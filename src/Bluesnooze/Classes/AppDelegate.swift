@@ -109,7 +109,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.handleWakeSequence(source: "screenIsUnlocked")
+            MainActor.assumeIsolated {
+                self?.handleWakeSequence(source: "screenIsUnlocked")
+            }
         }
 
         center.addObserver(
