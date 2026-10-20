@@ -1,0 +1,81 @@
+/* 标签页 */
+"Bluetooth" = "蓝牙";
+"Wi-Fi" = "Wi-Fi";
+"General" = "通用";
+"About" = "关于";
+
+/* 运行状态 */
+"Active" = "运行中";
+"Snoozing (%d devices)" = "休眠中（%d 台设备）";
+"Snoozing Bluetooth" = "蓝牙休眠中";
+"BlueNap: Active" = "蓝憩：已启用";
+"BlueNap: Snoozing (Mac asleep)" = "蓝憩：休眠中（Mac 睡眠）";
+"BlueNap: %@" = "蓝憩：%@";
+
+/* 通用设置 */
+"Status Bar & Animation" = "状态栏与动画";
+"Smooth transition animation on sleep/wake" = "在休眠与唤醒时显示平滑过渡动画";
+"Provides a subtle visual pulse and status feedback when network states change." = "当网络与外设状态变化时，提供细腻的呼吸动效与状态反馈。";
+"Menu Bar & Background Mode" = "菜单栏与后台模式";
+"Show icon in menu bar" = "在菜单栏显示图标";
+"When disabled, BlueNap runs silently in the background without taking up status bar space. To reopen Settings, launch BlueNap from Applications or Spotlight." = "停用后，蓝憩 将在后台静默运行且不占用菜单栏空间。若要重新打开设置，请从「应用程序」或聚焦搜索重新启动 蓝憩。";
+"Background mode active: BlueNap continues monitoring sleep & wake events silently." = "后台模式已生效：蓝憩 将在后台继续监控休眠与唤醒事件。";
+"Reset Preferences" = "重置偏好设置";
+"Restore all BlueNap settings to factory defaults." = "将 蓝憩 的所有设置恢复为出厂默认值。";
+"Reset to Defaults" = "恢复默认设置";
+"Hide Menu Bar Icon?" = "隐藏菜单栏图标？";
+"Hide Icon & Run in Background" = "隐藏图标并在后台运行";
+"Cancel" = "取消";
+"BlueNap will continue protecting your Bluetooth audio and Wi-Fi in the background.\n\nTo open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight." = "蓝憩 将在后台继续保护您的蓝牙音频与 Wi-Fi 连接。\n\n如需打开偏好设置或恢复菜单栏图标，只需从「应用程序」或聚焦搜索中重新打开 蓝憩 即可。";
+
+/* 蓝牙设置 */
+"Bluetooth Hardware" = "蓝牙硬件";
+"Powered On" = "已开启";
+"Powered Off" = "已关闭";
+"Refresh Bluetooth devices" = "刷新蓝牙设备";
+"When Mac Goes to Sleep" = "Mac 休眠时";
+"Turn off Bluetooth completely" = "完全关闭蓝牙";
+"Disconnect selected accessories only" = "仅断开选中的外设";
+"When Mac Wakes Up" = "Mac 唤醒时";
+"Action on unlock:" = "解锁屏幕时的操作：";
+"Select audio accessories to disconnect on sleep:" = "选择在休眠时要断开的音频外设：";
+"No paired Bluetooth audio accessories detected." = "未检测到已配对的蓝牙音频外设。";
+"Mice, keyboards, and trackpads are automatically protected and will never be disconnected." = "鼠标、键盘和触控板已受保护，绝不会被断开连接。";
+"Connected" = "已连接";
+" (Connected)" = "（已连接）";
+"Disconnecting mouse or keyboard may prevent waking via Bluetooth." = "断开鼠标或键盘可能导致无法通过蓝牙唤醒电脑。";
+
+/* Wi-Fi 设置 */
+"Wi-Fi Interface" = "Wi-Fi 接口";
+"Turn off Wi-Fi when sleeping" = "休眠时关闭 Wi-Fi";
+"Helps preserve battery life and prevent unexpected background network wakeups." = "有助于节省电池电量并防止意外的后台网络唤醒。";
+
+/* 关于设置 */
+"BlueNap" = "蓝憩 (BlueNap)";
+"BlueNap Settings" = "蓝憩 偏好设置";
+"Smart Bluetooth & Wi-Fi Power Manager for Mac" = "Mac 智能蓝牙与 Wi-Fi 深度休眠管理";
+"Swift 6 Strict Concurrency" = "Swift 6 严格并发";
+"Liquid Glass" = "Liquid Glass 视觉设计";
+"About This Application" = "关于本程序";
+"BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback." = "蓝憩（BlueNap）专为追求极致睡眠体验与电池续航打造。在您的 Mac 进入休眠后，优雅切断蓝牙音频外设与 Wi-Fi 的后台冗余唤醒，并在屏幕解锁后瞬间无缝复原。";
+"GitHub Repository" = "GitHub 代码仓库";
+"Open Website" = "打开官网";
+
+/* 偏好设置与菜单项 */
+"Restore previous state" = "恢复先前状态";
+"Always enable" = "始终开启";
+"Do nothing" = "不进行操作";
+"Hide icon" = "隐藏菜单栏图标";
+"Show icon" = "显示菜单栏图标";
+"Hide from Menu Bar?" = "从菜单栏隐藏？";
+"Hide Icon" = "隐藏图标";
+"No audio devices" = "未发现音频设备";
+
+/* 设备类别 */
+"Audio / Headset" = "音频 / 耳机";
+"Input Device" = "输入设备";
+"Phone / Tablet" = "手机 / 平板";
+"Computer" = "电脑";
+"Bluetooth Accessory" = "蓝牙外设";
+"Address" = "地址";
+"Category" = "类别";

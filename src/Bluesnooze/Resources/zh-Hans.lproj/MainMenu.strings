@@ -1,0 +1,71 @@
+/* Class = "NSMenuItem"; title = "Quit"; ObjectID = "0IH-xa-Tvk"; */
+"0IH-xa-Tvk.title" = "退出";
+
+/* Class = "NSMenuItem"; title = "Restore previous state"; ObjectID = "1rl-rg-UXC"; */
+"1rl-rg-UXC.title" = "恢复先前状态";
+
+/* Class = "NSMenuItem"; title = "Wi-Fi"; ObjectID = "2YU-sM-hjy"; */
+"2YU-sM-hjy.title" = "Wi-Fi";
+
+/* Class = "NSMenu"; title = "Bluetooth"; ObjectID = "6db-i4-kn8"; */
+"6db-i4-kn8.title" = "蓝牙";
+
+/* Class = "NSMenu"; title = "Wi-Fi"; ObjectID = "FLk-RB-qqS"; */
+"FLk-RB-qqS.title" = "Wi-Fi";
+
+/* Class = "NSMenuItem"; title = "Device list start"; ObjectID = "FSA-t2-uKj"; */
+"FSA-t2-uKj.title" = "设备列表开始";
+
+/* Class = "NSMenuItem"; title = "Action when unlocked:"; ObjectID = "I3h-jC-DnK"; */
+"I3h-jC-DnK.title" = "唤醒时的操作：";
+
+/* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "I9E-pI-lLm"; */
+"I9E-pI-lLm.title" = "偏好设置…";
+
+/* Class = "NSMenuItem"; title = "Bluetooth"; ObjectID = "MrC-mk-c9a"; */
+"MrC-mk-c9a.title" = "蓝牙";
+
+/* Class = "NSMenuItem"; title = "Action when unlocked"; ObjectID = "OUZ-ST-m1w"; */
+"OUZ-ST-m1w.title" = "唤醒时的操作";
+
+/* Class = "NSMenuItem"; title = "Device list end"; ObjectID = "U3Y-sg-vdO"; */
+"U3Y-sg-vdO.title" = "设备列表结束";
+
+/* Class = "NSMenuItem"; ibShadowedToolTip = "Version 1.4"; ObjectID = "UNc-OX-MPq"; */
+"UNc-OX-MPq.ibShadowedToolTip" = "版本 1.4";
+
+/* Class = "NSMenuItem"; title = "Website"; ObjectID = "UNc-OX-MPq"; */
+"UNc-OX-MPq.title" = "访问官网";
+
+/* Class = "NSMenuItem"; title = "Do nothing"; ObjectID = "Xld-ce-WJb"; */
+"Xld-ce-WJb.title" = "不进行操作";
+
+/* Class = "NSMenuItem"; title = "Turn off when sleeping"; ObjectID = "Yfg-ir-eaf"; */
+"Yfg-ir-eaf.title" = "休眠时关闭 Wi-Fi";
+
+/* Class = "NSMenuItem"; title = "Action when sleeping"; ObjectID = "eEB-7E-yZ7"; */
+"eEB-7E-yZ7.title" = "休眠时的操作";
+
+/* Class = "NSMenuItem"; title = "Always enable"; ObjectID = "hQ1-fS-R7M"; */
+"hQ1-fS-R7M.title" = "始终开启";
+
+/* Class = "NSMenuItem"; ibShadowedToolTip = "Relaunch app to show icon"; ObjectID = "iTh-xc-apd"; */
+"iTh-xc-apd.ibShadowedToolTip" = "重新打开应用即可恢复显示图标";
+
+/* Class = "NSMenuItem"; title = "Hide icon"; ObjectID = "iTh-xc-apd"; */
+"iTh-xc-apd.title" = "隐藏菜单栏图标";
+
+/* Class = "NSMenuItem"; title = "Always enable"; ObjectID = "k9U-YJ-Qra"; */
+"k9U-YJ-Qra.title" = "始终开启";
+
+/* Class = "NSMenuItem"; title = "Restore previous state"; ObjectID = "mBz-mB-SAw"; */
+"mBz-mB-SAw.title" = "恢复先前状态";
+
+/* Class = "NSMenuItem"; title = "Turn off Bluetooth"; ObjectID = "odn-aC-gVj"; */
+"odn-aC-gVj.title" = "休眠时关闭蓝牙";
+
+/* Class = "NSMenuItem"; title = "Do nothing"; ObjectID = "wwz-8o-dOW"; */
+"wwz-8o-dOW.title" = "不进行操作";
+
+/* Class = "NSMenuItem"; title = "Disconnect selected devices"; ObjectID = "x9r-cE-Oce"; */
+"x9r-cE-Oce.title" = "休眠时断开选中的设备";

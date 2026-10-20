@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+"CFBundleDisplayName" = "BlueNap";
+"CFBundleName" = "BlueNap";
+"NSBluetoothAlwaysUsageDescription" = "BlueNap needs Bluetooth access to disconnect connected accessories when your Mac sleeps and reconnect them upon wake.";
+"NSBluetoothPeripheralUsageDescription" = "BlueNap needs Bluetooth access to disconnect connected accessories when your Mac sleeps and reconnect them upon wake.";

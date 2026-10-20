@@ -1,0 +1,8 @@
+xcuserdata/
+Carthage
+DerivedData
+.DS_Store
+*.zip
+*.xcuserstate
+*.xcuserdata
+

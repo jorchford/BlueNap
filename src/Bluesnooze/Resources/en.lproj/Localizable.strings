@@ -1,0 +1,81 @@
+/* Tabs */
+"Bluetooth" = "Bluetooth";
+"Wi-Fi" = "Wi-Fi";
+"General" = "General";
+"About" = "About";
+
+/* Status */
+"Active" = "Active";
+"Snoozing (%d devices)" = "Snoozing (%d devices)";
+"Snoozing Bluetooth" = "Snoozing Bluetooth";
+"BlueNap: Active" = "BlueNap: Active";
+"BlueNap: Snoozing (Mac asleep)" = "BlueNap: Snoozing (Mac asleep)";
+"BlueNap: %@" = "BlueNap: %@";
+
+/* General Tab */
+"Status Bar & Animation" = "Status Bar & Animation";
+"Smooth transition animation on sleep/wake" = "Smooth transition animation on sleep/wake";
+"Provides a subtle visual pulse and status feedback when network states change." = "Provides a subtle visual pulse and status feedback when network states change.";
+"Menu Bar & Background Mode" = "Menu Bar & Background Mode";
+"Show icon in menu bar" = "Show icon in menu bar";
+"When disabled, BlueNap runs silently in the background without taking up status bar space. To reopen Settings, launch BlueNap from Applications or Spotlight." = "When disabled, BlueNap runs silently in the background without taking up status bar space. To reopen Settings, launch BlueNap from Applications or Spotlight.";
+"Background mode active: BlueNap continues monitoring sleep & wake events silently." = "Background mode active: BlueNap continues monitoring sleep & wake events silently.";
+"Reset Preferences" = "Reset Preferences";
+"Restore all BlueNap settings to factory defaults." = "Restore all BlueNap settings to factory defaults.";
+"Reset to Defaults" = "Reset to Defaults";
+"Hide Menu Bar Icon?" = "Hide Menu Bar Icon?";
+"Hide Icon & Run in Background" = "Hide Icon & Run in Background";
+"Cancel" = "Cancel";
+"BlueNap will continue protecting your Bluetooth audio and Wi-Fi in the background.\n\nTo open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight." = "BlueNap will continue protecting your Bluetooth audio and Wi-Fi in the background.\n\nTo open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight.";
+
+/* Bluetooth Tab */
+"Bluetooth Hardware" = "Bluetooth Hardware";
+"Powered On" = "Powered On";
+"Powered Off" = "Powered Off";
+"Refresh Bluetooth devices" = "Refresh Bluetooth devices";
+"When Mac Goes to Sleep" = "When Mac Goes to Sleep";
+"Turn off Bluetooth completely" = "Turn off Bluetooth completely";
+"Disconnect selected accessories only" = "Disconnect selected accessories only";
+"When Mac Wakes Up" = "When Mac Wakes Up";
+"Action on unlock:" = "Action on unlock:";
+"Select audio accessories to disconnect on sleep:" = "Select audio accessories to disconnect on sleep:";
+"No paired Bluetooth audio accessories detected." = "No paired Bluetooth audio accessories detected.";
+"Mice, keyboards, and trackpads are automatically protected and will never be disconnected." = "Mice, keyboards, and trackpads are automatically protected and will never be disconnected.";
+"Connected" = "Connected";
+" (Connected)" = " (Connected)";
+"Disconnecting mouse or keyboard may prevent waking via Bluetooth." = "Disconnecting mouse or keyboard may prevent waking via Bluetooth.";
+
+/* Wi-Fi Tab */
+"Wi-Fi Interface" = "Wi-Fi Interface";
+"Turn off Wi-Fi when sleeping" = "Turn off Wi-Fi when sleeping";
+"Helps preserve battery life and prevent unexpected background network wakeups." = "Helps preserve battery life and prevent unexpected background network wakeups.";
+
+/* About Tab */
+"BlueNap" = "BlueNap";
+"BlueNap Settings" = "BlueNap Settings";
+"Smart Bluetooth & Wi-Fi Power Manager for Mac" = "Smart Bluetooth & Wi-Fi Power Manager for Mac";
+"Swift 6 Strict Concurrency" = "Swift 6 Strict Concurrency";
+"Liquid Glass" = "Liquid Glass";
+"About This Application" = "About This Application";
+"BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback." = "BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback.";
+"GitHub Repository" = "GitHub Repository";
+"Open Website" = "Open Website";
+
+/* Preferences & Menu Items */
+"Restore previous state" = "Restore previous state";
+"Always enable" = "Always enable";
+"Do nothing" = "Do nothing";
+"Hide icon" = "Hide icon";
+"Show icon" = "Show icon";
+"Hide from Menu Bar?" = "Hide from Menu Bar?";
+"Hide Icon" = "Hide Icon";
+"No audio devices" = "No audio devices";
+
+/* Device Categories */
+"Audio / Headset" = "Audio / Headset";
+"Input Device" = "Input Device";
+"Phone / Tablet" = "Phone / Tablet";
+"Computer" = "Computer";
+"Bluetooth Accessory" = "Bluetooth Accessory";
+"Address" = "Address";
+"Category" = "Category";

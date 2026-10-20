@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+"CFBundleDisplayName" = "蓝憩";
+"CFBundleName" = "蓝憩";
+"NSBluetoothAlwaysUsageDescription" = "蓝憩 需要访问蓝牙，以便在您的 Mac 休眠时断开外设连接并在唤醒时恢复连接。";
+"NSBluetoothPeripheralUsageDescription" = "蓝憩 需要访问蓝牙，以便在您的 Mac 休眠时断开外设连接并在唤醒时恢复连接。";

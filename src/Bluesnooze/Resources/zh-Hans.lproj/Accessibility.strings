@@ -1,0 +1,8 @@
+/* 菜单栏图标的辅助功能标签 */
+"BlueNap" = "蓝憩";
+
+/* 已配对蓝牙设备菜单项的辅助功能提示 */
+"Disconnects this device when the Mac goes to sleep." = "Mac 进入休眠时断开此设备的连接。";
+
+/* 隐藏图标菜单项的辅助功能提示 */
+"Hides the menu bar icon. Launch the app again to show it." = "隐藏菜单栏图标。重新启动应用即可恢复显示。";

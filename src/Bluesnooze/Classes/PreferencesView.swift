@@ -1,0 +1,123 @@
+//
+//  PreferencesView.swift
+//  Bluesnooze
+//
+//  Created on 2026-10-20.
+//
+
+import SwiftUI
+
+struct PreferencesView: View {
+    @Bindable var preferences: Preferences = .shared
+    @Bindable var appState: AppState = .shared
+
+    @State private var selectedTab: SettingsTab = .bluetooth
+
+    enum SettingsTab: String, CaseIterable, Identifiable {
+        case bluetooth = "Bluetooth"
+        case wifi = "Wi-Fi"
+        case general = "General"
+        case about = "About"
+
+        var id: String {
+            rawValue
+        }
+
+        var localizedKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
+
+        var iconName: String {
+            switch self {
+            case .bluetooth: "antenna.radiowaves.left.and.right"
+            case .wifi: "wifi"
+            case .general: "gearshape"
+            case .about: "info.circle"
+            }
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header Tabs
+            HStack(spacing: 8) {
+                ForEach(SettingsTab.allCases) { tab in
+                    tabButton(for: tab)
+                }
+                Spacer()
+
+                // Live status capsule
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(appState.status == .active ? Color.green : Color.orange)
+                        .frame(width: 8, height: 8)
+                    Text(appState.status.displayText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(.regularMaterial, in: Capsule())
+            }
+            .padding(16)
+            .background(.thinMaterial)
+
+            Divider()
+
+            // Content Area
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(spacing: 20) {
+                    switch selectedTab {
+                    case .bluetooth:
+                        BluetoothPreferencesTab(preferences: preferences, appState: appState)
+                    case .wifi:
+                        WiFiPreferencesTab(preferences: preferences, appState: appState)
+                    case .general:
+                        GeneralPreferencesTab(preferences: preferences)
+                    case .about:
+                        AboutPreferencesTab()
+                    }
+                }
+                .padding(20)
+            }
+        }
+        .frame(width: 580, height: 480)
+        .background(.regularMaterial)
+        .onAppear {
+            appState.refreshHardwareStates()
+        }
+    }
+
+    private func tabButton(for tab: SettingsTab) -> some View {
+        Button {
+            withAnimation(.spring(duration: 0.35, bounce: 0.2)) {
+                selectedTab = tab
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: tab.iconName)
+                    .font(.system(size: 13, weight: .medium))
+                Text(tab.localizedKey)
+                    .font(.system(size: 13, weight: .medium))
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                selectedTab == tab
+                    ? AnyShapeStyle(.tint.opacity(0.18))
+                    : AnyShapeStyle(.clear),
+                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(selectedTab == tab ? Color.accentColor.opacity(0.3) : .clear, lineWidth: 1)
+            )
+            .foregroundStyle(selectedTab == tab ? Color.primary : Color.secondary)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+#Preview {
+    PreferencesView()
+}

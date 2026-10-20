@@ -1,0 +1,26 @@
+disabled_rules:
+  - todo
+
+excluded:
+  - Carthage
+  - Pods
+  - DerivedData
+
+line_length:
+  warning: 140
+  error: 160
+
+type_body_length:
+  warning: 300
+  error: 350
+
+identifier_name:
+  min_length: 2
+  max_length: 60
+  allowed_symbols: ["_"]
+  excluded:
+    - ui
+    - on
+    - id
+    - vm
+    - disconnectBluetoothDevicesOnPowerDownMenuItem
