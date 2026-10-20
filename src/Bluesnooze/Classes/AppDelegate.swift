@@ -199,7 +199,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func updateMenuStates() {
         // Bluetooth settings
         disableBluetoothOnPowerDownMenuItem.state = boolToMenuState(preferences.disableBluetoothOnSleep)
-        disconnectBluetoothDevicesOnPowerDownMenuItem.isEnabled = !preferences.disableBluetoothOnSleep
+        disconnectBluetoothDevicesOnPowerDownMenuItem.isEnabled = true
         disconnectBluetoothDevicesOnPowerDownMenuItem.state = boolToMenuState(preferences.disconnectDevicesOnSleep)
 
         // Populate dynamic device list
@@ -264,28 +264,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 item.target = self
                 let isMarked = preferences.isDeviceMarkedForDisconnect(address: device.address)
                 item.state = boolToMenuState(isMarked)
-                item.isEnabled = preferences.disconnectDevicesOnSleep
+                item.isEnabled = true
                 item.indentationLevel = startItem.indentationLevel
                 menu.insertItem(item, at: startIndex)
             }
         }
     }
+}
 
-    // MARK: - Action Handlers: Bluetooth
+// MARK: - Action Handlers
+
+extension AppDelegate {
+    // MARK: - Bluetooth Actions
 
     @IBAction func disableBluetoothOnPowerDownClicked(_: NSMenuItem) {
         preferences.disableBluetoothOnSleep.toggle()
-        if preferences.bluetoothWakeAction == .restore {
-            preferences.bluetoothWakeAction = .nothing
-        }
         if preferences.disableBluetoothOnSleep {
             preferences.disconnectDevicesOnSleep = false
+        }
+        if preferences.bluetoothWakeAction == .restore {
+            preferences.bluetoothWakeAction = .nothing
         }
         updateMenuStates()
     }
 
     @IBAction func disconnectBluetoothDevicesOnPowerDownClicked(_: NSMenuItem) {
         preferences.disconnectDevicesOnSleep.toggle()
+        if preferences.disconnectDevicesOnSleep {
+            preferences.disableBluetoothOnSleep = false
+        }
         if preferences.bluetoothWakeAction == .restore {
             preferences.bluetoothWakeAction = .nothing
         }
@@ -310,11 +317,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @IBAction func bluetoothDeviceClicked(_ sender: BluetoothDeviceMenuItem) {
         let addr = sender.deviceAddressString
         let isCurrentlyMarked = preferences.isDeviceMarkedForDisconnect(address: addr)
-        preferences.setDeviceMarkedForDisconnect(address: addr, disconnect: !isCurrentlyMarked)
+        let nextState = !isCurrentlyMarked
+        preferences.setDeviceMarkedForDisconnect(address: addr, disconnect: nextState)
+        if nextState, !preferences.disconnectDevicesOnSleep {
+            preferences.disconnectDevicesOnSleep = true
+            preferences.disableBluetoothOnSleep = false
+        }
         updateMenuStates()
     }
 
-    // MARK: - Action Handlers: Wi-Fi
+    // MARK: - Wi-Fi Actions
 
     @IBAction func disableWifiOnPowerDownClicked(_: NSMenuItem) {
         preferences.disableWifiOnSleep.toggle()
@@ -339,7 +351,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         updateMenuStates()
     }
 
-    // MARK: - Action Handlers: General & Preferences
+    // MARK: - General Actions
 
     @IBAction func openPreferencesClicked(_: Any) {
         SettingsWindowController.shared.showSettings()

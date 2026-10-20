@@ -7,12 +7,14 @@
 </p>
 
 <p align="center">
+  <a href="https://redsite.cn/apps/bluenap"><img src="https://img.shields.io/badge/Website-redsite.cn-blueviolet?style=flat-square" alt="Official Website" /></a>
+  <a href="https://github.com/jorchford/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
   <img src="https://img.shields.io/badge/Dependencies-0%20(Pure%20Native)-purple.svg?style=flat-square" alt="Zero Dependencies" />
-  <img src="https://img.shields.io/badge/SwiftLint-Passing%20(Strict)-success.svg?style=flat-square" alt="SwiftLint Passing" />
-  <img src="https://img.shields.io/badge/GitHub-jorchford%2FBlueNap-181717.svg?style=flat-square&logo=github" alt="GitHub Repository" />
+  <img src="https://img.shields.io/badge/Notarized-Apple%20Verified-success.svg?style=flat-square" alt="Apple Notarized" />
+  <a href="https://github.com/jorchford/BlueNap"><img src="https://img.shields.io/badge/GitHub-jorchford%2FBlueNap-181717.svg?style=flat-square&logo=github" alt="GitHub Repository" /></a>
 </p>
 
 ---
@@ -57,9 +59,15 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 4. **Comprehensive Localization (English & 简体中文)**
    - Complete Chinese translation across menu bars, settings panels, alerts, and VoiceOver accessibility labels.
 
-5. **Ultra-Low Resource Footprint & Battery Optimization**
-   - **Lazy Window Allocation**: The SwiftUI hosting window and rendering buffers are only instantiated when the user opens Settings.
-   - **Zero Idle Background CPU**: Sleep & wake lifecycle events are captured directly from `NSWorkspace` notifications.
+5. **Apple Notarized & Direct Distribution**
+   - Officially notarized by Apple (`source=Notarized Developer ID`), guaranteed Gatekeeper trust with zero quarantine blocks.
+
+---
+
+### 🌟 More macOS Apps from Developer
+
+* **[Tactile (妙触)](https://github.com/jorchford/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Buttery-smooth, native-grade trackpad & Magic Mouse gesture enhancements.
+* **[Official Website (RedSite)](https://redsite.cn)** — Discover more commercial-grade native macOS & iOS utilities crafted for speed and elegance.
 
 ---
 
@@ -92,13 +100,20 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 1. **Swift 6 全并发安全架构**
    - 彻底开启 `SWIFT_STRICT_CONCURRENCY = complete`，严格消除数据竞争。
 2. **Liquid Glass 流光玻璃偏好设置**
-   - 专为 macOS Sonoma/Sequoia 设计的高级磨砂拟物面板，支持蓝牙、Wi-Fi、通用与关于四大专属标签页。
+   - 专为 macOS Sonoma/Sequoia 设计的高级磨砂拟物面板，支持独立勾选任意已配对设备，实时响应。
 3. **后台极简静默模式**
    - 支持彻底隐藏状态栏图标，后台持续监听休眠事件；只需从聚焦搜索（Spotlight）再次启动蓝憩，即可随时唤回设置。
 4. **全语言原生适配**
    - 包含完整的简体中文（`zh-Hans`）与英文（`en`）支持，状态提示、动效反馈与 VoiceOver 盲人读屏完全本土化。
-5. **0 第三方依赖 & 极低能耗**
-   - 纯原生 Cocoa / SwiftUI / CoreWLAN / IOBluetooth 打造，闲置时 0.0% CPU 占用，内存仅数兆字节。
+5. **苹果官方公证 (Notarized)**
+   - 已通过 Apple 官方安全扫描公证，搭载 Developer ID 权威签名，下载即开，无拦截弹窗。
+
+---
+
+### 🌟 更多开发者独立作品
+
+* **[Tactile (妙触)](https://github.com/jorchford/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
+* **[官方应用展台 (RedSite)](https://redsite.cn)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
 
 ---
 
@@ -116,12 +131,11 @@ xcodebuild -project src/Bluesnooze.xcodeproj \
            build
 ```
 
-编译产物将生成在 Xcode DerivedData 目录：
-`~/Library/Developer/Xcode/DerivedData/Bluesnooze-*/Build/Products/Release/Bluesnooze.app`
-
 ---
 
 ### 开发者信息
 
+* **官方展示页面**：[https://redsite.cn/apps/bluenap](https://redsite.cn/apps/bluenap)
 * **GitHub 仓库**：[https://github.com/jorchford/BlueNap](https://github.com/jorchford/BlueNap)
+* **更多 macOS 神器**：[https://github.com/jorchford/tactile](https://github.com/jorchford/tactile)
 * **作者**：jorchford

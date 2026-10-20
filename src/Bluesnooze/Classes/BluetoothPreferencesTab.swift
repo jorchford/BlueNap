@@ -49,24 +49,30 @@ struct BluetoothPreferencesTab: View {
                     Text("When Mac Goes to Sleep")
                         .font(.headline)
 
-                    Toggle("Turn off Bluetooth completely", isOn: $preferences.disableBluetoothOnSleep)
-                        .onChange(of: preferences.disableBluetoothOnSleep) { _, newValue in
-                            if newValue {
+                    Toggle("Turn off Bluetooth completely", isOn: Binding(
+                        get: { preferences.disableBluetoothOnSleep },
+                        set: { isEnabled in
+                            preferences.disableBluetoothOnSleep = isEnabled
+                            if isEnabled {
                                 preferences.disconnectDevicesOnSleep = false
                             }
                         }
+                    ))
 
-                    Toggle("Disconnect selected accessories only", isOn: $preferences.disconnectDevicesOnSleep)
-                        .disabled(preferences.disableBluetoothOnSleep)
-                        .onChange(of: preferences.disconnectDevicesOnSleep) { _, newValue in
-                            if newValue {
+                    Toggle("Disconnect selected accessories only", isOn: Binding(
+                        get: { preferences.disconnectDevicesOnSleep },
+                        set: { isEnabled in
+                            preferences.disconnectDevicesOnSleep = isEnabled
+                            if isEnabled {
                                 preferences.disableBluetoothOnSleep = false
                             }
                         }
+                    ))
 
-                    if preferences.disconnectDevicesOnSleep {
-                        pairedDevicesListView
-                    }
+                    Divider()
+                        .padding(.vertical, 2)
+
+                    pairedDevicesListView
                 }
             }
 
@@ -123,57 +129,82 @@ struct BluetoothPreferencesTab: View {
     private func deviceRow(for device: BluetoothDeviceInfo) -> some View {
         let isMarked = preferences.isDeviceMarkedForDisconnect(address: device.address)
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 12) {
-                Image(systemName: device.sfSymbolName)
-                    .font(.system(size: 16))
-                    .foregroundStyle(device.isConnected ? Color.blue : Color.secondary)
-                    .frame(width: 24)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
-                        Text(device.name)
-                            .font(.body.weight(.medium))
-                        if device.isConnected {
-                            Text("Connected")
-                                .font(.caption2.weight(.bold))
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.green.opacity(0.18), in: Capsule())
-                                .foregroundStyle(Color.green)
-                        }
-                    }
-
-                    Text(device.address)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Toggle("", isOn: Binding(
-                    get: { isMarked },
-                    set: { newValue in
-                        preferences.setDeviceMarkedForDisconnect(address: device.address, disconnect: newValue)
-                    }
-                ))
-                .labelsHidden()
-                .toggleStyle(.switch)
-            }
+            deviceRowHeader(for: device)
 
             if isMarked, device.isInputDevice {
-                HStack(spacing: 6) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.yellow)
-                        .font(.caption)
-                    Text("Disconnecting mouse or keyboard may prevent waking via Bluetooth.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.leading, 6)
+                inputDeviceWarningView
             }
         }
         .padding(10)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .onTapGesture {
+            toggleDeviceSelection(for: device)
+        }
+    }
+
+    private func toggleDeviceSelection(for device: BluetoothDeviceInfo) {
+        let nextState = !preferences.isDeviceMarkedForDisconnect(address: device.address)
+        preferences.setDeviceMarkedForDisconnect(address: device.address, disconnect: nextState)
+        if nextState, !preferences.disconnectDevicesOnSleep {
+            preferences.disconnectDevicesOnSleep = true
+            preferences.disableBluetoothOnSleep = false
+        }
+    }
+
+    private func deviceRowHeader(for device: BluetoothDeviceInfo) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: device.sfSymbolName)
+                .font(.system(size: 16))
+                .foregroundStyle(device.isConnected ? Color.blue : Color.secondary)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(device.name)
+                        .font(.body.weight(.medium))
+                    if device.isConnected {
+                        Text("Connected")
+                            .font(.caption2.weight(.bold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.18), in: Capsule())
+                            .foregroundStyle(Color.green)
+                    }
+                }
+
+                Text(device.address)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Toggle("", isOn: Binding(
+                get: { preferences.isDeviceMarkedForDisconnect(address: device.address) },
+                set: { newValue in
+                    preferences.setDeviceMarkedForDisconnect(address: device.address, disconnect: newValue)
+                    if newValue, !preferences.disconnectDevicesOnSleep {
+                        preferences.disconnectDevicesOnSleep = true
+                        preferences.disableBluetoothOnSleep = false
+                    }
+                }
+            ))
+            .labelsHidden()
+            .toggleStyle(.switch)
+        }
+    }
+
+    private var inputDeviceWarningView: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.yellow)
+                .font(.caption)
+            Text("Disconnecting mouse or keyboard may prevent waking via Bluetooth.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.leading, 6)
     }
 
     private func liquidCard(@ViewBuilder content: () -> some View) -> some View {

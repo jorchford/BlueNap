@@ -60,6 +60,10 @@
 "BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback." = "蓝憩（BlueNap）专为追求极致睡眠体验与电池续航打造。在您的 Mac 进入休眠后，优雅切断蓝牙音频外设与 Wi-Fi 的后台冗余唤醒，并在屏幕解锁后瞬间无缝复原。";
 "GitHub Repository" = "GitHub 代码仓库";
 "Open Website" = "打开官网";
+"Official Website" = "官方展示网站";
+"More Apps: Tactile (妙触)" = "更多作品：Tactile (妙触)";
+"120Hz ProMotion Multitouch Gestures" = "120Hz 全能多点触控与手势增强";
+"View on GitHub" = "前往 GitHub";
 
 /* 偏好设置与菜单项 */
 "Restore previous state" = "恢复先前状态";

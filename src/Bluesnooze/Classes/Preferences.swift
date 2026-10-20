@@ -53,14 +53,8 @@ final class Preferences {
     }
 
     var bluetoothDevicesToDisconnect: [String] {
-        didSet {
-            disconnectSet = Set(bluetoothDevicesToDisconnect)
-            defaults.set(bluetoothDevicesToDisconnect, forKey: Keys.bluetoothDevicesToDisconnectOnPowerDown)
-        }
+        didSet { defaults.set(bluetoothDevicesToDisconnect, forKey: Keys.bluetoothDevicesToDisconnectOnPowerDown) }
     }
-
-    @ObservationIgnored
-    private var disconnectSet: Set<String>
 
     var bluetoothWakeAction: WakeAction {
         didSet { defaults.set(bluetoothWakeAction.rawValue, forKey: Keys.bluetoothActionOnScreenUnlock) }
@@ -101,10 +95,7 @@ final class Preferences {
         }
 
         disconnectDevicesOnSleep = defaults.bool(forKey: Keys.disconnectBluetoothDevicesOnPowerDown)
-
-        let initialDevices = defaults.stringArray(forKey: Keys.bluetoothDevicesToDisconnectOnPowerDown) ?? []
-        bluetoothDevicesToDisconnect = initialDevices
-        disconnectSet = Set(initialDevices)
+        bluetoothDevicesToDisconnect = defaults.stringArray(forKey: Keys.bluetoothDevicesToDisconnectOnPowerDown) ?? []
 
         let btRaw = defaults.string(forKey: Keys.bluetoothActionOnScreenUnlock)
         bluetoothWakeAction = btRaw.flatMap(WakeAction.init) ?? .restore
@@ -124,13 +115,13 @@ final class Preferences {
     }
 
     func isDeviceMarkedForDisconnect(address: String) -> Bool {
-        disconnectSet.contains(address)
+        bluetoothDevicesToDisconnect.contains(address)
     }
 
     func setDeviceMarkedForDisconnect(address: String, disconnect: Bool) {
         var devices = bluetoothDevicesToDisconnect
         if disconnect {
-            if !disconnectSet.contains(address) {
+            if !devices.contains(address) {
                 devices.append(address)
             }
         } else {
@@ -157,7 +148,6 @@ final class Preferences {
         disableBluetoothOnSleep = true
         disconnectDevicesOnSleep = false
         bluetoothDevicesToDisconnect = []
-        disconnectSet = []
         bluetoothWakeAction = .restore
         disableWifiOnSleep = false
         wifiWakeAction = .nothing

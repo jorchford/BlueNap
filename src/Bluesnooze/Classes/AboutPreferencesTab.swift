@@ -62,11 +62,44 @@ struct AboutPreferencesTab: View {
                     Divider()
 
                     HStack {
+                        Text("Official Website")
+                            .font(.subheadline)
+                        Spacer()
+                        Button("redsite.cn") {
+                            if let url = URL(string: "https://redsite.cn/apps/bluenap") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack {
                         Text("GitHub Repository")
                             .font(.subheadline)
                         Spacer()
-                        Button("Open Website") {
+                        Button("jorchford/BlueNap") {
                             if let url = URL(string: "https://github.com/jorchford/BlueNap") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("More Apps: Tactile (妙触)")
+                                .font(.subheadline)
+                            Text("120Hz ProMotion Multitouch Gestures")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("View on GitHub") {
+                            if let url = URL(string: "https://github.com/jorchford/tactile") {
                                 NSWorkspace.shared.open(url)
                             }
                         }
