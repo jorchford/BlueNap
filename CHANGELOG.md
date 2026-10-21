@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [2.0.1] - 2026-10-21
+
+### Fixed
+- Fixed Bluetooth device selection reactivity where `@ObservationIgnored` cache prevented SwiftUI view re-renders when toggling devices.
+- Resolved mutual exclusivity deadlock between full Bluetooth toggle and per-device disconnect toggles.
+- Fixed Swift 6 actor-isolation warning on `screenIsUnlocked` distributed notification closure via `MainActor.assumeIsolated`.
+- Fixed memory ballooning when hiding the menu bar icon by aggressively unbinding `NSAlert` modal windows, status items, dynamic menus, and invoking `malloc_zone_pressure_relief`.
+- Lazily released SwiftUI `NSHostingView` and `NSWindow` on settings window close to reclaim memory.
+
+### Added
+- Linked developer official website (https://redsite.cn/apps/bluenap) and Tactile (妙触) app recommendations in About tab and README.
+
+## [2.0.0] - 2026-10-20
 
 ### Added
 - Complete rewrite with Swift 6 and strict concurrency checking (`SWIFT_STRICT_CONCURRENCY = complete`).
