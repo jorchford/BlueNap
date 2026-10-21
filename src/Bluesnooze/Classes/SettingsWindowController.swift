@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import Darwin
 import SwiftUI
 
 @MainActor
@@ -53,5 +54,11 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     func windowWillClose(_: Notification) {
         // Return to accessory mode when preferences window is closed
         NSApp.setActivationPolicy(.accessory)
+        window?.contentView = nil
+        window = nil
+        malloc_zone_pressure_relief(nil, 0)
+        DispatchQueue.main.async {
+            malloc_zone_pressure_relief(nil, 0)
+        }
     }
 }

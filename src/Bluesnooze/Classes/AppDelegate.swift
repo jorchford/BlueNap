@@ -8,6 +8,7 @@
 
 import Cocoa
 import CoreWLAN
+import Darwin
 import IOBluetooth
 import os
 
@@ -76,14 +77,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
             updateStatusItemTooltip()
             hideIconMenuItem?.title = NSLocalizedString("Hide icon", comment: "")
+            updateMenuStates()
         } else {
             if let item = statusItem {
+                item.menu = nil
+                item.button?.image = nil
+                item.button?.action = nil
                 NSStatusBar.system.removeStatusItem(item)
                 statusItem = nil
             }
             hideIconMenuItem?.title = NSLocalizedString("Show icon", comment: "")
+            clearBluetoothDeviceList()
         }
-        updateMenuStates()
+        trimMemoryFootprint()
     }
 
     // MARK: - Notification Setup
@@ -233,18 +239,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             NSLocalizedString("Hide icon", comment: "")
     }
 
-    private func populateBluetoothDeviceList() {
+    private func clearBluetoothDeviceList() {
         guard let startItem = bluetoothDeviceListStart,
               let endItem = bluetoothDeviceListEnd,
               let menu = bluetoothMenu else { return }
 
         let startIndex = menu.index(of: startItem) + 1
         let endIndex = menu.index(of: endItem)
-        guard startIndex <= endIndex else { return }
+        guard startIndex < endIndex else { return }
 
         for _ in startIndex ..< endIndex {
             menu.removeItem(at: startIndex)
         }
+    }
+
+    private func populateBluetoothDeviceList() {
+        clearBluetoothDeviceList()
+
+        guard let startItem = bluetoothDeviceListStart,
+              let menu = bluetoothMenu else { return }
+        let startIndex = menu.index(of: startItem) + 1
 
         let pairedDevices = appState.pairedDevices
         if pairedDevices.isEmpty {
@@ -373,7 +387,13 @@ extension AppDelegate {
             alert.alertStyle = .informational
             alert.addButton(withTitle: NSLocalizedString("Hide Icon", comment: ""))
             alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-            if alert.runModal() == .alertSecondButtonReturn {
+
+            let response = alert.runModal()
+            alert.window.orderOut(nil)
+            alert.window.contentView = nil
+
+            if response == .alertSecondButtonReturn {
+                trimMemoryFootprint()
                 return
             }
             setMenuBarIconVisible(false)
@@ -391,6 +411,13 @@ extension AppDelegate {
     }
 
     // MARK: - Helpers
+
+    func trimMemoryFootprint() {
+        malloc_zone_pressure_relief(nil, 0)
+        DispatchQueue.main.async {
+            malloc_zone_pressure_relief(nil, 0)
+        }
+    }
 
     private func boolToMenuState(_ value: Bool?) -> NSControl.StateValue {
         switch value {
