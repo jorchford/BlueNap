@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://redsite.cn/apps/bluenap"><img src="https://img.shields.io/badge/Website-redsite.cn-blueviolet?style=flat-square" alt="Official Website" /></a>
-  <a href="https://github.com/jorchford/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
+  <a href="https://app.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-app.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
+  <a href="https://app.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
@@ -66,8 +66,8 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ### 🌟 More macOS Apps from Developer
 
-* **[Tactile (妙触)](https://github.com/jorchford/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Buttery-smooth, native-grade trackpad & Magic Mouse gesture enhancements.
-* **[Official Website (RedSite)](https://redsite.cn)** — Discover more commercial-grade native macOS & iOS utilities crafted for speed and elegance.
+* **[Tactile (妙触)](https://app.needai.top/app/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Buttery-smooth, native-grade trackpad & Magic Mouse gesture enhancements.
+* **[Official Website (BlueNap)](https://app.needai.top/app/bluenap)** — Discover more commercial-grade native macOS & iOS utilities crafted for speed and elegance.
 
 ---
 
@@ -112,8 +112,8 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ### 🌟 更多开发者独立作品
 
-* **[Tactile (妙触)](https://github.com/jorchford/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
-* **[官方应用展台 (RedSite)](https://redsite.cn)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
+* **[Tactile (妙触)](https://app.needai.top/app/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
+* **[官方应用主页 (BlueNap)](https://app.needai.top/app/bluenap)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
 
 ---
 
@@ -134,8 +134,8 @@ xcodebuild -project src/Bluesnooze.xcodeproj \
 ---
 
 ### 开发者信息
-
-* **官方展示页面**：[https://redsite.cn/apps/bluenap](https://redsite.cn/apps/bluenap)
+* **支持我喝杯咖啡**：[https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00](https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00)
+* **官方展示页面**：[https://app.needai.top](https://app.needai.top)
 * **GitHub 仓库**：[https://github.com/jorchford/BlueNap](https://github.com/jorchford/BlueNap)
 * **更多 macOS 神器**：[https://github.com/jorchford/tactile](https://github.com/jorchford/tactile)
-* **作者**：jorchford
+* **作者**：[ Jorchford](https://github.com/jorchford)

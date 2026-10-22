@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Lazily released SwiftUI `NSHostingView` and `NSWindow` on settings window close to reclaim memory.
 
 ### Added
-- Linked developer official website (https://redsite.cn/apps/bluenap) and Tactile (妙触) app recommendations in About tab and README.
+- Linked developer official website (https://app.needai.top/app/bluenap) and Tactile (妙触) app recommendations in About tab and README.
 
 ## [2.0.0] - 2026-10-20
 
