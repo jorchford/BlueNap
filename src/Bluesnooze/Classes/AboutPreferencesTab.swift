@@ -17,7 +17,7 @@ struct AboutPreferencesTab: View {
                         .frame(width: 72, height: 72)
                         .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
 
-                    Text("BlueNap")
+                    Text(NSLocalizedString("BlueNap", comment: ""))
                         .font(.title2.weight(.bold))
 
                     Text("Smart Bluetooth & Wi-Fi Power Manager for Mac")

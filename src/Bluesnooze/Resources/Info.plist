@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>BlueNap</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -13,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>BlueNap</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,9 +29,9 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Bluesnooze needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
+	<string>BlueNap needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Bluesnooze needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
+	<string>BlueNap needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2020 Oliver Peate. All rights reserved.</string>
 	<key>NSMainNibFile</key>

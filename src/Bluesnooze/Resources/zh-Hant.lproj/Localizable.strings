@@ -1,0 +1,153 @@
+/* 標籤頁 */
+"Bluetooth" = "藍牙";
+"Wi-Fi" = "Wi-Fi";
+"General" = "通用";
+"About" = "關於";
+
+/* 運行狀態 */
+"Active" = "監聽中";
+"Snoozing (%d devices)" = "休眠保護中 (%d 個設備)";
+"Snoozing Bluetooth" = "藍牙已休眠斷開";
+"BlueNap: Active" = "藍憩：正常運行中";
+"BlueNap: Snoozing (Mac asleep)" = "藍憩：休眠保護中 (Mac 正在睡眠)";
+"BlueNap: %@" = "藍憩：%@";
+
+/* 通用標籤頁 */
+"Status Bar & Animation" = "狀態欄與動畫效果";
+"Smooth transition animation on sleep/wake" = "睡眠/喚醒時平滑過渡動畫";
+"Provides a subtle visual pulse and status feedback when network states change." = "在網絡狀態或外設狀態變化時提供柔和的視覺微光與狀態反饋。";
+"Menu Bar & Background Mode" = "菜單欄與後台模式";
+"Show icon in menu bar" = "在菜單欄顯示圖標";
+"When disabled, BlueNap runs silently in the background without taking up status bar space. To reopen Settings, launch BlueNap from Applications or Spotlight." = "關閉後，藍憩將轉入純後台靜默運行，不佔用頂部菜單欄空間。如需再次打開設置，直接從「應用程序」或「聚焦搜索」重新啟動藍憩即可。";
+"Background mode active: BlueNap continues monitoring sleep & wake events silently." = "後台模式已生效：藍憩將在後台持續靜默守護睡眠與喚醒事件。";
+"Reset Preferences" = "恢復默認設置";
+"Restore all BlueNap settings to factory defaults." = "將所有藍憩設置與配置規則恢復至初始狀態。";
+"Reset to Defaults" = "恢復出廠默認值";
+"Hide Menu Bar Icon?" = "隱藏菜單欄圖標？";
+"Hide Icon & Run in Background" = "隱藏圖標並後台運行";
+"Cancel" = "取消";
+"BlueNap will continue protecting your Bluetooth audio and Wi-Fi in the background.\n\nTo open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight." = "藍憩將在後台繼續守護您的藍牙音頻與 Wi-Fi 連接。\n\n如需打開設置或恢復菜單欄圖標，只需從「應用程序」或「聚焦搜索 (Spotlight)」再次點擊啟動「藍憩」即可。";
+
+/* 藍牙標籤頁 */
+"Bluetooth Hardware" = "藍牙硬件狀態";
+"Powered On" = "已開啟";
+"Powered Off" = "已關閉";
+"Refresh Bluetooth devices" = "刷新已配對設備列表";
+"When Mac Goes to Sleep" = "當 Mac 進入休眠時";
+"Turn off Bluetooth completely" = "完全關閉藍牙硬件電源";
+"Disconnect selected accessories only" = "僅斷開已選中的音頻外設";
+"When Mac Wakes Up" = "當 Mac 屏幕喚醒時";
+"Action on unlock:" = "屏幕解鎖後動作：";
+"Select audio accessories to disconnect on sleep:" = "選擇休眠時自動斷開的音頻外設：";
+"No paired Bluetooth audio accessories detected." = "未檢測到已配對的藍牙音頻外設。";
+"Mice, keyboards, and trackpads are automatically protected and will never be disconnected." = "鼠標、鍵盤與觸控板等輸入外設已納入安全保護，永不斷開。";
+"Connected" = "已連接";
+" (Connected)" = " (已連接)";
+"Disconnecting mouse or keyboard may prevent waking via Bluetooth." = "斷開鼠標或鍵盤可能導致無法通過藍牙外設喚醒 Mac。";
+
+/* Wi-Fi 標籤頁 */
+"Wi-Fi Interface" = "Wi-Fi 網卡狀態";
+"Turn off Wi-Fi when sleeping" = "休眠時關閉 Wi-Fi 無線網卡";
+"Helps preserve battery life and prevent unexpected background network wakeups." = "有助於節約電池電量，並防止休眠期間被意外網絡喚醒。";
+
+/* 關於標籤頁 */
+"BlueNap" = "藍憩";
+"BlueNap Settings" = "藍憩 偏好設置";
+"Smart Bluetooth & Wi-Fi Power Manager for Mac" = "意境優雅的 Mac 藍牙與 Wi-Fi 深度休眠管理神器";
+"Swift 6 Strict Concurrency" = "Swift 6 全並發安全";
+"Liquid Glass" = "Liquid Glass 流光玻璃";
+"About This Application" = "關於本軟件";
+"BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback." = "藍憩 (BlueNap) 旨在終結 Mac 休眠時因 Power Nap 等後台維護意外搶連耳機、中斷手機音頻通話或耗盡外設電量的痛點，讓您的 Mac 與外設一同安恬入睡。";
+"GitHub Repository" = "GitHub 開源倉庫";
+"Open Website" = "訪問應用官網";
+"Official Website" = "官方發布主頁";
+"More Apps: Tactile (妙触)" = "更多作品：Tactile (妙觸)";
+"120Hz ProMotion Multitouch Gestures" = "120Hz ProMotion 妙控多點觸控手勢神器";
+"View on GitHub" = "在 GitHub 上查看";
+
+/* 偏好與菜單項 */
+"Restore previous state" = "恢復休眠前的狀態";
+"Always enable" = "始終開啟";
+"Do nothing" = "保持現狀，不作調整";
+"Hide icon" = "隱藏圖標";
+"Show icon" = "顯示圖標";
+"Hide from Menu Bar?" = "從菜單欄隱藏圖標？";
+"Hide Icon" = "隱藏圖標";
+"No audio devices" = "無音頻設備";
+
+/* 設備分類名稱 */
+"Audio / Headset" = "音頻外設 / 耳機";
+"Input Device" = "輸入設備 (鼠標/鍵盤)";
+"Phone / Tablet" = "手機 / 平板電腦";
+"Computer" = "電腦主機";
+"Bluetooth Accessory" = "藍牙外設";
+"Address" = "硬件地址";
+"Category" = "設備分類";
+
+/* AutoWiFi 靜態 IP 自動切換 */
+"Auto-Bind Wi-Fi Static IP" = "AutoWiFi 靜態 IP 智能自動切換";
+"Automatically switches to static IP for designated Wi-Fi networks." = "自動感知當前連接的 Wi-Fi SSID，毫秒級切換為指定靜態 IP、網關與 DNS。";
+"Wi-Fi Disconnected" = "Wi-Fi 未連接";
+"Static IP" = "靜態 IP";
+"DHCP" = "DHCP 動態分配";
+"Apply Rule Now" = "立即應用規則";
+"Current IPv4" = "當前 IPv4";
+"Subnet Mask" = "子網掩碼";
+"Gateway Router" = "路由器網關";
+"DNS Servers" = "DNS 服務器";
+"Rule Matched: %@ (%@)" = "已匹配規則：%1$@ (%2$@)";
+"Configured Wi-Fi Networks" = "已配置的 Wi-Fi 網絡規則";
+"Add Wi-Fi Profile" = "添加 Wi-Fi 配置";
+"Edit Wi-Fi Profile" = "編輯 Wi-Fi 配置";
+"No Wi-Fi Profiles Added" = "尚未添加任何 Wi-Fi 規則";
+"Click 'Add Wi-Fi Profile' above to configure static IP for your office or home network." = "點擊右上角「添加 Wi-Fi 配置」為辦公室、實驗室或家庭網絡預設靜態 IP。";
+"Connected" = "當前已連接";
+"Binding Paused" = "已暫停自動綁定";
+"Edit Configuration" = "編輯網絡規則";
+"Delete Profile" = "刪除配置";
+"DNS:" = "DNS：";
+"Wi-Fi SSID" = "Wi-Fi 無線名稱 (SSID)";
+"Use Current Wi-Fi" = "填入當前 Wi-Fi";
+"Static IPv4" = "靜態 IPv4 地址";
+"Router Gateway" = "默認網關 / 路由器";
+"DNS Servers (Space separated)" = "DNS 服務器 (空格分隔)";
+"Presets:" = "常用推薦預設：";
+"Save Profile" = "保存配置規則";
+"Cancel" = "取消";
+"Background Daemon Service" = "後台守護進程服務 (LaunchDaemon)";
+"0% CPU kernel event-driven LaunchDaemon for automatic switching." = "純 Swift 內核級事件驅動守護進程，零輪詢，閒置 0.0% CPU 佔用。";
+"Running" = "正在運行";
+"Running (PID: %d)" = "運行中 (進程號: %d)";
+"Stopped" = "已停止";
+"Not Installed" = "未安裝服務";
+"Unknown: %@" = "未知狀態: %@";
+"Install Daemon Service" = "安裝後台服務";
+"Stop Service" = "停止服務";
+"Start Service" = "啟動服務";
+"Restart" = "重啟服務";
+"Uninstall" = "徹底卸載服務";
+"Restore DHCP when connecting to unconfigured Wi-Fi" = "連接未配置 Wi-Fi 或斷開時自動恢復 DHCP";
+"Sleep & Wake Power Lifecycle" = "睡眠與喚醒電源管理";
+"SSID cannot be empty" = "Wi-Fi 名稱 (SSID) 不能為空";
+"Invalid static IPv4: %@" = "無效的靜態 IPv4 地址: %@";
+"Invalid subnet mask: %@" = "無效的子網掩碼: %@";
+"Invalid gateway/router: %@" = "無效的默認網關地址: %@";
+"Invalid DNS address: %@" = "無效的 DNS 服務器地址: %@";
+"Authorization failed" = "提權授權失敗或被取消";
+"Wi-Fi disconnected; maintaining current network settings" = "Wi-Fi 已斷開，保持當前網絡配置";
+"Auto-binding disabled; maintaining settings for %@" = "自動綁定已全局停用，保持 %@ 配置";
+"Binding paused for %@" = "已為 %@ 暫停自動靜態 IP 綁定";
+"Failed to set static IP" = "設置靜態 IP 失敗";
+"Static IP %@ successfully applied for %@" = "已成功為 %2$@ 應用靜態 IP %1$@";
+"Already in DHCP mode" = "當前已處於 DHCP 模式";
+"Restored DHCP for unconfigured Wi-Fi: %@" = "已為未配置網絡恢復 DHCP 模式: %@";
+
+/* Menu Bar Items */
+"Preferences…" = "偏好設定…";
+"Website" = "官方網站";
+"Quit" = "退出 藍憩";
+"Action when sleeping" = "休眠時動作";
+"Turn off Bluetooth" = "關閉藍牙";
+"Disconnect selected devices" = "僅斷開選中的外設";
+"Action when unlocked" = "喚醒解鎖後動作";
+"Turn off when sleeping" = "休眠時關閉 Wi-Fi";

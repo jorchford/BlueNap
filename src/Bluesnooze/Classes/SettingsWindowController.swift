@@ -75,6 +75,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     // MARK: - NSWindowDelegate
 
     func windowWillClose(_: Notification) {
+        // Stop network monitor immediately to stop all observers and free resources
+        WiFiNetworkMonitor.shared.stopMonitoring()
+
         // Return to accessory mode when preferences window is closed
         NSApp.setActivationPolicy(.accessory)
         window?.contentView = nil

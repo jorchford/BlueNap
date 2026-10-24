@@ -53,6 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if !preferences.hideIcon {
             createStatusItem()
         }
+        localizeMenuTitles()
         setupNotificationHandlers()
         setupAccessibility()
 
@@ -205,6 +206,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         ))
         item.button?.setAccessibilityIdentifier("AppDelegate.statusItem")
         statusItem = item
+    }
+
+    private func localizeMenuTitles() {
+        guard let statusMenu else { return }
+
+        for item in statusMenu.items {
+            let key = item.title
+            let localized = NSLocalizedString(key, comment: "")
+            if localized != key {
+                item.title = localized
+            }
+
+            if let submenu = item.submenu {
+                let subKey = submenu.title
+                let localizedSub = NSLocalizedString(subKey, comment: "")
+                if localizedSub != subKey {
+                    submenu.title = localizedSub
+                }
+                for subItem in submenu.items {
+                    let itemKey = subItem.title
+                    let localizedItem = NSLocalizedString(itemKey, comment: "")
+                    if localizedItem != itemKey {
+                        subItem.title = localizedItem
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - NSMenuDelegate

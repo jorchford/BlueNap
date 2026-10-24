@@ -141,3 +141,13 @@
 "Static IP %@ successfully applied for %@" = "已成功为 %2$@ 应用静态 IP %1$@";
 "Already in DHCP mode" = "网络当前已处于 DHCP 模式";
 "Restored DHCP for unconfigured Wi-Fi: %@" = "检测到未配置 Wi-Fi (%@)，已自动恢复为 DHCP";
+
+/* Menu Bar Items */
+"Preferences…" = "偏好设置…";
+"Website" = "官方网站";
+"Quit" = "退出 蓝憩";
+"Action when sleeping" = "休眠时动作";
+"Turn off Bluetooth" = "关闭蓝牙";
+"Disconnect selected devices" = "仅断开选中的外设";
+"Action when unlocked" = "唤醒解锁后动作";
+"Turn off when sleeping" = "休眠时关闭 Wi-Fi";

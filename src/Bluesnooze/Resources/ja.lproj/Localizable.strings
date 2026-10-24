@@ -1,0 +1,153 @@
+/* Tabs */
+"Bluetooth" = "Bluetooth";
+"Wi-Fi" = "Wi-Fi";
+"General" = "一般";
+"About" = "情報";
+
+/* Status */
+"Active" = "動作中";
+"Snoozing (%d devices)" = "スリープ待機中 (%d 台)";
+"Snoozing Bluetooth" = "Bluetooth スリープ切断中";
+"BlueNap: Active" = "BlueNap: 動作中";
+"BlueNap: Snoozing (Mac asleep)" = "BlueNap: スリープ保護中 (Macがスリープ中)";
+"BlueNap: %@" = "BlueNap: %@";
+
+/* General Tab */
+"Status Bar & Animation" = "メニューバーとアニメーション";
+"Smooth transition animation on sleep/wake" = "スリープ/復帰時のスムーズな切り替えアニメーション";
+"Provides a subtle visual pulse and status feedback when network states change." = "状態変化時に穏やかな視覚フィードバックを提供します。";
+"Menu Bar & Background Mode" = "メニューバーとバックグラウンド動作";
+"Show icon in menu bar" = "メニューバーにアイコンを表示";
+"When disabled, BlueNap runs silently in the background without taking up status bar space. To reopen Settings, launch BlueNap from Applications or Spotlight." = "無効にすると、BlueNapはメニューバー領域を占有せずに静かにバックグラウンドで動作します。設定を再度開くには、SpotlightまたはアプリケーションからBlueNapを起動してください。";
+"Background mode active: BlueNap continues monitoring sleep & wake events silently." = "バックグラウンドモード有効: スリープ・復帰イベントを静かに監視します。";
+"Reset Preferences" = "設定のリセット";
+"Restore all BlueNap settings to factory defaults." = "すべてのBlueNap設定を初期値に戻します。";
+"Reset to Defaults" = "初期設定に戻す";
+"Hide Menu Bar Icon?" = "メニューバーアイコンを非表示にしますか？";
+"Hide Icon & Run in Background" = "非表示にしてバックグラウンドで実行";
+"Cancel" = "キャンセル";
+"BlueNap will continue protecting your Bluetooth audio and Wi-Fi in the background.\n\nTo open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight." = "BlueNapはバックグラウンドでBluetoothおよびWi-Fiの保護を継続します。\n\n設定を開くかメニューバーアイコンを戻すには、Spotlightまたはアプリケーションから再度起動してください。";
+
+/* Bluetooth Tab */
+"Bluetooth Hardware" = "Bluetooth ハードウェア";
+"Powered On" = "オン";
+"Powered Off" = "オフ";
+"Refresh Bluetooth devices" = "Bluetoothデバイスリストを更新";
+"When Mac Goes to Sleep" = "Mac がスリープするとき";
+"Turn off Bluetooth completely" = "Bluetooth 電源を完全にオフにする";
+"Disconnect selected accessories only" = "選択したアクセサリのみ切断する";
+"When Mac Wakes Up" = "Mac が復帰するとき";
+"Action on unlock:" = "ロック解除時の動作:";
+"Select audio accessories to disconnect on sleep:" = "スリープ時に切断するオーディオアクセサリを選択:";
+"No paired Bluetooth audio accessories detected." = "ペアリングされたオーディオアクセサリは見つかりませんでした。";
+"Mice, keyboards, and trackpads are automatically protected and will never be disconnected." = "マウス、キーボード、トラックパッドなどの入力デバイスは自動的に保護され、切断されません。";
+"Connected" = "接続済み";
+" (Connected)" = " (接続済み)";
+"Disconnecting mouse or keyboard may prevent waking via Bluetooth." = "マウスやキーボードを切断すると、Bluetooth経由でMacを復帰できなくなる場合があります。";
+
+/* Wi-Fi Tab */
+"Wi-Fi Interface" = "Wi-Fi インターフェース";
+"Turn off Wi-Fi when sleeping" = "スリープ時に Wi-Fi をオフにする";
+"Helps preserve battery life and prevent unexpected background network wakeups." = "バッテリー消費を抑え、不要なバックグラウンド通信による復帰を防ぎます。";
+
+/* About Tab */
+"BlueNap" = "BlueNap";
+"BlueNap Settings" = "BlueNap 設定";
+"Smart Bluetooth & Wi-Fi Power Manager for Mac" = "Mac向けスマートBluetooth & Wi-Fiスリープ管理ツール";
+"Swift 6 Strict Concurrency" = "Swift 6 完全並行性セーフティ";
+"Liquid Glass" = "Liquid Glass デザイン";
+"About This Application" = "このアプリケーションについて";
+"BlueNap prevents your sleeping Mac from intermittently connecting to paired Bluetooth accessories and disrupting your audio playback." = "Macがスリープ中にBluetoothヘッドホンを予期せず接続し、スマホでの通話や再生を妨げるのをスマートに防止します。";
+"GitHub Repository" = "GitHub リポジトリ";
+"Open Website" = "ウェブサイトを開く";
+"Official Website" = "公式サイト";
+"More Apps: Tactile (妙触)" = "その他のアプリ: Tactile (妙触)";
+"120Hz ProMotion Multitouch Gestures" = "120Hz ProMotion マルチタッチジェスチャー拡張";
+"View on GitHub" = "GitHubで表示";
+
+/* Preferences & Menu Items */
+"Restore previous state" = "スリープ前の状態を復元";
+"Always enable" = "常にオンにする";
+"Do nothing" = "何もしない";
+"Hide icon" = "アイコンを非表示";
+"Show icon" = "アイコンを表示";
+"Hide from Menu Bar?" = "メニューバーから非表示にしますか？";
+"Hide Icon" = "アイコンを隠す";
+"No audio devices" = "オーディオ機器なし";
+
+/* Device Categories */
+"Audio / Headset" = "オーディオ / ヘッドセット";
+"Input Device" = "入力デバイス";
+"Phone / Tablet" = "スマートフォン / タブレット";
+"Computer" = "コンピュータ";
+"Bluetooth Accessory" = "Bluetooth アクセサリ";
+"Address" = "アドレス";
+"Category" = "カテゴリ";
+
+/* AutoWiFi Static IP Auto-Switching */
+"Auto-Bind Wi-Fi Static IP" = "Wi-Fi 固定IP 自動切り替え";
+"Automatically switches to static IP for designated Wi-Fi networks." = "指定されたWi-Fiネットワークに接続時、固定IPアドレスとDNSへ自動切り替えします。";
+"Wi-Fi Disconnected" = "Wi-Fi 未接続";
+"Static IP" = "固定 IP";
+"DHCP" = "DHCP";
+"Apply Rule Now" = "今すぐルールを適用";
+"Current IPv4" = "現在の IPv4";
+"Subnet Mask" = "サブネットマスク";
+"Gateway Router" = "ルーターゲートウェイ";
+"DNS Servers" = "DNS サーバー";
+"Rule Matched: %@ (%@)" = "ルール一致: %1$@ (%2$@)";
+"Configured Wi-Fi Networks" = "設定済み Wi-Fi ネットワーク";
+"Add Wi-Fi Profile" = "Wi-Fi プロファイルを追加";
+"Edit Wi-Fi Profile" = "Wi-Fi プロファイルを編集";
+"No Wi-Fi Profiles Added" = "Wi-Fi プロファイルが未登録です";
+"Click 'Add Wi-Fi Profile' above to configure static IP for your office or home network." = "オフィスや自宅用の固定IP設定を追加してください。";
+"Connected" = "接続中";
+"Binding Paused" = "自動バインド一時停止中";
+"Edit Configuration" = "設定を編集";
+"Delete Profile" = "プロファイルを削除";
+"DNS:" = "DNS:";
+"Wi-Fi SSID" = "Wi-Fi SSID";
+"Use Current Wi-Fi" = "現在の Wi-Fi を使用";
+"Static IPv4" = "固定 IPv4 アドレス";
+"Router Gateway" = "デフォルトルーター";
+"DNS Servers (Space separated)" = "DNS サーバー (半角スペース区切り)";
+"Presets:" = "プリセット:";
+"Save Profile" = "保存";
+"Cancel" = "キャンセル";
+"Background Daemon Service" = "バックグラウンドデーモンサービス (LaunchDaemon)";
+"0% CPU kernel event-driven LaunchDaemon for automatic switching." = "カーネルイベント駆動型デーモン。待機時CPU使用率0.0%。";
+"Running" = "実行中";
+"Running (PID: %d)" = "実行中 (PID: %d)";
+"Stopped" = "停止中";
+"Not Installed" = "未インストール";
+"Unknown: %@" = "不明: %@";
+"Install Daemon Service" = "デーモンサービスをインストール";
+"Stop Service" = "サービスを停止";
+"Start Service" = "サービスを開始";
+"Restart" = "再起動";
+"Uninstall" = "完全にアンインストール";
+"Restore DHCP when connecting to unconfigured Wi-Fi" = "未設定Wi-Fi接続時は自動でDHCPに戻す";
+"Sleep & Wake Power Lifecycle" = "スリープ＆復帰 電源管理";
+"SSID cannot be empty" = "SSIDを入力してください";
+"Invalid static IPv4: %@" = "無効な IPv4 アドレス: %@";
+"Invalid subnet mask: %@" = "無効なサブネットマスク: %@";
+"Invalid gateway/router: %@" = "無効なルーターアドレス: %@";
+"Invalid DNS address: %@" = "無効な DNS アドレス: %@";
+"Authorization failed" = "管理者認証に失敗しました";
+"Wi-Fi disconnected; maintaining current network settings" = "Wi-Fi 切断中。現在の設定を維持します";
+"Auto-binding disabled; maintaining settings for %@" = "自動バインド無効。%@ の設定を維持します";
+"Binding paused for %@" = "%@ の自動バインドは一時停止中です";
+"Failed to set static IP" = "固定IPの設定に失敗しました";
+"Static IP %@ successfully applied for %@" = "%2$@ に固定IP %1$@ を適用しました";
+"Already in DHCP mode" = "既に DHCP モードです";
+"Restored DHCP for unconfigured Wi-Fi: %@" = "未設定ネットワーク %@ のため DHCP に復元しました";
+
+/* Menu Bar Items */
+"Preferences…" = "設定…";
+"Website" = "ウェブサイト";
+"Quit" = "BlueNap を終了";
+"Action when sleeping" = "スリープ時の動作";
+"Turn off Bluetooth" = "Bluetooth をオフにする";
+"Disconnect selected devices" = "選択した機器のみ切断";
+"Action when unlocked" = "ロック解除後の動作";
+"Turn off when sleeping" = "スリープ時に Wi-Fi をオフにする";

@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+"CFBundleDisplayName" = "BlueNap";
+"CFBundleName" = "BlueNap";
+"NSBluetoothAlwaysUsageDescription" = "BlueNapは、Macのスリープ中にBluetoothアクセサリを切断し、復帰時に再接続するためにBluetoothアクセスを必要とします。";
+"NSBluetoothPeripheralUsageDescription" = "BlueNapは、Macのスリープ中にBluetoothアクセサリを切断し、復帰時に再接続するためにBluetoothアクセスを必要とします。";

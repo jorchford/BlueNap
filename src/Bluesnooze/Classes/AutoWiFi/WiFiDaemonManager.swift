@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import Darwin
 import Foundation
 
 /// Manages the background LaunchDaemon switcher service lifecycle.
@@ -14,7 +15,7 @@ actor WiFiDaemonManager {
 
     init() {}
 
-    /// Checks the current status of the LaunchDaemon.
+    /// Checks the current status of the LaunchDaemon using in-memory Darwin libproc (0 subprocesses).
     func checkStatus() -> DaemonInfo.Status {
         let plistExists = FileManager.default.fileExists(atPath: DaemonInfo.plistPath) ||
             FileManager.default.fileExists(atPath: DaemonInfo.legacyPlistPath)
@@ -22,52 +23,31 @@ actor WiFiDaemonManager {
             return .notInstalled
         }
 
-        // Check if process is actively running via pgrep
-        let pgrepProcess = Process()
-        pgrepProcess.executableURL = URL(fileURLWithPath: "/usr/bin/pgrep")
-        pgrepProcess.arguments = ["-f", "bluenap-wifid|wifi-static-ip-switcher.sh"]
-        let pgrepPipe = Pipe()
-        pgrepProcess.standardOutput = pgrepPipe
-        do {
-            try pgrepProcess.run()
-            pgrepProcess.waitUntilExit()
-            if pgrepProcess.terminationStatus == 0 {
-                let data = pgrepPipe.fileHandleForReading.readDataToEndOfFile()
-                if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-                   let firstLine = output.components(separatedBy: .newlines).first,
-                   let pid = Int(firstLine) {
-                    return .running(pid: pid)
-                }
-                return .running(pid: nil)
-            }
-        } catch {}
+        // Query active processes purely in memory via libproc
+        var pids = [pid_t](repeating: 0, count: 2048)
+        let bytesUsed = proc_listallpids(&pids, Int32(MemoryLayout<pid_t>.stride * pids.count))
+        let count = Int(bytesUsed) / MemoryLayout<pid_t>.stride
 
-        // Check launchctl print
-        for label in [DaemonInfo.daemonLabel, DaemonInfo.legacyDaemonLabel] {
-            let launchctlProcess = Process()
-            launchctlProcess.executableURL = URL(fileURLWithPath: "/bin/launchctl")
-            launchctlProcess.arguments = ["print", "system/\(label)"]
-            let lPipe = Pipe()
-            launchctlProcess.standardOutput = lPipe
-            launchctlProcess.standardError = Pipe()
-            do {
-                try launchctlProcess.run()
-                launchctlProcess.waitUntilExit()
-                if launchctlProcess.terminationStatus == 0 {
-                    let data = lPipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: data, encoding: .utf8) ?? ""
-                    if output.contains("state = running") {
-                        return .running(pid: nil)
-                    }
+        for index in 0 ..< count {
+            let pid = pids[index]
+            guard pid > 0 else { continue }
+            var buffer = [CChar](repeating: 0, count: 4096)
+            let nameLen = Int(proc_name(pid, &buffer, UInt32(buffer.count)))
+            if nameLen > 0 {
+                let name = buffer.withUnsafeBufferPointer { ptr in
+                    ptr.baseAddress.map { String(cString: $0) } ?? ""
                 }
-            } catch {}
+                if name.contains("bluenap-wifid") || name.contains("wifi-static-ip-switcher") {
+                    return .running(pid: Int(pid))
+                }
+            }
         }
 
         return .stopped
     }
 
     /// Installs the native LaunchDaemon and registers it with launchd using administrator privileges.
-    func installService(daemonBinaryURL: URL, configText: String) throws {
+    func installService(daemonBinaryURL: URL, configText: String) async throws {
         let tempConfigURL = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("bluenap_install_\(UUID().uuidString).conf")
         try configText.write(to: tempConfigURL, atomically: true, encoding: .utf8)
@@ -90,35 +70,38 @@ actor WiFiDaemonManager {
             "/bin/launchctl bootstrap system '\(DaemonInfo.plistPath)'"
         let script = "do shell script \"\(cmd)\" with administrator privileges"
 
-        try executePrivilegedScript(script)
+        try await executePrivilegedScript(script)
     }
 
     /// Starts or bootstraps the LaunchDaemon.
-    func start() throws {
+    func start() async throws {
         let cmd = "/bin/launchctl bootstrap system '\(DaemonInfo.plistPath)' || " +
             "/bin/launchctl kickstart -k system/\(DaemonInfo.daemonLabel)"
         let script = "do shell script \"\(cmd)\" with administrator privileges"
-        try executePrivilegedScript(script)
+        try await executePrivilegedScript(script)
     }
 
-    /// Stops the LaunchDaemon.
-    func stop() throws {
-        let cmd = "/bin/launchctl bootout system '\(DaemonInfo.plistPath)' 2>/dev/null || true"
+    /// Stops or bootouts the LaunchDaemon.
+    func stop() async throws {
+        let cmd = "/bin/launchctl bootout system '\(DaemonInfo.plistPath)' 2>/dev/null || " +
+            "/bin/launchctl bootout system '\(DaemonInfo.legacyPlistPath)' 2>/dev/null || true"
         let script = "do shell script \"\(cmd)\" with administrator privileges"
-        try executePrivilegedScript(script)
+        try await executePrivilegedScript(script)
     }
 
-    /// Restarts the LaunchDaemon.
-    func restart() throws {
-        let restartCmd = "/bin/launchctl kickstart -k system/\(DaemonInfo.daemonLabel) 2>/dev/null || " +
-            "(/bin/launchctl bootout system '\(DaemonInfo.plistPath)' 2>/dev/null; " +
+    /// Restarts the LaunchDaemon service.
+    func restart() async throws {
+        let kickstartLegacy = "/bin/launchctl kickstart -k system/\(DaemonInfo.legacyDaemonLabel) 2>/dev/null || "
+        let fallbackReload = "(/bin/launchctl bootout system '\(DaemonInfo.plistPath)' 2>/dev/null; " +
             "/bin/launchctl bootstrap system '\(DaemonInfo.plistPath)')"
-        let script = "do shell script \"\(restartCmd)\" with administrator privileges"
-        try executePrivilegedScript(script)
+        let cmd = "/bin/launchctl kickstart -k system/\(DaemonInfo.daemonLabel) 2>/dev/null || " +
+            kickstartLegacy + fallbackReload
+        let script = "do shell script \"\(cmd)\" with administrator privileges"
+        try await executePrivilegedScript(script)
     }
 
     /// Uninstalls the service and removes daemon files.
-    func uninstall(purgeConfig: Bool = false) throws {
+    func uninstall(purgeConfig: Bool = false) async throws {
         var cmd = "/bin/launchctl bootout system '\(DaemonInfo.plistPath)' 2>/dev/null || true && " +
             "/bin/launchctl bootout system '\(DaemonInfo.legacyPlistPath)' 2>/dev/null || true && " +
             "rm -f '\(DaemonInfo.plistPath)' '\(DaemonInfo.legacyPlistPath)' '\(DaemonInfo.daemonExecutablePath)'"
@@ -126,16 +109,28 @@ actor WiFiDaemonManager {
             cmd += " '\(DaemonInfo.configPath)' '\(DaemonInfo.legacyConfigPath)' '\(DaemonInfo.statePath)' '\(DaemonInfo.legacyStatePath)'"
         }
         let script = "do shell script \"\(cmd)\" with administrator privileges"
-        try executePrivilegedScript(script)
+        try await executePrivilegedScript(script)
     }
 
-    private func executePrivilegedScript(_ scriptSource: String) throws {
-        var errorInfo: NSDictionary?
-        if let appleScript = NSAppleScript(source: scriptSource) {
-            _ = appleScript.executeAndReturnError(&errorInfo)
-            if let error = errorInfo {
-                let msg = error[NSAppleScript.errorMessage] as? String ?? NSLocalizedString("Authorization failed", comment: "")
-                throw NSError(domain: "BlueNap.WiFiDaemonManager", code: 2, userInfo: [NSLocalizedDescriptionKey: msg])
+    private func executePrivilegedScript(_ scriptSource: String) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            DispatchQueue.global(qos: .utility).async {
+                var errorInfo: NSDictionary?
+                if let appleScript = NSAppleScript(source: scriptSource) {
+                    _ = appleScript.executeAndReturnError(&errorInfo)
+                    if let error = errorInfo {
+                        let msg = error[NSAppleScript.errorMessage] as? String ?? NSLocalizedString("Authorization failed", comment: "")
+                        continuation.resume(
+                            throwing: NSError(
+                                domain: "BlueNap.WiFiDaemonManager",
+                                code: 2,
+                                userInfo: [NSLocalizedDescriptionKey: msg]
+                            )
+                        )
+                        return
+                    }
+                }
+                continuation.resume(returning: ())
             }
         }
     }

@@ -1,0 +1,8 @@
+/* メニューバーアイコンのアクセシビリティラベル */
+"BlueNap" = "BlueNap";
+
+/* ペアリング済みBluetoothデバイス項目のアクセシビリティヒント */
+"Disconnects this device when the Mac goes to sleep." = "Macがスリープ状態になると、このデバイスを切断します。";
+
+/* アイコン非表示項目のアクセシビリティヒント */
+"Hides the menu bar icon. Launch the app again to show it." = "メニューバーアイコンを非表示にします。アプリを再起動すると再表示されます。";

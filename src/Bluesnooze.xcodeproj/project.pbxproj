@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		4F229ABA243CC29500B1784C /* Bluesnooze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bluesnooze.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F229ABA243CC29500B1784C /* BlueNap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlueNap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,7 +53,7 @@
 		4F229ABB243CC29500B1784C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4F229ABA243CC29500B1784C /* Bluesnooze.app */,
+				4F229ABA243CC29500B1784C /* BlueNap.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,7 +80,7 @@
 			packageProductDependencies = (
 			);
 			productName = Bluesnooze;
-			productReference = 4F229ABA243CC29500B1784C /* Bluesnooze.app */;
+			productReference = 4F229ABA243CC29500B1784C /* BlueNap.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,6 +107,8 @@
 				en,
 				Base,
 				"zh-Hans",
+				"zh-Hant",
+				ja,
 			);
 			mainGroup = 4F229AB1243CC29500B1784C;
 			packageReferences = (
@@ -286,9 +288,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.needai.bluesnooze;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Bluesnooze;
+				PRODUCT_NAME = BlueNap;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bluesnooze/Classes/Bluesnooze-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -317,9 +320,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.needai.bluesnooze;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Bluesnooze;
+				PRODUCT_NAME = BlueNap;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bluesnooze/Classes/Bluesnooze-Bridging-Header.h";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;

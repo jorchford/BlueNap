@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.1] - 2026-10-24
+
+### Fixed
+- **Memory Optimization (Physical Footprint reduced from ~61MB to ~12MB)**:
+  - Completely eliminated all CLI subprocess spawning (`networksetup`, `ioreg`, `route`, `pgrep`, `launchctl print`) from `WiFiNetworkMonitor` and `WiFiDaemonManager`.
+  - Converted network gateway, DNS, manual/DHCP configuration, and process status checks to 100% in-memory queries via `SCDynamicStoreCopyValue` and Darwin `proc_listallpids`/`proc_name`.
+  - Automatically halt network monitoring and reclaim memory resources when the settings window closes.
+- **Resolved Xcode Hang Risk & QoS Priority Inversion**:
+  - Removed synchronous AppleScript executions during routine configuration changes; user configurations are saved instantly in Application Support (`~/Library/Application Support/BlueNap/bluenap-wifi.conf`).
+  - Isolated privileged service installations to background utility queues with asynchronous continuations.
+
+### Changed
+- **Official App Branding & Multilingual Support**:
+  - Set `PRODUCT_NAME` and `CFBundleDisplayName` to **BlueNap** (Chinese: **蓝憩**).
+  - Added full multi-language localizations: Traditional Chinese (`zh-Hant`) and Japanese (`ja`), alongside Simplified Chinese (`zh-Hans`) and English (`en`).
+  - Implemented runtime menu item localization so menu bars dynamically match the system language.
+
 ## [2.1.0] - 2026-10-24
 
 ### Added

@@ -5,13 +5,14 @@
 //  Created on 2026-10-23.
 //
 
+import CoreWLAN
 import Darwin
 import Foundation
 import IOKit
 import Network
 import SystemConfiguration
 
-/// Pure event-driven network monitor. Consumes 0% CPU when idle.
+/// Pure event-driven network monitor. Consumes 0.0% CPU when idle and executes 100% in-memory with zero subprocesses.
 final class WiFiNetworkMonitor: @unchecked Sendable {
     static let shared = WiFiNetworkMonitor()
 
@@ -46,7 +47,7 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         isRunning = false
     }
 
-    /// Captures a complete snapshot of current network state.
+    /// Captures a complete snapshot of current network state purely from in-memory kernel/store queries.
     func captureCurrentSnapshot(device: String = "en0", serviceName: String = "Wi-Fi") -> NetworkSnapshot {
         let ssid = Self.fetchCurrentSSID()
         let (ip, mask) = Self.fetchIPv4AndMask(for: device)
@@ -69,7 +70,7 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         )
     }
 
-    /// Fetches the currently connected Wi-Fi SSID via native IOKit registry without location prompts.
+    /// Fetches the currently connected Wi-Fi SSID via native IOKit registry without location prompts or subprocesses.
     static func fetchCurrentSSID() -> String? {
         let classesToTry = ["IOUserNetworkWLAN", "IO80211Interface", "AppleBCMWLANSkywalkInterface"]
         for className in classesToTry {
@@ -96,26 +97,15 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
             }
         }
 
-        // Fast fallback via ioreg CLI
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/sh")
-        let cmd = "/usr/sbin/ioreg -r -k IO80211SSID 2>/dev/null | /usr/bin/awk -F '\"' '/\"IO80211SSID\" = \"/ {print $4; exit}'"
-        process.arguments = ["-c", cmd]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        do {
-            try process.run()
-            process.waitUntilExit()
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !output.isEmpty {
-                return output
-            }
-        } catch {}
+        // Fast in-process CoreWLAN query fallback
+        if let interface = CWWiFiClient.shared().interface(), let ssid = interface.ssid(), !ssid.isEmpty {
+            return ssid
+        }
 
         return nil
     }
 
-    /// Retrieves IPv4 address and subnet mask using `getifaddrs`.
+    /// Retrieves IPv4 address and subnet mask using in-memory `getifaddrs`.
     static func fetchIPv4AndMask(for interfaceName: String) -> (ip: String?, mask: String?) {
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&ifaddr) == 0, let firstAddr = ifaddr else { return (nil, nil) }
@@ -134,10 +124,24 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
                     var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                     var maskBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
 
-                    _ = getnameinfo(ptr.pointee.ifa_addr, socklen_t(ptr.pointee.ifa_addr.pointee.sa_len),
-                                    &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST)
-                    _ = getnameinfo(ptr.pointee.ifa_netmask, socklen_t(ptr.pointee.ifa_netmask.pointee.sa_len),
-                                    &maskBuffer, socklen_t(maskBuffer.count), nil, 0, NI_NUMERICHOST)
+                    _ = getnameinfo(
+                        ptr.pointee.ifa_addr,
+                        socklen_t(ptr.pointee.ifa_addr.pointee.sa_len),
+                        &hostBuffer,
+                        socklen_t(hostBuffer.count),
+                        nil,
+                        0,
+                        NI_NUMERICHOST
+                    )
+                    _ = getnameinfo(
+                        ptr.pointee.ifa_netmask,
+                        socklen_t(ptr.pointee.ifa_netmask.pointee.sa_len),
+                        &maskBuffer,
+                        socklen_t(maskBuffer.count),
+                        nil,
+                        0,
+                        NI_NUMERICHOST
+                    )
 
                     let ipStr = hostBuffer.withUnsafeBufferPointer { ptr in
                         ptr.baseAddress.map { String(cString: $0) } ?? ""
@@ -153,25 +157,18 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         return (nil, nil)
     }
 
-    /// Fetches the default router gateway.
+    /// Fetches the default router gateway directly from SCDynamicStore in memory (0 subprocesses).
     static func fetchDefaultGateway() -> String? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/sh")
-        process.arguments = ["-c", "route -n get default 2>/dev/null | awk '/gateway:/{print $2}'"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        do {
-            try process.run()
-            process.waitUntilExit()
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !output.isEmpty {
-                return output
-            }
-        } catch {}
-        return nil
+        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
+              let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+              let router = dict["Router"] as? String, !router.isEmpty
+        else {
+            return nil
+        }
+        return router
     }
 
-    /// Retrieves current DNS servers via SCDynamicStore.
+    /// Retrieves current DNS servers via SCDynamicStore in memory (0 subprocesses).
     static func fetchDNSServers() -> [String] {
         guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
               let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/DNS" as CFString) as? [String: Any],
@@ -182,20 +179,19 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         return servers
     }
 
-    /// Checks whether the network service is currently configured with Manual Static IP.
-    static func checkIfManualConfig(serviceName: String) -> Bool {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
-        process.arguments = ["-getinfo", serviceName]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        do {
-            try process.run()
-            process.waitUntilExit()
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: data, encoding: .utf8) ?? ""
-            return output.contains("Manual Configuration")
-        } catch {}
+    /// Checks whether the network service is currently configured with Manual Static IP via SCDynamicStore in memory (0 subprocesses).
+    static func checkIfManualConfig(serviceName _: String = "Wi-Fi") -> Bool {
+        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
+              let globalDict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+              let serviceID = globalDict["PrimaryService"] as? String
+        else {
+            return false
+        }
+        let setupKey = "Setup:/Network/Service/\(serviceID)/IPv4" as CFString
+        if let setupDict = SCDynamicStoreCopyValue(store, setupKey) as? [String: Any],
+           let configMethod = setupDict["ConfigMethod"] as? String {
+            return configMethod == "Manual"
+        }
         return false
     }
 }

@@ -69,54 +69,18 @@ actor WiFiConfigManager {
     func saveConfig(global: GlobalConfig, profiles: [WiFiProfile]) throws {
         let text = serializeINI(global: global, profiles: profiles)
 
-        // Always save local backup in Application Support
+        // Always save to Application Support (user domain, no privileges required, zero hang risk)
         try text.write(to: appSupportURL, atomically: true, encoding: .utf8)
 
-        // Attempt writing directly to /usr/local/etc/bluenap-wifi.conf
+        // If system configuration path is writable (e.g., daemon service installed with chmod 666), sync to it directly
         let stdPath = Self.standardConfigURL.path
         let etcDir = Self.standardConfigURL.deletingLastPathComponent().path
-
-        var writeSucceeded = false
         let isDirectlyWritable = FileManager.default.isWritableFile(atPath: stdPath) ||
             (!FileManager.default.fileExists(atPath: stdPath) && FileManager.default.isWritableFile(atPath: etcDir))
 
         if isDirectlyWritable {
-            do {
-                try text.write(to: Self.standardConfigURL, atomically: true, encoding: .utf8)
-                writeSucceeded = true
-            } catch {
-                writeSucceeded = false
-            }
-        }
-
-        if !writeSucceeded {
-            try writePrivilegedConfig(text: text)
-        }
-    }
-
-    private func writePrivilegedConfig(text: String) throws {
-        let tempFileURL = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("bluenap_wifi_\(UUID().uuidString).conf")
-        try text.write(to: tempFileURL, atomically: true, encoding: .utf8)
-
-        let cmd = "mkdir -p /usr/local/etc && " +
-            "cp '\(tempFileURL.path)' '\(DaemonInfo.configPath)' && " +
-            "chmod 666 '\(DaemonInfo.configPath)' && " +
-            "cp '\(tempFileURL.path)' '\(DaemonInfo.legacyConfigPath)' 2>/dev/null || true && " +
-            "rm -f '\(tempFileURL.path)'"
-        let script = "do shell script \"\(cmd)\" with administrator privileges"
-
-        var errorInfo: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            _ = appleScript.executeAndReturnError(&errorInfo)
-            if let error = errorInfo {
-                let msg = error[NSAppleScript.errorMessage] as? String ?? NSLocalizedString("Authorization failed", comment: "")
-                throw NSError(
-                    domain: "BlueNap.WiFiConfigManager",
-                    code: 1,
-                    userInfo: [NSLocalizedDescriptionKey: msg]
-                )
-            }
+            try? text.write(to: Self.standardConfigURL, atomically: true, encoding: .utf8)
+            try? text.write(to: Self.legacyConfigURL, atomically: true, encoding: .utf8)
         }
     }
 

@@ -141,3 +141,13 @@
 "Static IP %@ successfully applied for %@" = "Static IP %1$@ successfully applied for %2$@";
 "Already in DHCP mode" = "Already in DHCP mode";
 "Restored DHCP for unconfigured Wi-Fi: %@" = "Restored DHCP for unconfigured Wi-Fi: %@";
+
+/* Menu Bar Items */
+"Preferences…" = "Preferences…";
+"Website" = "Website";
+"Quit" = "Quit BlueNap";
+"Action when sleeping" = "Action when sleeping";
+"Turn off Bluetooth" = "Turn off Bluetooth";
+"Disconnect selected devices" = "Disconnect selected devices";
+"Action when unlocked" = "Action when unlocked";
+"Turn off when sleeping" = "Turn off when sleeping";
