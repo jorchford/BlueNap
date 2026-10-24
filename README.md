@@ -154,7 +154,7 @@ xcodebuild -project src/Bluesnooze.xcodeproj \
 
 ### 开发者信息
 * **支持我喝杯咖啡**：[https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00](https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00)
-* **官方展示页面**：[https://app.needai.top](https://app.needai.top)
+* **官方展示页面**：[https://app.needai.top/app/bluenap](https://app.needai.top/app/bluenap)
 * **GitHub 仓库**：[https://github.com/jorchford/BlueNap](https://github.com/jorchford/BlueNap)
 * **更多 macOS 神器**：[https://github.com/jorchford/tactile](https://github.com/jorchford/tactile)
 * **作者**：[ Jorchford](https://github.com/jorchford)
