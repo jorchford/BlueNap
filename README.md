@@ -2,8 +2,12 @@
 
 <p align="center">
   <img src="images/icon.png" width="108" height="108" alt="BlueNap 蓝憩 App Icon" /><br />
-  <b>Sleeping Mac, Silent Bluetooth.</b><br />
-  <i>意境优雅的 Mac 蓝牙与 Wi-Fi 深度休眠管理 · 让外设与 Mac 一同恬静安睡</i>
+  <b>Sleeping Mac, Silent Bluetooth & Intelligent Auto-WiFi.</b><br />
+  <i>意境优雅的 Mac 蓝牙与 Wi-Fi 深度休眠管理 · 原生 AutoWiFi 静态 IP 智能自动绑定 · 让设备管理恬静自如</i>
+</p>
+
+<p align="center">
+  <img src="images/bluenap_autowifi_preferences.png" width="580" alt="BlueNap AutoWiFi Settings" />
 </p>
 
 <p align="center">
@@ -36,12 +40,20 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 - When your Mac **goes to sleep**, BlueNap automatically disconnects selected audio accessories or gracefully switches off Bluetooth entirely.
 - When your Mac **wakes up and is unlocked**, BlueNap restores your previous state seamlessly.
 - Optionally applies the same power lifecycle management for **Wi-Fi**.
+- **AutoWiFi Intelligent Static IP Auto-Switching**: Detects your connected Wi-Fi SSID and automatically applies customized static IP, subnet, router, and DNS settings. When leaving, it restores DHCP automatically. Powered by a native Swift LaunchDaemon with 0.0% CPU and zero polling.
 
 ---
 
-### What's New in this Modern Swift 6 Architecture
+### What's New in Version 2.1.0
 
-1. **Swift 6 Complete Concurrency Architecture**
+1. **AutoWiFi Static IP Auto-Binding Subsystem**
+   - Seamlessly switches between DHCP and custom static IP profiles matching office/lab/home SSIDs.
+   - Master switch to enable/disable auto-binding anytime, with individual per-profile toggles.
+   - Pure Swift native background daemon (`bluenap-wifid`) replacing legacy shell scripts, consuming 0.0% CPU via kernel `SCDynamicStore` event-driven notifications.
+   - Full daemon lifecycle management directly within the UI: install, start, stop, restart, and uninstall.
+   - Live network card, IPv4 validation, and one-tap DNS presets (AliDNS, DNSPod, 114DNS, Cloudflare, Google).
+
+2. **Swift 6 Complete Concurrency Architecture**
    - Fully compiled under `SWIFT_STRICT_CONCURRENCY = complete` with zero concurrency warnings or race conditions.
    - Actor-isolated hardware managers: [`BluetoothService`](src/Bluesnooze/Classes/BluetoothService.swift) and [`WiFiService`](src/Bluesnooze/Classes/WiFiService.swift) ensure all hardware control and I/O tasks execute off the main thread.
    - Unified reactive UI state model driven by `@Observable` and `@MainActor` ([`AppState`](src/Bluesnooze/Classes/AppState.swift) and [`Preferences`](src/Bluesnooze/Classes/Preferences.swift)).
@@ -91,13 +103,20 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 **蓝憩** 赋予您的 Mac 恬静的睡眠体验：
 - **Mac 入睡**：合盖或进入睡眠时，蓝憩立即断开指定的蓝牙音频设备或完全关闭蓝牙电源；
 - **Mac 醒来**：屏幕唤醒并解锁后，瞬间自动还原休眠前的外设与网络状态；
+- **AutoWiFi 静态 IP 智能绑定**：全自动感知当前连接的 Wi-Fi SSID，毫秒级切换为对应网络预设的静态 IPv4、子网掩码、网关与 DNS，离开或断开自动恢复 DHCP。内置纯原生 Swift LaunchDaemon 守护进程，内核级事件驱动，零轮询、0.0% CPU 占用；
 - **输入外设安全守卫**：全自动识别蓝牙鼠标、触控板与键盘，坚决不误断输入设备，确保蓝牙唤醒顺畅无阻。
 
 ---
 
-### 核心特性
+### 核心特性 (v2.1.0)
 
-1. **Swift 6 全并发安全架构**
+1. **AutoWiFi 智能网络绑定引擎**
+   - 告别繁琐的终端命令与 Shell 脚本，由纯 Swift 原生守护进程驱动。
+   - 提供全局主开关与单网络独立开关，自由掌控是否绑定静态 IP。
+   - 偏好设置面板内原生一键安装、启动、停止、重启与彻底卸载后台 LaunchDaemon 守护进程。
+   - 实时网络状态看板（显示当前连接 SSID、IP、掩码、网关与 DNS），自带“立即应用规则”与“使用当前网络配置”。
+   - 预设常用高速 DNS（阿里、腾讯 DNSPod、114DNS、Cloudflare、Google）。
+2. **Swift 6 全并发安全架构**
    - 彻底开启 `SWIFT_STRICT_CONCURRENCY = complete`，严格消除数据竞争。
 2. **Liquid Glass 流光玻璃偏好设置**
    - 专为 macOS Sonoma/Sequoia 设计的高级磨砂拟物面板，支持独立勾选任意已配对设备，实时响应。

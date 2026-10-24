@@ -39,11 +39,16 @@ final class Preferences {
         static let wifiActionOnScreenUnlock = "wifiActionOnScreenUnlock"
         static let hideIcon = "hideIcon"
         static let showTransitionAnimation = "showTransitionAnimation"
+        static let isAutoWiFiBindingEnabled = "isAutoWiFiBindingEnabled"
     }
 
     private let defaults: UserDefaults
 
     /// In-memory cached properties for zero-IPC and O(1) reads
+    var isAutoWiFiBindingEnabled: Bool {
+        didSet { defaults.set(isAutoWiFiBindingEnabled, forKey: Keys.isAutoWiFiBindingEnabled) }
+    }
+
     var disableBluetoothOnSleep: Bool {
         didSet { defaults.set(disableBluetoothOnSleep, forKey: Keys.disableBluetoothOnPowerDown) }
     }
@@ -107,6 +112,12 @@ final class Preferences {
 
         hideIcon = defaults.bool(forKey: Keys.hideIcon)
 
+        if defaults.object(forKey: Keys.isAutoWiFiBindingEnabled) == nil {
+            isAutoWiFiBindingEnabled = true
+        } else {
+            isAutoWiFiBindingEnabled = defaults.bool(forKey: Keys.isAutoWiFiBindingEnabled)
+        }
+
         if defaults.object(forKey: Keys.showTransitionAnimation) == nil {
             showTransitionAnimation = true
         } else {
@@ -139,7 +150,8 @@ final class Preferences {
             Keys.disableWifiOnPowerDown,
             Keys.wifiActionOnScreenUnlock,
             Keys.hideIcon,
-            Keys.showTransitionAnimation
+            Keys.showTransitionAnimation,
+            Keys.isAutoWiFiBindingEnabled
         ]
         for key in keys {
             defaults.removeObject(forKey: key)
@@ -153,5 +165,6 @@ final class Preferences {
         wifiWakeAction = .nothing
         hideIcon = false
         showTransitionAnimation = true
+        isAutoWiFiBindingEnabled = true
     }
 }

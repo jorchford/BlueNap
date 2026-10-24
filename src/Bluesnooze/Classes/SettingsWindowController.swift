@@ -26,7 +26,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         if window == nil {
             let hostingView = NSHostingView(rootView: PreferencesView())
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 580, height: 480),
+                contentRect: NSRect(x: 0, y: 0, width: 580, height: 540),
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered,
                 defer: false
@@ -47,6 +47,29 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func captureScreenshot(to path: String) {
+        guard let window, let contentView = window.contentView else {
+            print("Capture failed: window or contentView is nil")
+            return
+        }
+        contentView.layoutSubtreeIfNeeded()
+        guard let rep = contentView.bitmapImageRepForCachingDisplay(in: contentView.bounds) else {
+            print("Capture failed: bitmapImageRepForCachingDisplay returned nil for bounds: \(contentView.bounds)")
+            return
+        }
+        contentView.cacheDisplay(in: contentView.bounds, to: rep)
+        guard let pngData = rep.representation(using: .png, properties: [:]) else {
+            print("Capture failed: png representation nil")
+            return
+        }
+        do {
+            try pngData.write(to: URL(fileURLWithPath: path), options: .atomic)
+            print("Successfully wrote \(pngData.count) bytes to \(path)")
+        } catch {
+            print("Capture failed to write file: \(error)")
+        }
     }
 
     // MARK: - NSWindowDelegate

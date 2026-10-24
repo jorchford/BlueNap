@@ -3,6 +3,7 @@
 //  Bluesnooze
 //
 //  Created on 2026-10-20.
+//  Enhanced with AutoWiFi on 2026-10-23.
 //
 
 import SwiftUI
@@ -11,50 +12,196 @@ struct WiFiPreferencesTab: View {
     @Bindable var preferences: Preferences
     @Bindable var appState: AppState
 
+    @State private var globalConfig: GlobalConfig = .init()
+    @State private var profiles: [WiFiProfile] = []
+    @State private var networkSnapshot: NetworkSnapshot = .init()
+    @State private var daemonInfo: DaemonInfo = .init()
+
+    @State private var isSheetPresented: Bool = false
+    @State private var isNewProfile: Bool = false
+    @State private var editingProfile: WiFiProfile = .init(ssid: "", staticIP: "", router: "")
+    @State private var statusMessage: String?
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            // Hardware Status Card
-            liquidCard {
-                HStack {
-                    Image(systemName: "wifi")
-                        .font(.title2)
-                        .foregroundStyle(appState.isWifiHardwareOn ? Color.blue : Color.gray)
-                        .frame(width: 36, height: 36)
-                        .background(.ultraThinMaterial, in: Circle())
+        VStack(alignment: .leading, spacing: 20) {
+            // Master Auto-Binding Toggle Card
+            autoBindingMasterCard
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Wi-Fi Interface")
-                            .font(.headline)
-                        Text(appState.isWifiHardwareOn ? "Powered On" : "Powered Off")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
+            if preferences.isAutoWiFiBindingEnabled {
+                // Live Network Status Card
+                WiFiNetworkStatusCard(snapshot: networkSnapshot) {
+                    applyOnce()
                 }
+
+                // Configured Wi-Fi Profiles Section
+                profilesSection
+
+                // Background Daemon Service Card
+                WiFiDaemonControlCard(
+                    daemonInfo: daemonInfo,
+                    globalConfig: $globalConfig,
+                    onInstall: { installDaemon() },
+                    onStart: { startDaemon() },
+                    onStop: { stopDaemon() },
+                    onRestart: { restartDaemon() },
+                    onUninstall: { uninstallDaemon() }
+                )
             }
 
-            // Wi-Fi Sleep Actions
-            liquidCard {
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("When Mac Goes to Sleep")
+            // Wi-Fi Sleep & Wake Power Management
+            sleepWakePowerSection
+        }
+        .sheet(isPresented: $isSheetPresented) {
+            WiFiProfileEditSheet(
+                profile: $editingProfile,
+                isNew: isNewProfile,
+                currentSSID: networkSnapshot.connectedSSID,
+                onSave: { saved in
+                    saveProfile(saved)
+                    isSheetPresented = false
+                },
+                onCancel: {
+                    isSheetPresented = false
+                }
+            )
+        }
+        .onAppear {
+            loadAutoWiFiData()
+            startMonitoring()
+        }
+        .onDisappear {
+            stopMonitoring()
+        }
+        .onChange(of: preferences.isAutoWiFiBindingEnabled) { _, newValue in
+            globalConfig.isBindingEnabled = newValue
+            persistConfig()
+        }
+        .onChange(of: globalConfig.restoreDHCP) { _, _ in
+            persistConfig()
+        }
+    }
+
+    // MARK: - Sections
+
+    private var autoBindingMasterCard: some View {
+        liquidCard {
+            HStack {
+                Image(systemName: "network")
+                    .font(.title2)
+                    .foregroundStyle(preferences.isAutoWiFiBindingEnabled ? Color.blue : Color.secondary)
+                    .frame(width: 36, height: 36)
+                    .background(.ultraThinMaterial, in: Circle())
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(NSLocalizedString("Auto-Bind Wi-Fi Static IP", comment: ""))
                         .font(.headline)
-
-                    Toggle("Turn off Wi-Fi when sleeping", isOn: $preferences.disableWifiOnSleep)
-
-                    Text("Helps preserve battery life and prevent unexpected background network wakeups.")
+                    Text(NSLocalizedString("Automatically switches to static IP for designated Wi-Fi networks.", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+
+                Spacer()
+
+                Toggle("", isOn: $preferences.isAutoWiFiBindingEnabled)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+            }
+        }
+    }
+
+    private var profilesSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(NSLocalizedString("Configured Wi-Fi Networks", comment: ""))
+                    .font(.headline)
+                Spacer()
+                Button {
+                    editingProfile = WiFiProfile(
+                        ssid: networkSnapshot.connectedSSID ?? "",
+                        staticIP: networkSnapshot.currentIPv4 ?? "",
+                        subnetMask: networkSnapshot.currentNetmask ?? "255.255.255.0",
+                        router: networkSnapshot.currentRouter ?? "",
+                        dnsServers: networkSnapshot.currentDNS
+                    )
+                    isNewProfile = true
+                    isSheetPresented = true
+                } label: {
+                    Label(NSLocalizedString("Add Wi-Fi Profile", comment: ""), systemImage: "plus")
+                        .font(.caption.weight(.medium))
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
             }
 
-            // Wi-Fi Wake Actions
-            liquidCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("When Mac Wakes Up")
-                        .font(.headline)
+            if profiles.isEmpty {
+                liquidCard {
+                    HStack(spacing: 12) {
+                        Image(systemName: "wifi.exclamationmark")
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(NSLocalizedString("No Wi-Fi Profiles Added", comment: ""))
+                                .font(.subheadline.weight(.medium))
+                            Text(
+                                NSLocalizedString(
+                                    "Click 'Add Wi-Fi Profile' above to configure static IP for your office or home network.",
+                                    comment: ""
+                                )
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 6)
+                }
+            } else {
+                ForEach(profiles) { profile in
+                    WiFiProfileCardView(
+                        profile: profile,
+                        isCurrentSSID: profile.ssid == networkSnapshot.connectedSSID,
+                        onToggleBinding: { isEnabled in
+                            if let idx = profiles.firstIndex(where: { $0.id == profile.id }) {
+                                profiles[idx].isEnabled = isEnabled
+                                persistConfig()
+                            }
+                        },
+                        onEdit: {
+                            editingProfile = profile
+                            isNewProfile = false
+                            isSheetPresented = true
+                        },
+                        onDelete: {
+                            profiles.removeAll { $0.id == profile.id }
+                            persistConfig()
+                        }
+                    )
+                }
+            }
+        }
+    }
 
-                    Picker("Action on unlock:", selection: $preferences.wifiWakeAction) {
+    private var sleepWakePowerSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("Sleep & Wake Power Lifecycle", comment: ""))
+                .font(.headline)
+
+            liquidCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text(NSLocalizedString("When Mac Goes to Sleep", comment: ""))
+                        .font(.subheadline.weight(.medium))
+
+                    Toggle(NSLocalizedString("Turn off Wi-Fi when sleeping", comment: ""), isOn: $preferences.disableWifiOnSleep)
+
+                    Text(NSLocalizedString("Helps preserve battery life and prevent unexpected background network wakeups.", comment: ""))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Divider()
+
+                    Text(NSLocalizedString("When Mac Wakes Up", comment: ""))
+                        .font(.subheadline.weight(.medium))
+
+                    Picker(NSLocalizedString("Action on unlock:", comment: ""), selection: $preferences.wifiWakeAction) {
                         ForEach(WakeAction.allCases, id: \.self) { action in
                             Text(action.displayName).tag(action)
                         }
@@ -62,6 +209,120 @@ struct WiFiPreferencesTab: View {
                     .pickerStyle(.radioGroup)
                 }
             }
+        }
+    }
+
+    // MARK: - Actions & Persistence
+
+    private func loadAutoWiFiData() {
+        Task {
+            let (loadedGlobal, loadedProfiles) = await WiFiConfigManager.shared.loadConfig()
+            globalConfig = loadedGlobal
+            profiles = loadedProfiles
+
+            let daemonStatus = await WiFiDaemonManager.shared.checkStatus()
+            daemonInfo = DaemonInfo(status: daemonStatus)
+
+            refreshSnapshot()
+        }
+    }
+
+    private func startMonitoring() {
+        WiFiNetworkMonitor.shared.startMonitoring { snapshot in
+            var updated = snapshot
+            if let ssid = updated.connectedSSID,
+               let match = profiles.first(where: { $0.ssid == ssid }) {
+                updated.matchedProfile = match
+            }
+            networkSnapshot = updated
+        }
+    }
+
+    private func stopMonitoring() {
+        WiFiNetworkMonitor.shared.stopMonitoring()
+    }
+
+    private func refreshSnapshot() {
+        var snap = WiFiNetworkMonitor.shared.captureCurrentSnapshot(
+            device: globalConfig.wifiDevice,
+            serviceName: globalConfig.networkService
+        )
+        if let ssid = snap.connectedSSID,
+           let match = profiles.first(where: { $0.ssid == ssid }) {
+            snap.matchedProfile = match
+        }
+        networkSnapshot = snap
+    }
+
+    private func persistConfig() {
+        Task {
+            try? await WiFiConfigManager.shared.saveConfig(global: globalConfig, profiles: profiles)
+        }
+    }
+
+    private func saveProfile(_ saved: WiFiProfile) {
+        if let idx = profiles.firstIndex(where: { $0.id == saved.id }) {
+            profiles[idx] = saved
+        } else {
+            profiles.append(saved)
+        }
+        persistConfig()
+        refreshSnapshot()
+    }
+
+    private func applyOnce() {
+        Task {
+            let (_, msg) = await WiFiAutoBindingService.shared.evaluateAndApply(global: globalConfig, profiles: profiles)
+            statusMessage = msg
+            refreshSnapshot()
+        }
+    }
+
+    private func installDaemon() {
+        Task {
+            let configText = await WiFiConfigManager.shared.serializeINI(global: globalConfig, profiles: profiles)
+            // Use bundled universal binary
+            let bundledURL = Bundle.main.url(forResource: "bluenap-wifid", withExtension: nil) ??
+                URL(fileURLWithPath: DaemonInfo.daemonExecutablePath)
+            do {
+                try await WiFiDaemonManager.shared.installService(daemonBinaryURL: bundledURL, configText: configText)
+                let status = await WiFiDaemonManager.shared.checkStatus()
+                daemonInfo = DaemonInfo(status: status)
+            } catch {
+                statusMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func startDaemon() {
+        Task {
+            try? await WiFiDaemonManager.shared.start()
+            let status = await WiFiDaemonManager.shared.checkStatus()
+            daemonInfo = DaemonInfo(status: status)
+        }
+    }
+
+    private func stopDaemon() {
+        Task {
+            try? await WiFiDaemonManager.shared.stop()
+            let status = await WiFiDaemonManager.shared.checkStatus()
+            daemonInfo = DaemonInfo(status: status)
+        }
+    }
+
+    private func restartDaemon() {
+        Task {
+            try? await WiFiDaemonManager.shared.restart()
+            let status = await WiFiDaemonManager.shared.checkStatus()
+            daemonInfo = DaemonInfo(status: status)
+        }
+    }
+
+    private func uninstallDaemon() {
+        Task {
+            try? await WiFiDaemonManager.shared.uninstall(purgeConfig: false)
+            let status = await WiFiDaemonManager.shared.checkStatus()
+            daemonInfo = DaemonInfo(status: status)
         }
     }
 

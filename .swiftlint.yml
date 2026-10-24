@@ -5,6 +5,7 @@ excluded:
   - Carthage
   - Pods
   - DerivedData
+  - daemon
 
 line_length:
   warning: 140

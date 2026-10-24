@@ -11,7 +11,7 @@ struct PreferencesView: View {
     @Bindable var preferences: Preferences = .shared
     @Bindable var appState: AppState = .shared
 
-    @State private var selectedTab: SettingsTab = .bluetooth
+    @State private var selectedTab: SettingsTab = CommandLine.arguments.contains("--tab-wifi") ? .wifi : .bluetooth
 
     enum SettingsTab: String, CaseIterable, Identifiable {
         case bluetooth = "Bluetooth"
@@ -81,7 +81,7 @@ struct PreferencesView: View {
                 .padding(20)
             }
         }
-        .frame(width: 580, height: 480)
+        .frame(width: 580, height: 540)
         .background(.regularMaterial)
         .onAppear {
             appState.refreshHardwareStates()

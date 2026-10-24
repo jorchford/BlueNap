@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] - 2026-10-24
+
+### Added
+- **AutoWiFi Intelligent Static IP Auto-Switching Subsystem**:
+  - Automatically detects connected Wi-Fi SSID and applies tailored static IPv4 configurations (IP address, subnet mask, router, DNS servers).
+  - Automatically restores DHCP when disconnecting from configured SSIDs or joining untracked networks.
+  - Global master toggle for static IP auto-binding (`isAutoWiFiBindingEnabled`) and per-profile toggles (`isEnabled`).
+  - Native LaunchDaemon (`bluenap-wifid`) written in Swift to replace the legacy 700-line shell script, maintaining 0.0% CPU and zero polling via `SCDynamicStoreCreate` kernel notifications.
+  - Full daemon service lifecycle management inside the Settings UI: Install, Start, Stop, Restart, and Uninstall `/Library/LaunchDaemons/com.red.bluenap.autowifi.plist`.
+  - Live network status card displaying current SSID, IPv4, Subnet, Router, DNS, and manual/DHCP status with "Apply Rule Now" button.
+  - Profile edit sheet with "Use Current Wi-Fi" one-click autofill, live IPv4 format validation, and one-tap domestic & international DNS presets (AliDNS, DNSPod, 114DNS, Cloudflare, Google).
+  - Compatible with `/usr/local/etc/bluenap-wifi.conf` and legacy `/usr/local/etc/wifi-static-ip-switcher.conf` INI formats.
+- **Preferences & UI Upgrades**:
+  - Expanded Preferences window frame to 580x540 for comfortable layout.
+  - Added dedicated screenshot generation option (`--screenshot`) with Retina export.
+
 ## [2.0.1] - 2026-10-21
 
 ### Fixed

@@ -55,6 +55,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         setupNotificationHandlers()
         setupAccessibility()
+
+        if CommandLine.arguments.contains("--settings") {
+            SettingsWindowController.shared.showSettings()
+        }
+
+        if CommandLine.arguments.contains("--screenshot") {
+            SettingsWindowController.shared.showSettings()
+            let outputPath = CommandLine.arguments.first(where: { $0.hasSuffix(".png") })
+                ?? "/Volumes/data/xcode/Bluesnooze/images/bluenap_autowifi_preferences.png"
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                SettingsWindowController.shared.captureScreenshot(to: outputPath)
+                print("Screenshot captured to \(outputPath)")
+                NSApplication.shared.terminate(nil)
+            }
+        }
     }
 
     func applicationWillTerminate(_: Notification) {
