@@ -16,7 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Isolated privileged service installations to background utility queues with asynchronous continuations.
 
 ### Changed
-- **Official App Branding & Multilingual Support**:
+- **Official App Branding & Multilingual App Name Support**:
+  - Configured `LSHasLocalizedDisplayName` and `CFBundleLocalizations` in `Info.plist` to enable macOS LaunchServices and Finder to natively display **蓝憩** in Simplified Chinese, **藍憩** in Traditional Chinese, and **BlueNap** in English and Japanese.
+  - Dynamically set `ProcessInfo.processInfo.processName` at application launch to reflect the localized app name in Activity Monitor, Force Quit, and system dialogs.
   - Set `PRODUCT_NAME` and `CFBundleDisplayName` to **BlueNap** (Chinese: **蓝憩**).
   - Added full multi-language localizations: Traditional Chinese (`zh-Hant`) and Japanese (`ja`), alongside Simplified Chinese (`zh-Hans`) and English (`en`).
   - Implemented runtime menu item localization so menu bars dynamically match the system language.

@@ -51,7 +51,7 @@
 "Helps preserve battery life and prevent unexpected background network wakeups." = "有助于节省电池电量并防止意外的后台网络唤醒。";
 
 /* 关于设置 */
-"BlueNap" = "蓝憩 (BlueNap)";
+"BlueNap" = "蓝憩";
 "BlueNap Settings" = "蓝憩 偏好设置";
 "Smart Bluetooth & Wi-Fi Power Manager for Mac" = "Mac 智能蓝牙与 Wi-Fi 深度休眠管理";
 "Swift 6 Strict Concurrency" = "Swift 6 严格并发";

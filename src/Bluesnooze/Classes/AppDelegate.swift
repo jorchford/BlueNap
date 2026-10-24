@@ -50,6 +50,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Prevent sudden termination to ensure status bar item is cleanly unmapped from MenuBarAgent
         ProcessInfo.processInfo.disableSuddenTermination()
 
+        let localizedAppName = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String
+            ?? Bundle.main.localizedInfoDictionary?["CFBundleName"] as? String
+            ?? NSLocalizedString("BlueNap", comment: "")
+        ProcessInfo.processInfo.processName = localizedAppName
+
         if !preferences.hideIcon {
             createStatusItem()
         }
@@ -192,7 +197,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             icon.isTemplate = true
             item.button?.image = icon
         } else {
-            item.button?.title = "BlueNap"
+            item.button?.title = NSLocalizedString("BlueNap", comment: "")
         }
 
         item.button?.toolTip = appState.status.menuTitle
