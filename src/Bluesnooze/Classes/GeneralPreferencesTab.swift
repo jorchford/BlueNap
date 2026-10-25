@@ -91,6 +91,38 @@ struct GeneralPreferencesTab: View {
                         .padding(10)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
+
+                    Divider()
+
+                    // Auto-close menu bar icon
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString("Auto-close menu bar icon", comment: ""))
+                                .font(.body.weight(.medium))
+                            Text(
+                                NSLocalizedString(
+                                    "Automatically close menu bar icon after specified duration and enter silent background mode.",
+                                    comment: ""
+                                )
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Picker("", selection: $preferences.autoHideMenuBarDelayMinutes) {
+                            ForEach(AutoHideDelayOption.allCases) { option in
+                                Text(option.displayName).tag(option.rawValue)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 140)
+                        .disabled(preferences.hideIcon)
+                        .onChange(of: preferences.autoHideMenuBarDelayMinutes) { _, _ in
+                            AppDelegate.shared?.scheduleAutoHideTimerIfNeeded()
+                        }
+                    }
                 }
             }
 

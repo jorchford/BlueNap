@@ -13,6 +13,10 @@ import SwiftUI
 final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     static let shared = SettingsWindowController()
 
+    var isWindowVisible: Bool {
+        window?.isVisible == true
+    }
+
     private init() {
         super.init(window: nil)
     }
@@ -41,6 +45,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         }
 
         guard let window else { return }
+
+        // Cancel any pending auto-hide countdown while settings window is open
+        AppDelegate.shared?.cancelAutoHideTimer()
 
         // Switch to regular activation policy so the settings window can become key and accept input
         NSApp.setActivationPolicy(.regular)
@@ -89,6 +96,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
         // Return to accessory mode when preferences window is closed
         NSApp.setActivationPolicy(.accessory)
+
+        // Resume auto-hide timer if configured
+        AppDelegate.shared?.scheduleAutoHideTimerIfNeeded()
 
         // Aggressive memory pressure relief & purge
         trimMemory()

@@ -25,6 +25,37 @@ enum WakeAction: String, CaseIterable, Sendable {
     }
 }
 
+enum AutoHideDelayOption: Int, CaseIterable, Identifiable, Sendable {
+    case never = 0
+    case oneMinute = 1
+    case twoMinutes = 2
+    case threeMinutes = 3
+    case fiveMinutes = 5
+    case tenMinutes = 10
+    case fifteenMinutes = 15
+
+    var id: Int { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .never:
+            NSLocalizedString("Never", comment: "")
+        case .oneMinute:
+            NSLocalizedString("1 Minute", comment: "")
+        case .twoMinutes:
+            NSLocalizedString("2 Minutes", comment: "")
+        case .threeMinutes:
+            NSLocalizedString("3 Minutes", comment: "")
+        case .fiveMinutes:
+            NSLocalizedString("5 Minutes", comment: "")
+        case .tenMinutes:
+            NSLocalizedString("10 Minutes", comment: "")
+        case .fifteenMinutes:
+            NSLocalizedString("15 Minutes", comment: "")
+        }
+    }
+}
+
 @Observable
 @MainActor
 final class Preferences {
@@ -40,11 +71,15 @@ final class Preferences {
         static let hideIcon = "hideIcon"
         static let showTransitionAnimation = "showTransitionAnimation"
         static let isAutoWiFiBindingEnabled = "isAutoWiFiBindingEnabled"
+        static let autoHideMenuBarDelayMinutes = "autoHideMenuBarDelayMinutes"
     }
 
     private let defaults: UserDefaults
 
     /// In-memory cached properties for zero-IPC and O(1) reads
+    var autoHideMenuBarDelayMinutes: Int {
+        didSet { defaults.set(autoHideMenuBarDelayMinutes, forKey: Keys.autoHideMenuBarDelayMinutes) }
+    }
     var isAutoWiFiBindingEnabled: Bool {
         didSet { defaults.set(isAutoWiFiBindingEnabled, forKey: Keys.isAutoWiFiBindingEnabled) }
     }
@@ -97,7 +132,8 @@ final class Preferences {
             Keys.hideIcon: false,
             Keys.showTransitionAnimation: true,
             Keys.isAutoWiFiBindingEnabled: true,
-            Keys.disableBluetoothOnPowerDown: true
+            Keys.disableBluetoothOnPowerDown: true,
+            Keys.autoHideMenuBarDelayMinutes: 0
         ])
 
         if defaults.object(forKey: Keys.disableBluetoothOnPowerDown) == nil {
@@ -118,6 +154,7 @@ final class Preferences {
         wifiWakeAction = wifiRaw.flatMap(WakeAction.init) ?? .nothing
 
         hideIcon = defaults.bool(forKey: Keys.hideIcon)
+        autoHideMenuBarDelayMinutes = defaults.integer(forKey: Keys.autoHideMenuBarDelayMinutes)
 
         if defaults.object(forKey: Keys.isAutoWiFiBindingEnabled) == nil {
             isAutoWiFiBindingEnabled = true
@@ -158,7 +195,8 @@ final class Preferences {
             Keys.wifiActionOnScreenUnlock,
             Keys.hideIcon,
             Keys.showTransitionAnimation,
-            Keys.isAutoWiFiBindingEnabled
+            Keys.isAutoWiFiBindingEnabled,
+            Keys.autoHideMenuBarDelayMinutes
         ]
         for key in keys {
             defaults.removeObject(forKey: key)
@@ -173,5 +211,6 @@ final class Preferences {
         hideIcon = false
         showTransitionAnimation = true
         isAutoWiFiBindingEnabled = true
+        autoHideMenuBarDelayMinutes = 0
     }
 }

@@ -168,3 +168,14 @@
 "Quit BlueNap" = "Quit BlueNap";
 "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors.";
 "Quit Application" = "Quit Application";
+
+/* Auto-close menu bar */
+"Auto-close menu bar icon" = "Auto-close menu bar icon";
+"Automatically close menu bar icon after specified duration and enter silent background mode." = "Automatically close the menu bar icon after the specified duration and enter silent background mode. Launch BlueNap again to reopen Settings and restore the icon.";
+"Never" = "Never";
+"1 Minute" = "1 Minute";
+"2 Minutes" = "2 Minutes";
+"3 Minutes" = "3 Minutes";
+"5 Minutes" = "5 Minutes";
+"10 Minutes" = "10 Minutes";
+"15 Minutes" = "15 Minutes";

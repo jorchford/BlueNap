@@ -168,3 +168,14 @@
 "Quit BlueNap" = "退出 藍憩";
 "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "完全退出 藍憩，停止所有背景藍牙與 Wi-Fi 監聽守護。";
 "Quit Application" = "完全退出應用";
+
+/* 自動隱藏選單列 */
+"Auto-close menu bar icon" = "自動關閉選單列圖示";
+"Automatically close menu bar icon after specified duration and enter silent background mode." = "在啟動或無操作達到指定時長後，自動關閉選單列圖示並轉入靜默背景執行。再次啟動應用即可喚回設定與圖示。";
+"Never" = "從不（保持常駐）";
+"1 Minute" = "1 分鐘";
+"2 Minutes" = "2 分鐘";
+"3 Minutes" = "3 分鐘";
+"5 Minutes" = "5 分鐘";
+"10 Minutes" = "10 分鐘";
+"15 Minutes" = "15 分鐘";

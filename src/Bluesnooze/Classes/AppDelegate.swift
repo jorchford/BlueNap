@@ -39,6 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private var statusItem: NSStatusItem?
+    private var autoHideTimer: Timer?
     private let preferences = Preferences.shared
     private let powerStateManager = PowerStateManager.shared
     private let bluetoothService = BluetoothService.shared
@@ -60,9 +61,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 createStatusItem()
             }
         } else {
-            // Default to opening/showing menu bar icon on interactive launch
-            if preferences.hideIcon {
-                setMenuBarIconVisible(true)
+            // Default to opening/showing menu bar icon on startup / interactive launch
+            if preferences.autoHideMenuBarDelayMinutes > 0 || !preferences.hideIcon {
+                if statusItem == nil {
+                    createStatusItem()
+                }
+                preferences.hideIcon = false
             } else if statusItem == nil {
                 createStatusItem()
             }
@@ -70,6 +74,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         localizeMenuTitles()
         setupNotificationHandlers()
         setupAccessibility()
+        scheduleAutoHideTimerIfNeeded()
 
         if CommandLine.arguments.contains("--settings") {
             SettingsWindowController.shared.showSettings()
@@ -95,6 +100,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationWillTerminate(_: Notification) {
+        cancelAutoHideTimer()
         if let item = statusItem {
             NSStatusBar.system.removeStatusItem(item)
             statusItem = nil
@@ -118,7 +124,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             updateStatusItemTooltip()
             hideIconMenuItem?.title = NSLocalizedString("Hide icon", comment: "")
             updateMenuStates()
+            scheduleAutoHideTimerIfNeeded()
         } else {
+            cancelAutoHideTimer()
             if let item = statusItem {
                 item.menu = nil
                 item.button?.image = nil
@@ -262,8 +270,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: - NSMenuDelegate
 
     func menuWillOpen(_: NSMenu) {
+        cancelAutoHideTimer()
         appState.refreshHardwareStates()
         updateMenuStates()
+    }
+
+    func menuDidClose(_: NSMenu) {
+        scheduleAutoHideTimerIfNeeded()
     }
 
     @IBAction func handleMenuOpen(_: NSMenu) {
@@ -475,6 +488,49 @@ extension AppDelegate {
 
     @IBAction func quitClicked(_: NSMenuItem) {
         NSApplication.shared.terminate(self)
+    }
+
+    // MARK: - Auto-Hide Menu Bar Timer
+
+    func scheduleAutoHideTimerIfNeeded() {
+        cancelAutoHideTimer()
+
+        let testDelaySeconds: TimeInterval? = {
+            if let idx = CommandLine.arguments.firstIndex(of: "--autohide-delay-seconds"),
+               idx + 1 < CommandLine.arguments.count,
+               let sec = Double(CommandLine.arguments[idx + 1]) {
+                return sec
+            }
+            return nil
+        }()
+
+        guard (preferences.autoHideMenuBarDelayMinutes > 0 || testDelaySeconds != nil), statusItem != nil else { return }
+
+        if SettingsWindowController.shared.isWindowVisible {
+            return
+        }
+
+        let delaySeconds = testDelaySeconds ?? TimeInterval(preferences.autoHideMenuBarDelayMinutes * 60)
+        Log.app.info("Scheduling menu bar icon auto-hide in \(delaySeconds, privacy: .public)s")
+
+        autoHideTimer = Timer.scheduledTimer(withTimeInterval: delaySeconds, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if SettingsWindowController.shared.isWindowVisible {
+                    self.scheduleAutoHideTimerIfNeeded()
+                    return
+                }
+                Log.app.info("Auto-hiding menu bar icon after configured delay. Entering background mode.")
+                self.setMenuBarIconVisible(false)
+            }
+        }
+    }
+
+    func cancelAutoHideTimer() {
+        if autoHideTimer != nil {
+            autoHideTimer?.invalidate()
+            autoHideTimer = nil
+        }
     }
 
     // MARK: - Helpers

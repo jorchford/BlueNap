@@ -168,3 +168,14 @@
 "Quit BlueNap" = "BlueNap を終了";
 "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "BlueNap を完全に終了し、バックグラウンドの監視処理を停止します。";
 "Quit Application" = "アプリを終了";
+
+/* メニューバー自動非表示 */
+"Auto-close menu bar icon" = "メニューバー自動非表示";
+"Automatically close menu bar icon after specified duration and enter silent background mode." = "指定した時間が経過するとメニューバーアイコンを閉じ、バックグラウンド待機状態にします。再度アプリを起動すると設定とアイコンを再表示できます。";
+"Never" = "なし（常時表示）";
+"1 Minute" = "1 分";
+"2 Minutes" = "2 分";
+"3 Minutes" = "3 分";
+"5 Minutes" = "5 分";
+"10 Minutes" = "10 分";
+"15 Minutes" = "15 分";
