@@ -16,4 +16,5 @@ enum Log: Sendable {
     static let power = Logger(subsystem: subsystem, category: "power")
     static let ui = Logger(subsystem: subsystem, category: "ui")
     static let state = Logger(subsystem: subsystem, category: "state")
+    static let app = Logger(subsystem: subsystem, category: "app")
 }

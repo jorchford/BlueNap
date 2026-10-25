@@ -160,3 +160,11 @@
 "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management.";
 "Visit Website" = "Visit Website";
 "Recommended App" = "Recommended App";
+
+/* System & Lifecycle */
+"System & Lifecycle" = "System & Lifecycle";
+"Launch at login" = "Launch at login";
+"Automatically start BlueNap in the background when your Mac turns on or logs in." = "Automatically start BlueNap in the background when your Mac turns on or logs in.";
+"Quit BlueNap" = "Quit BlueNap";
+"Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors.";
+"Quit Application" = "Quit Application";

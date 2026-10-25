@@ -160,3 +160,11 @@
 "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "獨創單指駐留滑動、流光筆畫繪字識別、視窗精準貼靠與妙控滑鼠全表面增強，榨乾觸控板全部潛能。";
 "Visit Website" = "官網直達";
 "Recommended App" = "精選推薦應用";
+
+/* 系統啟動與退出 */
+"System & Lifecycle" = "系統啟動與運行";
+"Launch at login" = "登入時自動啟動";
+"Automatically start BlueNap in the background when your Mac turns on or logs in." = "在 Mac 開機或使用者登入時，自動在背景無聲啟動 藍憩。";
+"Quit BlueNap" = "退出 藍憩";
+"Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "完全退出 藍憩，停止所有背景藍牙與 Wi-Fi 監聽守護。";
+"Quit Application" = "完全退出應用";

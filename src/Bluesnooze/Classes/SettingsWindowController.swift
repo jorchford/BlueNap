@@ -78,13 +78,33 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         // Stop network monitor immediately to stop all observers and free resources
         WiFiNetworkMonitor.shared.stopMonitoring()
 
+        // Clear view hierarchy and break all SwiftUI graph references
+        window?.contentView = nil
+        window?.delegate = nil
+        window = nil
+
+        // Clear transient state caches
+        AppState.shared.pairedDevices.removeAll(keepingCapacity: false)
+        URLCache.shared.removeAllCachedResponses()
+
         // Return to accessory mode when preferences window is closed
         NSApp.setActivationPolicy(.accessory)
-        window?.contentView = nil
-        window = nil
+
+        // Aggressive memory pressure relief & purge
+        trimMemory()
+    }
+
+    private func trimMemory() {
+        CATransaction.flush()
         malloc_zone_pressure_relief(nil, 0)
-        DispatchQueue.main.async {
-            malloc_zone_pressure_relief(nil, 0)
+        malloc_zone_pressure_relief(malloc_default_zone(), 0)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            autoreleasepool {
+                CATransaction.flush()
+                malloc_zone_pressure_relief(nil, 0)
+                malloc_zone_pressure_relief(malloc_default_zone(), 0)
+            }
         }
     }
 }

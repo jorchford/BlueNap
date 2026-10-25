@@ -75,6 +75,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             SettingsWindowController.shared.showSettings()
         }
 
+        if let idx = CommandLine.arguments.firstIndex(of: "--close-after"), idx + 1 < CommandLine.arguments.count,
+           let delay = Double(CommandLine.arguments[idx + 1]) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                SettingsWindowController.shared.window?.performClose(nil)
+            }
+        }
+
         if CommandLine.arguments.contains("--screenshot") {
             SettingsWindowController.shared.showSettings()
             let outputPath = CommandLine.arguments.first(where: { $0.hasSuffix(".png") })

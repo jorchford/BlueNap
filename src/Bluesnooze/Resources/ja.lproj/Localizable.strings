@@ -160,3 +160,11 @@
 "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "トラックパッドと Magic Mouse の可能性を最大限に引き出す高機能ジェスチャーツール。";
 "Visit Website" = "公式サイト";
 "Recommended App" = "おすすめアプリ";
+
+/* システム起動と終了 */
+"System & Lifecycle" = "システム起動と終了";
+"Launch at login" = "ログイン時に自動起動";
+"Automatically start BlueNap in the background when your Mac turns on or logs in." = "Mac の起動時やログイン時に、バックグラウンドで自動的に BlueNap を開始します。";
+"Quit BlueNap" = "BlueNap を終了";
+"Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "BlueNap を完全に終了し、バックグラウンドの監視処理を停止します。";
+"Quit Application" = "アプリを終了";

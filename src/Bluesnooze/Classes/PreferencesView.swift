@@ -11,7 +11,7 @@ struct PreferencesView: View {
     @Bindable var preferences: Preferences = .shared
     @Bindable var appState: AppState = .shared
 
-    @State private var selectedTab: SettingsTab = CommandLine.arguments.contains("--tab-wifi") ? .wifi : (CommandLine.arguments.contains("--tab-about") ? .about : .bluetooth)
+    @State private var selectedTab: SettingsTab = CommandLine.arguments.contains("--tab-wifi") ? .wifi : (CommandLine.arguments.contains("--tab-about") ? .about : (CommandLine.arguments.contains("--tab-general") ? .general : .bluetooth))
 
     enum SettingsTab: String, CaseIterable, Identifiable {
         case bluetooth = "Bluetooth"
@@ -58,6 +58,19 @@ struct PreferencesView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(.regularMaterial, in: Capsule())
+
+                // Quick Quit button
+                Button {
+                    NSApplication.shared.terminate(nil)
+                } label: {
+                    Image(systemName: "power")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.red)
+                        .padding(6)
+                        .background(Color.red.opacity(0.12), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .help(NSLocalizedString("Quit BlueNap", comment: ""))
             }
             .padding(16)
             .background(.thinMaterial)
