@@ -151,3 +151,5 @@
 "Disconnect selected devices" = "Disconnect selected devices";
 "Action when unlocked" = "Action when unlocked";
 "Turn off when sleeping" = "Turn off when sleeping";
+"macOS 27 Tested" = "macOS 27 Tested";
+"Tested exclusively on macOS 27" = "Notice: This application has currently only been tested and verified on macOS 27.";

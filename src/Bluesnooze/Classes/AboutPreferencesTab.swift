@@ -38,6 +38,13 @@ struct AboutPreferencesTab: View {
                             .padding(.vertical, 4)
                             .background(Color.blue.opacity(0.18), in: Capsule())
                             .foregroundStyle(Color.blue)
+
+                        Text("macOS 27 Tested")
+                            .font(.caption2.weight(.semibold))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.purple.opacity(0.18), in: Capsule())
+                            .foregroundStyle(Color.purple)
                     }
                     .padding(.top, 4)
                 }
@@ -58,6 +65,15 @@ struct AboutPreferencesTab: View {
                     )
                     .font(.callout)
                     .foregroundStyle(.secondary)
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(.purple)
+                            .font(.caption)
+                        Text("Tested exclusively on macOS 27")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
                     Divider()
 

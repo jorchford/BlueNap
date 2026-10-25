@@ -83,11 +83,12 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ---
 
-### System Requirements
+### System Requirements & Development Environment
 
-* **Operating System**: macOS 14.0 (Sonoma) or macOS 15.0+ (Sequoia).
+* **Operating System**: macOS 14.0 (Sonoma) or later.
+* **⚠️ Testing Notice**: **This application has currently only been tested and validated on macOS 27.**
 * **Architecture**: Universal (Apple Silicon M1/M2/M3/M4 & Intel x86_64).
-* **Build Tool**: Xcode 16.0+ (Swift 6.0).
+* **Development Environment**: macOS 27 (Darwin 26.x), Xcode 16.0+, Swift 6.0 (`SWIFT_STRICT_CONCURRENCY = complete`).
 
 ---
 
@@ -133,6 +134,15 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 * **[Tactile (妙触)](https://app.needai.top/app/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
 * **[官方应用主页 (BlueNap)](https://app.needai.top/app/bluenap)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
+
+---
+
+### 系统要求与开发环境说明
+
+* **系统支持**：macOS 14.0 (Sonoma) 或更高版本。
+* **⚠️ 测试环境特别说明**：**本应用目前仅在 macOS 27 环境下完成全面测试与验证。**
+* **硬件架构**：Universal 通用二进制（原生支持 Apple Silicon M1/M2/M3/M4 与 Intel x86_64 架构）。
+* **开发环境说明**：macOS 27 (Darwin 26.x)、Xcode 16.0+、Swift 6.0 纯原生（开启严格并发检查 `SWIFT_STRICT_CONCURRENCY = complete`）。
 
 ---
 
