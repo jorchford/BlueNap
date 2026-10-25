@@ -153,3 +153,10 @@
 "Turn off when sleeping" = "スリープ時に Wi-Fi をオフにする";
 "macOS 27 Tested" = "macOS 27 でテスト済み";
 "Tested exclusively on macOS 27" = "注意: 本アプリは現在 macOS 27 環境でのみテスト・検証されています。";
+
+/* おすすめアプリ */
+"Featured Recommendation" = "おすすめアプリ";
+"120Hz ProMotion Multitouch & Gesture Powerhouse for macOS" = "macOS 向け次世代 120Hz マルチタッチ＆ジェスチャーエンジン";
+"Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "トラックパッドと Magic Mouse の可能性を最大限に引き出す高機能ジェスチャーツール。";
+"Visit Website" = "公式サイト";
+"Recommended App" = "おすすめアプリ";

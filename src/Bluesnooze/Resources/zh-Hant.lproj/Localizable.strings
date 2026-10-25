@@ -153,3 +153,10 @@
 "Turn off when sleeping" = "休眠時關閉 Wi-Fi";
 "macOS 27 Tested" = "僅在 macOS 27 下測試";
 "Tested exclusively on macOS 27" = "注意：本應用目前僅在 macOS 27 環境下完成全面測試與驗證。";
+
+/* 推薦應用 */
+"Featured Recommendation" = "精選生態推薦";
+"120Hz ProMotion Multitouch & Gesture Powerhouse for macOS" = "新一代 macOS 120Hz 智能多指觸控與字符筆畫手勢神器";
+"Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "獨創單指駐留滑動、流光筆畫繪字識別、視窗精準貼靠與妙控滑鼠全表面增強，榨乾觸控板全部潛能。";
+"Visit Website" = "官網直達";
+"Recommended App" = "精選推薦應用";

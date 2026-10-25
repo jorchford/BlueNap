@@ -93,6 +93,13 @@ final class Preferences {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
 
+        defaults.register(defaults: [
+            Keys.hideIcon: false,
+            Keys.showTransitionAnimation: true,
+            Keys.isAutoWiFiBindingEnabled: true,
+            Keys.disableBluetoothOnPowerDown: true
+        ])
+
         if defaults.object(forKey: Keys.disableBluetoothOnPowerDown) == nil {
             disableBluetoothOnSleep = true
         } else {

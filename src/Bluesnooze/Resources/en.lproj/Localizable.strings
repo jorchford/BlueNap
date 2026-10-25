@@ -153,3 +153,10 @@
 "Turn off when sleeping" = "Turn off when sleeping";
 "macOS 27 Tested" = "macOS 27 Tested";
 "Tested exclusively on macOS 27" = "Notice: This application has currently only been tested and verified on macOS 27.";
+
+/* Recommended App */
+"Featured Recommendation" = "Featured Recommendation";
+"120Hz ProMotion Multitouch & Gesture Powerhouse for macOS" = "Next-Gen 120Hz Multitouch & Gesture Powerhouse for macOS";
+"Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management." = "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management.";
+"Visit Website" = "Visit Website";
+"Recommended App" = "Recommended App";

@@ -11,7 +11,7 @@ struct PreferencesView: View {
     @Bindable var preferences: Preferences = .shared
     @Bindable var appState: AppState = .shared
 
-    @State private var selectedTab: SettingsTab = CommandLine.arguments.contains("--tab-wifi") ? .wifi : .bluetooth
+    @State private var selectedTab: SettingsTab = CommandLine.arguments.contains("--tab-wifi") ? .wifi : (CommandLine.arguments.contains("--tab-about") ? .about : .bluetooth)
 
     enum SettingsTab: String, CaseIterable, Identifiable {
         case bluetooth = "Bluetooth"

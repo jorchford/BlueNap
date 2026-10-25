@@ -55,8 +55,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             ?? NSLocalizedString("BlueNap", comment: "")
         ProcessInfo.processInfo.processName = localizedAppName
 
-        if !preferences.hideIcon {
-            createStatusItem()
+        if CommandLine.arguments.contains("--hidden") || CommandLine.arguments.contains("--background") {
+            if !preferences.hideIcon {
+                createStatusItem()
+            }
+        } else {
+            // Default to opening/showing menu bar icon on interactive launch
+            if preferences.hideIcon {
+                setMenuBarIconVisible(true)
+            } else if statusItem == nil {
+                createStatusItem()
+            }
         }
         localizeMenuTitles()
         setupNotificationHandlers()
@@ -86,6 +95,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows _: Bool) -> Bool {
+        if preferences.hideIcon {
+            setMenuBarIconVisible(true)
+        }
         SettingsWindowController.shared.showSettings()
         return true
     }
