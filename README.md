@@ -92,6 +92,12 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ---
 
+### 🔒 Privacy Policy
+
+**BlueNap operates 100% locally and offline on your device.** It makes zero outbound network connections, includes no tracking or analytics SDKs, and never collects, stores, or uploads any user private data.
+
+---
+
 <a name="中文说明"></a>
 ## 中文说明
 
@@ -143,6 +149,12 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 * **⚠️ 测试环境特别说明**：**本应用目前仅在 macOS 27 环境下完成全面测试与验证。**
 * **硬件架构**：Universal 通用二进制（原生支持 Apple Silicon M1/M2/M3/M4 与 Intel x86_64 架构）。
 * **开发环境说明**：macOS 27 (Darwin 26.x)、Xcode 16.0+、Swift 6.0 纯原生（开启严格并发检查 `SWIFT_STRICT_CONCURRENCY = complete`）。
+
+---
+
+### 🔒 隐私与数据安全
+
+**蓝憩 (BlueNap) 100% 在本地设备离线运行。** 绝无任何外部网络请求与上传行为，不含任何统计或遥测 SDK，承诺绝不收集、记录或上传任何用户的个人隐私数据。
 
 ---
 
