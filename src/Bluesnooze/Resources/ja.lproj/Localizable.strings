@@ -179,3 +179,9 @@
 "5 Minutes" = "5 分";
 "10 Minutes" = "10 分";
 "15 Minutes" = "15 分";
+
+/* 言語設定 */
+"Language & Localization" = "多言語設定";
+"App Interface Language" = "アプリの表示言語";
+"Choose the display language for BlueNap. Changes take effect immediately." = "BlueNap の表示言語を選択します。変更は即座に反映されます。";
+

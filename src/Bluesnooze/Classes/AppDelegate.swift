@@ -48,6 +48,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: - Lifecycle
 
     func applicationDidFinishLaunching(_: Notification) {
+        Bundle.setupLocalizationSwizzling()
+
         // Prevent sudden termination to ensure status bar item is cleanly unmapped from MenuBarAgent
         ProcessInfo.processInfo.disableSuddenTermination()
 
@@ -240,31 +242,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = item
     }
 
-    private func localizeMenuTitles() {
+    func localizeMenuTitles() {
         guard let statusMenu else { return }
 
         for item in statusMenu.items {
-            let key = item.title
-            let localized = NSLocalizedString(key, comment: "")
-            if localized != key {
-                item.title = localized
-            }
-
+            localizeMenuItem(item)
             if let submenu = item.submenu {
-                let subKey = submenu.title
-                let localizedSub = NSLocalizedString(subKey, comment: "")
-                if localizedSub != subKey {
-                    submenu.title = localizedSub
+                let originalSubKey = (submenu.identifier?.rawValue).flatMap { $0.isEmpty ? nil : $0 } ?? submenu.title
+                if submenu.identifier == nil {
+                    submenu.identifier = NSUserInterfaceItemIdentifier(originalSubKey)
                 }
+                let localizedSub = NSLocalizedString(originalSubKey, comment: "")
+                submenu.title = localizedSub.isEmpty ? originalSubKey : localizedSub
+
                 for subItem in submenu.items {
-                    let itemKey = subItem.title
-                    let localizedItem = NSLocalizedString(itemKey, comment: "")
-                    if localizedItem != itemKey {
-                        subItem.title = localizedItem
-                    }
+                    localizeMenuItem(subItem)
                 }
             }
         }
+        updateStatusItemTooltip()
+    }
+
+    private func localizeMenuItem(_ item: NSMenuItem) {
+        guard !item.isSeparatorItem else { return }
+        let originalKey = (item.identifier?.rawValue).flatMap { $0.isEmpty ? nil : $0 } ?? item.title
+        if item.identifier == nil {
+            item.identifier = NSUserInterfaceItemIdentifier(originalKey)
+        }
+        let localized = NSLocalizedString(originalKey, comment: "")
+        item.title = localized.isEmpty ? originalKey : localized
     }
 
     // MARK: - NSMenuDelegate

@@ -96,6 +96,8 @@ struct PreferencesView: View {
         }
         .frame(width: 580, height: 540)
         .background(.regularMaterial)
+        .id(preferences.appLanguage.rawValue)
+        .environment(\.locale, preferences.appLanguage.locale ?? Locale.autoupdatingCurrent)
         .onAppear {
             appState.refreshHardwareStates()
         }

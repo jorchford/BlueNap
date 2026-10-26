@@ -77,6 +77,14 @@ final class Preferences {
     private let defaults: UserDefaults
 
     /// In-memory cached properties for zero-IPC and O(1) reads
+    var appLanguage: AppLanguage {
+        get { AppLanguage.current }
+        set {
+            AppLanguage.current = newValue
+            AppDelegate.shared?.localizeMenuTitles()
+        }
+    }
+
     var autoHideMenuBarDelayMinutes: Int {
         didSet { defaults.set(autoHideMenuBarDelayMinutes, forKey: Keys.autoHideMenuBarDelayMinutes) }
     }
@@ -212,5 +220,6 @@ final class Preferences {
         showTransitionAnimation = true
         isAutoWiFiBindingEnabled = true
         autoHideMenuBarDelayMinutes = 0
+        appLanguage = .system
     }
 }

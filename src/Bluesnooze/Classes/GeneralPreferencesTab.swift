@@ -38,6 +38,39 @@ struct GeneralPreferencesTab: View {
                 }
             }
 
+            // Language & Localization
+            liquidCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text(NSLocalizedString("Language & Localization", comment: ""))
+                        .font(.headline)
+
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString("App Interface Language", comment: ""))
+                                .font(.body.weight(.medium))
+                            Text(
+                                NSLocalizedString(
+                                    "Choose the display language for BlueNap. Changes take effect immediately.",
+                                    comment: ""
+                                )
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Picker("", selection: $preferences.appLanguage) {
+                            ForEach(AppLanguage.allCases) { lang in
+                                Text(lang.displayName).tag(lang)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 175)
+                    }
+                }
+            }
+
             // Menu Bar & Background Execution
             liquidCard {
                 VStack(alignment: .leading, spacing: 14) {
