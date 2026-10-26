@@ -144,12 +144,14 @@
 
 /* Menu Bar Items */
 "Preferences…" = "設定…";
+"Preferences..." = "設定…";
 "Website" = "ウェブサイト";
 "Quit" = "BlueNap を終了";
 "Action when sleeping" = "スリープ時の動作";
 "Turn off Bluetooth" = "Bluetooth をオフにする";
 "Disconnect selected devices" = "選択した機器のみ切断";
 "Action when unlocked" = "ロック解除後の動作";
+"Action when unlocked:" = "ロック解除後の動作：";
 "Turn off when sleeping" = "スリープ時に Wi-Fi をオフにする";
 "macOS 27 Tested" = "macOS 27 でテスト済み";
 "Tested exclusively on macOS 27" = "注意: 本アプリは現在 macOS 27 環境でのみテスト・検証されています。";

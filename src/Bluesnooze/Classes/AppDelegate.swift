@@ -246,17 +246,54 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let statusMenu else { return }
 
         for item in statusMenu.items {
-            localizeMenuItem(item)
-            if let submenu = item.submenu {
-                let originalSubKey = (submenu.identifier?.rawValue).flatMap { $0.isEmpty ? nil : $0 } ?? submenu.title
-                if submenu.identifier == nil {
-                    submenu.identifier = NSUserInterfaceItemIdentifier(originalSubKey)
-                }
-                let localizedSub = NSLocalizedString(originalSubKey, comment: "")
-                submenu.title = localizedSub.isEmpty ? originalSubKey : localizedSub
+            if item.submenu == bluetoothMenu {
+                item.title = NSLocalizedString("Bluetooth", comment: "")
+                bluetoothMenu?.title = NSLocalizedString("Bluetooth", comment: "")
+            } else if item.submenu != nil {
+                item.title = NSLocalizedString("Wi-Fi", comment: "")
+                item.submenu?.title = NSLocalizedString("Wi-Fi", comment: "")
+            } else if item.action == #selector(openPreferencesClicked(_:)) {
+                item.title = NSLocalizedString("Preferences…", comment: "")
+            } else if item == hideIconMenuItem {
+                item.title = preferences.hideIcon ?
+                    NSLocalizedString("Show icon", comment: "") :
+                    NSLocalizedString("Hide icon", comment: "")
+            } else if item.action == #selector(websiteClicked(_:)) {
+                item.title = NSLocalizedString("Website", comment: "")
+            } else if item.action == #selector(quitClicked(_:)) {
+                item.title = NSLocalizedString("Quit", comment: "")
+            } else if !item.isSeparatorItem && !item.title.isEmpty {
+                localizeMenuItem(item)
+            }
+        }
 
-                for subItem in submenu.items {
-                    localizeMenuItem(subItem)
+        if let bluetoothMenu {
+            for item in bluetoothMenu.items {
+                if item.action == nil && !item.isSeparatorItem && !item.title.isEmpty {
+                    if item.title.contains("sleeping") || item.title.contains("休眠") || item.title.contains("スリープ") {
+                        item.title = NSLocalizedString("Action when sleeping", comment: "")
+                    } else if item.title.contains("unlock") || item.title.contains("唤醒") || item.title.contains("ロック解除") {
+                        item.title = NSLocalizedString("Action when unlocked", comment: "")
+                    }
+                }
+            }
+        }
+        disableBluetoothOnPowerDownMenuItem?.title = NSLocalizedString("Turn off Bluetooth", comment: "")
+        disconnectBluetoothDevicesOnPowerDownMenuItem?.title = NSLocalizedString("Disconnect selected devices", comment: "")
+        bluetoothActionOnScreenUnlockRestore?.title = NSLocalizedString("Restore previous state", comment: "")
+        bluetoothActionOnScreenUnlockEnable?.title = NSLocalizedString("Always enable", comment: "")
+        bluetoothActionOnScreenUnlockNothing?.title = NSLocalizedString("Do nothing", comment: "")
+
+        disableWifiOnPowerDownMenuItem?.title = NSLocalizedString("Turn off when sleeping", comment: "")
+        wifiActionOnScreenUnlockRestore?.title = NSLocalizedString("Restore previous state", comment: "")
+        wifiActionOnScreenUnlockEnable?.title = NSLocalizedString("Always enable", comment: "")
+        wifiActionOnScreenUnlockNothing?.title = NSLocalizedString("Do nothing", comment: "")
+
+        // Wi-Fi submenu header
+        if let wifiItem = statusMenu.items.first(where: { $0.submenu != nil && $0.submenu != bluetoothMenu }) {
+            for sub in wifiItem.submenu?.items ?? [] {
+                if sub.action == nil && !sub.isSeparatorItem && !sub.title.isEmpty {
+                    sub.title = NSLocalizedString("Action when unlocked:", comment: "")
                 }
             }
         }
@@ -276,6 +313,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: - NSMenuDelegate
 
     func menuWillOpen(_: NSMenu) {
+        localizeMenuTitles()
         cancelAutoHideTimer()
         appState.refreshHardwareStates()
         updateMenuStates()
@@ -286,6 +324,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @IBAction func handleMenuOpen(_: NSMenu) {
+        localizeMenuTitles()
         appState.refreshHardwareStates()
         updateMenuStates()
     }

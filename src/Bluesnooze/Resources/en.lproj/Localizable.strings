@@ -144,12 +144,14 @@
 
 /* Menu Bar Items */
 "Preferences…" = "Preferences…";
+"Preferences..." = "Preferences…";
 "Website" = "Website";
 "Quit" = "Quit BlueNap";
 "Action when sleeping" = "Action when sleeping";
 "Turn off Bluetooth" = "Turn off Bluetooth";
 "Disconnect selected devices" = "Disconnect selected devices";
 "Action when unlocked" = "Action when unlocked";
+"Action when unlocked:" = "Action when unlocked:";
 "Turn off when sleeping" = "Turn off when sleeping";
 "macOS 27 Tested" = "macOS 27 Tested";
 "Tested exclusively on macOS 27" = "Notice: This application has currently only been tested and verified on macOS 27.";

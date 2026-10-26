@@ -144,12 +144,14 @@
 
 /* Menu Bar Items */
 "Preferences…" = "偏好设置…";
+"Preferences..." = "偏好设置…";
 "Website" = "官方网站";
 "Quit" = "退出 蓝憩";
 "Action when sleeping" = "休眠时动作";
 "Turn off Bluetooth" = "关闭蓝牙";
 "Disconnect selected devices" = "仅断开选中的外设";
 "Action when unlocked" = "唤醒解锁后动作";
+"Action when unlocked:" = "唤醒解锁后动作：";
 "Turn off when sleeping" = "休眠时关闭 Wi-Fi";
 "macOS 27 Tested" = "仅在 macOS 27 下测试";
 "Tested exclusively on macOS 27" = "注意：本应用目前仅在 macOS 27 环境下完成全面测试与验证。";

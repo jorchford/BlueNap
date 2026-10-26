@@ -50,29 +50,45 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     }
 
     var locale: Locale? {
-        switch self {
-        case .system:
-            nil
-        case .zhHans:
-            Locale(identifier: "zh-Hans")
-        case .zhHant:
-            Locale(identifier: "zh-Hant")
-        case .en:
-            Locale(identifier: "en")
-        case .ja:
-            Locale(identifier: "ja")
-        }
+        Locale(identifier: AppLanguage.effectiveLanguageCode)
     }
 
-    var bundle: Bundle {
-        if self == .system {
-            return .main
+    static var effectiveLanguageCode: String {
+        let current = AppLanguage.current
+        if current != .system {
+            return current.rawValue
         }
-        if let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),
+        for lang in Locale.preferredLanguages {
+            if lang.hasPrefix("zh-Hans") || lang.hasPrefix("zh-CN") || lang.hasPrefix("zh-SG") {
+                return "zh-Hans"
+            }
+            if lang.hasPrefix("zh-Hant") || lang.hasPrefix("zh-TW") || lang.hasPrefix("zh-HK") || lang.hasPrefix("zh-MO") {
+                return "zh-Hant"
+            }
+            if lang.hasPrefix("zh") {
+                return "zh-Hans"
+            }
+            if lang.hasPrefix("ja") {
+                return "ja"
+            }
+            if lang.hasPrefix("en") {
+                return "en"
+            }
+        }
+        return "zh-Hans"
+    }
+
+    static var currentLanguageBundle: Bundle {
+        let code = effectiveLanguageCode
+        if let path = Bundle.main.path(forResource: code, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             return bundle
         }
         return .main
+    }
+
+    var bundle: Bundle {
+        AppLanguage.currentLanguageBundle
     }
 }
 
@@ -97,23 +113,15 @@ extension Bundle {
 
     @objc func customLocalizedString(forKey key: String, value: String?, table tableName: String?) -> String {
         if self == Bundle.main {
-            let lang = AppLanguage.current
-            if lang != .system,
-               let path = Bundle.main.path(forResource: lang.rawValue, ofType: "lproj"),
-               let bundle = Bundle(path: path) {
-                return bundle.customLocalizedString(forKey: key, value: value, table: tableName)
+            let targetBundle = AppLanguage.currentLanguageBundle
+            if targetBundle != Bundle.main {
+                return targetBundle.customLocalizedString(forKey: key, value: value, table: tableName)
             }
         }
         return customLocalizedString(forKey: key, value: value, table: tableName)
     }
 
     static func localized(_ key: String, table tableName: String? = nil) -> String {
-        let lang = AppLanguage.current
-        if lang != .system,
-           let path = Bundle.main.path(forResource: lang.rawValue, ofType: "lproj"),
-           let bundle = Bundle(path: path) {
-            return bundle.localizedString(forKey: key, value: nil, table: tableName)
-        }
-        return Bundle.main.localizedString(forKey: key, value: nil, table: tableName)
+        AppLanguage.currentLanguageBundle.localizedString(forKey: key, value: nil, table: tableName)
     }
 }
