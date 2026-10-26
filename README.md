@@ -7,10 +7,6 @@
 </p>
 
 <p align="center">
-  <img src="images/bluenap_autowifi_preferences.png" width="580" alt="BlueNap AutoWiFi Settings" />
-</p>
-
-<p align="center">
   <a href="https://app.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-app.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
   <a href="https://app.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
@@ -28,6 +24,40 @@
   <a href="https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip">⚡ Gitee 国内极速直链</a> &nbsp;|&nbsp;
   <a href="https://github.com/jorchford/BlueNap/releases">📦 GitHub Releases</a>
 </p>
+
+---
+
+## 📸 Screenshots & Interface Showcase / 界面截图展示
+
+<div align="center">
+
+### 1. 通用设置与后台运行 (General Preferences & Silent Background Mode)
+*登录时自动启动、完全退出应用、以及菜单栏定时自动隐藏（进入静默后台）选项*
+
+<img src="images/bluenap_general_settings.png" width="620" alt="BlueNap General Settings" />
+
+<br /><br />
+
+### 2. AutoWiFi 静态 IP 智能绑定与系统守护服务 (AutoWiFi Subsystem)
+*自动感知已连接 SSID，毫秒级切换静态 IPv4 与 DNS，纯原生 Swift LaunchDaemon 守护*
+
+<img src="images/bluenap_autowifi_preferences.png" width="620" alt="BlueNap AutoWiFi Settings" />
+
+<br /><br />
+
+### 3. 蓝牙休眠管理与外设防抢连 (Bluetooth Sleep Management)
+*Mac 合盖或休眠时，自动断开指定的 AirPods 或无线音频外设，防止声音截断与电池偷跑*
+
+<img src="images/blue.png" width="620" alt="BlueNap Bluetooth Settings" />
+
+<br /><br />
+
+### 4. Wi-Fi 节能控制与睡眠电源管理 (Wi-Fi Power Management)
+*休眠时关闭 Wi-Fi 电源阻断维护唤醒与无效能耗，开盖解锁瞬间秒速恢复连网*
+
+<img src="images/wifi.png" width="620" alt="BlueNap Wi-Fi Settings" />
+
+</div>
 
 ---
 
