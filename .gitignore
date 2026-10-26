@@ -3,6 +3,7 @@ Carthage
 DerivedData
 .DS_Store
 *.zip
+!downloads/*.zip
 *.xcuserstate
 *.xcuserdata
 

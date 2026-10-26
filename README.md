@@ -19,6 +19,14 @@
   <img src="https://img.shields.io/badge/Dependencies-0%20(Pure%20Native)-purple.svg?style=flat-square" alt="Zero Dependencies" />
   <img src="https://img.shields.io/badge/Notarized-Apple%20Verified-success.svg?style=flat-square" alt="Apple Notarized" />
   <a href="https://github.com/jorchford/BlueNap"><img src="https://img.shields.io/badge/GitHub-jorchford%2FBlueNap-181717.svg?style=flat-square&logo=github" alt="GitHub Repository" /></a>
+  <a href="https://gitee.com/jorchford/BlueNap"><img src="https://img.shields.io/badge/Gitee-jorchford%2FBlueNap-C71D23.svg?style=flat-square&logo=gitee" alt="Gitee Mirror" /></a>
+</p>
+
+<p align="center">
+  <b>⚡ Fast Downloads / 高速下载通道:</b><br />
+  <a href="https://app.needai.top/downloads/BlueNap.app.zip">🌐 官网直链 (app.needai.top)</a> &nbsp;|&nbsp;
+  <a href="https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip">⚡ Gitee 国内极速直链</a> &nbsp;|&nbsp;
+  <a href="https://github.com/jorchford/BlueNap/releases">📦 GitHub Releases</a>
 </p>
 
 ---
@@ -41,6 +49,26 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 - When your Mac **wakes up and is unlocked**, BlueNap restores your previous state seamlessly.
 - Optionally applies the same power lifecycle management for **Wi-Fi**.
 - **AutoWiFi Intelligent Static IP Auto-Switching**: Detects your connected Wi-Fi SSID and automatically applies customized static IP, subnet, router, and DNS settings. When leaving, it restores DHCP automatically. Powered by a native Swift LaunchDaemon with 0.0% CPU and zero polling.
+
+---
+
+### What's New in Version 2.2.0
+
+1. **Auto-Close Menu Bar Icon & Silent Background Mode**
+   - Configurable timeout (Never, 1, 2, 3, 5, 10, or 15 minutes) to automatically hide the menu bar icon and run silently in the background.
+   - On system startup or launch at login, BlueNap starts quietly without popping up the Settings window, showing only the status bar item before automatically entering background mode.
+   - Intelligent interaction protection: countdown automatically pauses while menu or settings window is open. Relaunching from Applications or Spotlight restores both the menu bar icon and settings window instantly.
+
+2. **System & Lifecycle Integration**
+   - Added native macOS "Launch at login" toggle powered by `SMAppService.mainApp`.
+   - Added dedicated "Quit Application" button in General preferences and header bar.
+
+3. **Privacy & Security Commitment**
+   - 100% offline, zero-telemetry architecture: does not collect, track, or upload any user personal or device data.
+
+4. **Ecosystem & Memory Optimization**
+   - Added featured recommendation for [Tactile (秒触)](https://app.needai.top/app/tactile) - 120Hz ProMotion Multitouch & Gesture engine.
+   - Aggressive memory purging and zero-IPC caching reducing runtime footprint to bare minimum.
 
 ---
 
@@ -112,6 +140,23 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 - **Mac 醒来**：屏幕唤醒并解锁后，瞬间自动还原休眠前的外设与网络状态；
 - **AutoWiFi 静态 IP 智能绑定**：全自动感知当前连接的 Wi-Fi SSID，毫秒级切换为对应网络预设的静态 IPv4、子网掩码、网关与 DNS，离开或断开自动恢复 DHCP。内置纯原生 Swift LaunchDaemon 守护进程，内核级事件驱动，零轮询、0.0% CPU 占用；
 - **输入外设安全守卫**：全自动识别蓝牙鼠标、触控板与键盘，坚决不误断输入设备，确保蓝牙唤醒顺畅无阻。
+
+---
+
+### 核心特性 (v2.2.0)
+
+1. **菜单栏定时自动隐藏与开机静默后台运行**
+   - 灵活设置自动关闭菜单栏时长（从不、1/2/3/5/10/15 分钟），达到时限后自动从状态栏隐去，转入极低功耗静默后台。
+   - 开机或登录启动时，默认仅在菜单栏常驻、绝不主动弹出任何设置界面打扰用户。
+   - 智能防误触：在用户展开菜单或浏览设置时自动暂停计时；随时从「应用程序」或「聚焦搜索」再次点击 BlueNap 即可立刻唤回界面与图标。
+2. **系统生命周期原生集成**
+   - 采用 Apple 现代 `SMAppService.mainApp` 官方 API，在通用设置一键开启/关闭「登录时自动启动」。
+   - 新增明确的「完全退出应用」按钮，停止一切后台监听。
+3. **隐私安全声明与零遥测**
+   - 坚持 100% 本地纯离线运行，绝不收集、追踪或上传任何设备与个人隐私数据。
+4. **精选生态推荐与内存深度优化**
+   - 推荐新一代 macOS 120Hz 智能多指触控神器 [Tactile (秒触)](https://app.needai.top/app/tactile)。
+   - 设置窗口关闭主动释放 SwiftUI 视图层图元与 `URLCache` 缓存，触发系统级内存压力释放。
 
 ---
 
