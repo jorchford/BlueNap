@@ -23,14 +23,28 @@ actor WiFiDaemonManager {
             return .notInstalled
         }
 
-        // Query active processes purely in memory via libproc
-        var pids = [pid_t](repeating: 0, count: 2048)
-        let bytesUsed = proc_listallpids(&pids, Int32(MemoryLayout<pid_t>.stride * pids.count))
+        // Query active processes across entire system using Darwin libproc PROC_ALL_PIDS
+        var pids = [pid_t](repeating: 0, count: 4096)
+        let bytesUsed = proc_listpids(UInt32(PROC_ALL_PIDS), 0, &pids, Int32(MemoryLayout<pid_t>.stride * pids.count))
         let count = Int(bytesUsed) / MemoryLayout<pid_t>.stride
 
         for index in 0 ..< count {
             let pid = pids[index]
             guard pid > 0 else { continue }
+
+            // Check proc_pidpath (resolves system/root daemons where proc_name may be restricted)
+            var pathBuffer = [CChar](repeating: 0, count: 4096)
+            let pathLen = proc_pidpath(pid, &pathBuffer, UInt32(pathBuffer.count))
+            if pathLen > 0 {
+                let path = pathBuffer.withUnsafeBufferPointer { ptr in
+                    ptr.baseAddress.map { String(cString: $0) } ?? ""
+                }
+                if path.contains("bluenap-wifid") || path.contains("wifi-static-ip-switcher") {
+                    return .running(pid: Int(pid))
+                }
+            }
+
+            // Fallback: Check proc_name
             var buffer = [CChar](repeating: 0, count: 4096)
             let nameLen = Int(proc_name(pid, &buffer, UInt32(buffer.count)))
             if nameLen > 0 {

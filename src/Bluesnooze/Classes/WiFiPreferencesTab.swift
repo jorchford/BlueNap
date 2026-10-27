@@ -235,6 +235,10 @@ struct WiFiPreferencesTab: View {
                 updated.matchedProfile = match
             }
             networkSnapshot = updated
+            Task {
+                let status = await WiFiDaemonManager.shared.checkStatus()
+                daemonInfo = DaemonInfo(status: status)
+            }
         }
     }
 
