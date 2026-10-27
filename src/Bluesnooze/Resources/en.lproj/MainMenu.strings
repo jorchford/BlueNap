@@ -51,10 +51,10 @@
 "hQ1-fS-R7M.title" = "Always enable";
 
 /* Class = "NSMenuItem"; ibShadowedToolTip = "Relaunch app to show icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.ibShadowedToolTip" = "Relaunch app to show icon";
+"iTh-xc-apd.ibShadowedToolTip" = "Hide menu bar icon and continue in background";
 
 /* Class = "NSMenuItem"; title = "Hide icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.title" = "Hide icon";
+"iTh-xc-apd.title" = "Exit to Background";
 
 /* Class = "NSMenuItem"; title = "Always enable"; ObjectID = "k9U-YJ-Qra"; */
 "k9U-YJ-Qra.title" = "Always enable";

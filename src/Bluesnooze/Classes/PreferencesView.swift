@@ -59,6 +59,24 @@ struct PreferencesView: View {
                 .padding(.vertical, 5)
                 .background(.regularMaterial, in: Capsule())
 
+                // Exit to Background button
+                Button {
+                    AppDelegate.shared?.enterBackgroundMode()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.down.right.and.arrow.up.left")
+                            .font(.system(size: 10, weight: .bold))
+                        Text(NSLocalizedString("Exit to Background", comment: ""))
+                            .font(.system(size: 11, weight: .medium))
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(Color.blue.opacity(0.12), in: Capsule())
+                    .foregroundStyle(.blue)
+                }
+                .buttonStyle(.plain)
+                .help(NSLocalizedString("Exit to Background Description", comment: ""))
+
                 // Quick Quit button
                 Button {
                     NSApplication.shared.terminate(nil)
@@ -70,7 +88,7 @@ struct PreferencesView: View {
                         .background(Color.red.opacity(0.12), in: Circle())
                 }
                 .buttonStyle(.plain)
-                .help(NSLocalizedString("Quit BlueNap", comment: ""))
+                .help(NSLocalizedString("Quit Application", comment: ""))
             }
             .padding(16)
             .background(.thinMaterial)

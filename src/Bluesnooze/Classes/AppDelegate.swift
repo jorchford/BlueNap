@@ -124,7 +124,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 createStatusItem()
             }
             updateStatusItemTooltip()
-            hideIconMenuItem?.title = NSLocalizedString("Hide icon", comment: "")
+            hideIconMenuItem?.title = NSLocalizedString("Exit to Background", comment: "")
             updateMenuStates()
             scheduleAutoHideTimerIfNeeded()
         } else {
@@ -257,7 +257,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             } else if item == hideIconMenuItem {
                 item.title = preferences.hideIcon ?
                     NSLocalizedString("Show icon", comment: "") :
-                    NSLocalizedString("Hide icon", comment: "")
+                    NSLocalizedString("Exit to Background", comment: "")
             } else if item.action == #selector(websiteClicked(_:)) {
                 item.title = NSLocalizedString("Website", comment: "")
             } else if item.action == #selector(quitClicked(_:)) {
@@ -357,11 +357,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         wifiActionOnScreenUnlockEnable.state = boolToMenuState(wifiAction == .enable)
         wifiActionOnScreenUnlockNothing.state = boolToMenuState(wifiAction == .nothing)
 
-        // Hide icon
+        // Hide icon / Exit to background
         hideIconMenuItem.state = boolToMenuState(preferences.hideIcon)
         hideIconMenuItem.title = preferences.hideIcon ?
             NSLocalizedString("Show icon", comment: "") :
-            NSLocalizedString("Hide icon", comment: "")
+            NSLocalizedString("Exit to Background", comment: "")
     }
 
     private func clearBluetoothDeviceList() {
@@ -502,27 +502,16 @@ extension AppDelegate {
         if preferences.hideIcon {
             setMenuBarIconVisible(true)
         } else {
-            let alert = NSAlert()
-            alert.messageText = NSLocalizedString("Hide from Menu Bar?", comment: "")
-            alert.informativeText = NSLocalizedString(
-                "BlueNap will continue running silently in the background.\n\n" +
-                    "To open Settings or restore the menu bar icon, launch BlueNap again from Applications or Spotlight.",
-                comment: ""
-            )
-            alert.alertStyle = .informational
-            alert.addButton(withTitle: NSLocalizedString("Hide Icon", comment: ""))
-            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-
-            let response = alert.runModal()
-            alert.window.orderOut(nil)
-            alert.window.contentView = nil
-
-            if response == .alertSecondButtonReturn {
-                trimMemoryFootprint()
-                return
-            }
-            setMenuBarIconVisible(false)
+            enterBackgroundMode()
         }
+    }
+
+    func enterBackgroundMode() {
+        if SettingsWindowController.shared.isWindowVisible {
+            SettingsWindowController.shared.window?.performClose(nil)
+        }
+        setMenuBarIconVisible(false)
+        trimMemoryFootprint()
     }
 
     @IBAction func websiteClicked(_: NSMenuItem) {

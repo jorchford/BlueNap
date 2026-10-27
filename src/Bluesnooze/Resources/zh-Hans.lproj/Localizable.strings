@@ -167,9 +167,12 @@
 "System & Lifecycle" = "系统启动与运行";
 "Launch at login" = "登录时自动启动";
 "Automatically start BlueNap in the background when your Mac turns on or logs in." = "在 Mac 开机或用户登录时，自动在后台静默启动 蓝憩。";
+"Exit to Background" = "退出进入后台";
+"Exit to Background Description" = "关闭窗口并隐藏菜单栏图标，蓝憩 将在后台静默运行并持续保护网络与蓝牙外设。再次从「访达」或「聚焦」启动即可唤回。";
 "Quit BlueNap" = "退出 蓝憩";
 "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "完全退出 蓝憩，停止所有后台蓝牙与 Wi-Fi 监听守护。";
 "Quit Application" = "完全退出应用";
+"Quit Application Description" = "完全停止 蓝憩 进程并终止所有后台监听守护。";
 
 /* 自动隐藏菜单栏 */
 "Auto-close menu bar icon" = "自动关闭菜单栏图标";

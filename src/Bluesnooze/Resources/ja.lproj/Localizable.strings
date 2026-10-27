@@ -167,9 +167,12 @@
 "System & Lifecycle" = "システム起動と終了";
 "Launch at login" = "ログイン時に自動起動";
 "Automatically start BlueNap in the background when your Mac turns on or logs in." = "Mac の起動時やログイン時に、バックグラウンドで自動的に BlueNap を開始します。";
+"Exit to Background" = "バックグラウンドへ移動";
+"Exit to Background Description" = "設定を閉じてメニューバーアイコンを非表示にし、バックグラウンドで動作を継続します。FinderまたはSpotlightから再起動すると復元できます。";
 "Quit BlueNap" = "BlueNap を終了";
 "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors." = "BlueNap を完全に終了し、バックグラウンドの監視処理を停止します。";
 "Quit Application" = "アプリを終了";
+"Quit Application Description" = "BlueNap プロセスを完全に終了し、すべてのバックグラウンド監視を停止します。";
 
 /* メニューバー自動非表示 */
 "Auto-close menu bar icon" = "メニューバー自動非表示";

@@ -204,6 +204,39 @@ struct GeneralPreferencesTab: View {
 
                     Divider()
 
+                    // Exit to Background Button
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString("Exit to Background", comment: ""))
+                                .font(.body.weight(.medium))
+                            Text(
+                                NSLocalizedString(
+                                    "Exit to Background Description",
+                                    comment: ""
+                                )
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Button {
+                            AppDelegate.shared?.enterBackgroundMode()
+                        } label: {
+                            HStack(spacing: 5) {
+                                Image(systemName: "arrow.down.right.and.arrow.up.left")
+                                    .font(.system(size: 11, weight: .semibold))
+                                Text(NSLocalizedString("Exit to Background", comment: ""))
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.blue)
+                        .controlSize(.regular)
+                    }
+
+                    Divider()
+
                     // Quit Application Button
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 4) {
@@ -211,7 +244,7 @@ struct GeneralPreferencesTab: View {
                                 .font(.body.weight(.medium))
                             Text(
                                 NSLocalizedString(
-                                    "Completely stop BlueNap and terminate all background Bluetooth & Wi-Fi monitors.",
+                                    "Quit Application Description",
                                     comment: ""
                                 )
                             )
@@ -230,7 +263,7 @@ struct GeneralPreferencesTab: View {
                                 Text(NSLocalizedString("Quit Application", comment: ""))
                             }
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                         .tint(.red)
                         .controlSize(.regular)
                     }

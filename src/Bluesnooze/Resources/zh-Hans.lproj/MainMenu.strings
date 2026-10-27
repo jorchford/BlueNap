@@ -50,10 +50,10 @@
 "hQ1-fS-R7M.title" = "始终开启";
 
 /* Class = "NSMenuItem"; ibShadowedToolTip = "Relaunch app to show icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.ibShadowedToolTip" = "重新打开应用即可恢复显示图标";
+"iTh-xc-apd.ibShadowedToolTip" = "隐藏菜单栏图标并转入后台静默运行";
 
 /* Class = "NSMenuItem"; title = "Hide icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.title" = "隐藏菜单栏图标";
+"iTh-xc-apd.title" = "退出进入后台";
 
 /* Class = "NSMenuItem"; title = "Always enable"; ObjectID = "k9U-YJ-Qra"; */
 "k9U-YJ-Qra.title" = "始终开启";

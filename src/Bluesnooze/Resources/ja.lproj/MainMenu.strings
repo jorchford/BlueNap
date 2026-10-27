@@ -50,10 +50,10 @@
 "hQ1-fS-R7M.title" = "常にオン";
 
 /* Class = "NSMenuItem"; ibShadowedToolTip = "Relaunch app to show icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.ibShadowedToolTip" = "アプリを再起動するとアイコンが再表示されます";
+"iTh-xc-apd.ibShadowedToolTip" = "メニューバーアイコンを非表示にしてバックグラウンドで動作";
 
 /* Class = "NSMenuItem"; title = "Hide icon"; ObjectID = "iTh-xc-apd"; */
-"iTh-xc-apd.title" = "アイコンを非表示";
+"iTh-xc-apd.title" = "バックグラウンドへ移動";
 
 /* Class = "NSMenuItem"; title = "Always enable"; ObjectID = "k9U-YJ-Qra"; */
 "k9U-YJ-Qra.title" = "常にオン";
