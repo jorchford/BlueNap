@@ -233,7 +233,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         item.button?.toolTip = appState.status.menuTitle
         statusMenu.delegate = self
-        item.menu = statusMenu
+        item.menu = nil
+        item.button?.target = self
+        item.button?.action = #selector(statusBarButtonClicked(_:))
+        item.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
         setupLanguageMenuIfNeeded()
         ensureMenuItemOrder()
@@ -391,6 +394,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         item.title = localized.isEmpty ? originalKey : localized
     }
 
+    // MARK: - Status Bar Button Actions
+
+    @objc private func statusBarButtonClicked(_ sender: NSStatusBarButton) {
+        let event = NSApp.currentEvent
+        let isRightClick = event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true
+
+        if isRightClick {
+            setupLanguageMenuIfNeeded()
+            ensureMenuItemOrder()
+            localizeMenuTitles()
+            updateLanguageMenuStates()
+            statusItem?.menu = statusMenu
+            statusItem?.button?.performClick(nil)
+        } else {
+            openPreferencesClicked(sender)
+        }
+    }
+
     // MARK: - NSMenuDelegate
 
     func menuWillOpen(_: NSMenu) {
@@ -404,6 +425,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func menuDidClose(_: NSMenu) {
+        statusItem?.menu = nil
         scheduleAutoHideTimerIfNeeded()
     }
 
