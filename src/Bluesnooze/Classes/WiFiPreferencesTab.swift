@@ -66,11 +66,15 @@ struct WiFiPreferencesTab: View {
             )
         }
         .onAppear {
+            WiFiNetworkMonitor.shared.requestLocationAuthorizationIfNeeded()
             loadAutoWiFiData()
             startMonitoring()
         }
         .onDisappear {
             stopMonitoring()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .init("WiFiNetworkSnapshotNeedsRefresh"))) { _ in
+            refreshSnapshot()
         }
         .onChange(of: preferences.isAutoWiFiBindingEnabled) { _, newValue in
             globalConfig.isBindingEnabled = newValue
@@ -216,9 +220,30 @@ struct WiFiPreferencesTab: View {
 
     private func loadAutoWiFiData() {
         Task {
+            if CommandLine.arguments.contains("--demo") {
+                globalConfig = GlobalConfig(networkService: "Wi-Fi", wifiDevice: "en0", restoreDHCP: true, isBindingEnabled: true)
+                let demoProfile1 = WiFiProfile(ssid: "Home_Office_5G", staticIP: "192.168.1.151", subnetMask: "255.255.255.0", router: "192.168.1.1", dnsServers: ["1.1.1.1", "8.8.8.8"], isEnabled: true)
+                let demoProfile2 = WiFiProfile(ssid: "Company_HighSpeed_Wi-Fi", staticIP: "10.0.0.188", subnetMask: "255.255.255.0", router: "10.0.0.1", dnsServers: ["223.5.5.5", "114.114.114.114"], isEnabled: true)
+                profiles = [demoProfile1, demoProfile2]
+                networkSnapshot = NetworkSnapshot(
+                    connectedSSID: "Home_Office_5G",
+                    currentIPv4: "192.168.1.151",
+                    currentNetmask: "255.255.255.0",
+                    currentRouter: "192.168.1.1",
+                    currentDNS: ["1.1.1.1", "8.8.8.8"],
+                    isManualConfiguration: true,
+                    lastSeenSSID: "Home_Office_5G",
+                    matchedProfile: demoProfile1,
+                    timestamp: Date()
+                )
+                daemonInfo = DaemonInfo(status: .running(pid: 1234))
+                return
+            }
+
             let (loadedGlobal, loadedProfiles) = await WiFiConfigManager.shared.loadConfig()
             globalConfig = loadedGlobal
-            profiles = loadedProfiles
+            // Filter out any legacy corrupted redacted SSIDs
+            profiles = loadedProfiles.filter { WiFiNetworkMonitor.isValidSSID($0.ssid) }
 
             let daemonStatus = await WiFiDaemonManager.shared.checkStatus()
             daemonInfo = DaemonInfo(status: daemonStatus)
@@ -228,11 +253,16 @@ struct WiFiPreferencesTab: View {
     }
 
     private func startMonitoring() {
+        guard !CommandLine.arguments.contains("--demo") else { return }
         WiFiNetworkMonitor.shared.startMonitoring { snapshot in
             var updated = snapshot
             if let ssid = updated.connectedSSID,
                let match = profiles.first(where: { $0.ssid == ssid }) {
                 updated.matchedProfile = match
+            } else if updated.connectedSSID == nil, let router = updated.currentRouter,
+                      let match = profiles.first(where: { $0.router == router }) {
+                updated.matchedProfile = match
+                updated.connectedSSID = match.ssid
             }
             networkSnapshot = updated
             Task {
@@ -247,6 +277,7 @@ struct WiFiPreferencesTab: View {
     }
 
     private func refreshSnapshot() {
+        guard !CommandLine.arguments.contains("--demo") else { return }
         var snap = WiFiNetworkMonitor.shared.captureCurrentSnapshot(
             device: globalConfig.wifiDevice,
             serviceName: globalConfig.networkService
@@ -254,6 +285,11 @@ struct WiFiPreferencesTab: View {
         if let ssid = snap.connectedSSID,
            let match = profiles.first(where: { $0.ssid == ssid }) {
             snap.matchedProfile = match
+        } else if snap.connectedSSID == nil, let router = snap.currentRouter,
+                  let match = profiles.first(where: { $0.router == router }) {
+            // Intelligent fallback: Resolve Wi-Fi SSID by matching default router gateway IP
+            snap.matchedProfile = match
+            snap.connectedSSID = match.ssid
         }
         networkSnapshot = snap
     }

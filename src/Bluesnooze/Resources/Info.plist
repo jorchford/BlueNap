@@ -41,6 +41,12 @@
 	<string>BlueNap needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>BlueNap needs Bluetooth access to detect connected accessories and manage Bluetooth power when your Mac sleeps or wakes.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>BlueNap needs location authorization to detect connected Wi-Fi network names (SSID) for automatic static IP switching.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>BlueNap needs location authorization to detect connected Wi-Fi network names (SSID) for automatic static IP switching.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>BlueNap needs location authorization to detect connected Wi-Fi network names (SSID) for automatic static IP switching.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 jorchford. All rights reserved.</string>
 	<key>NSMainNibFile</key>

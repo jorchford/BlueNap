@@ -5,6 +5,7 @@
 //  Created on 2026-10-23.
 //
 
+import CoreLocation
 import CoreWLAN
 import Darwin
 import Foundation
@@ -13,14 +14,39 @@ import Network
 import SystemConfiguration
 
 /// Pure event-driven network monitor. Consumes 0.0% CPU when idle and executes 100% in-memory with zero subprocesses.
-final class WiFiNetworkMonitor: @unchecked Sendable {
+final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManagerDelegate {
     static let shared = WiFiNetworkMonitor()
 
     private var pathMonitor: NWPathMonitor?
     private let monitorQueue = DispatchQueue(label: "com.needai.bluenap.WiFiNetworkMonitor", qos: .utility)
     private var isRunning = false
+    private var locationManager: CLLocationManager?
 
-    private init() {}
+    override private init() {
+        super.init()
+    }
+
+    /// Requests location authorization if needed so macOS can provide unredacted Wi-Fi SSID.
+    func requestLocationAuthorizationIfNeeded() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if self.locationManager == nil {
+                let manager = CLLocationManager()
+                manager.delegate = self
+                self.locationManager = manager
+            }
+            if self.locationManager?.authorizationStatus == .notDetermined {
+                self.locationManager?.requestWhenInUseAuthorization()
+            }
+        }
+    }
+
+    func locationManagerDidChangeAuthorization(_: CLLocationManager) {
+        // Trigger a fresh snapshot whenever authorization status changes
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .init("WiFiNetworkSnapshotNeedsRefresh"), object: nil)
+        }
+    }
 
     /// Starts monitoring network changes. The callback is invoked on MainActor whenever network status changes.
     func startMonitoring(onChange: @escaping @MainActor @Sendable (NetworkSnapshot) -> Void) {
@@ -54,8 +80,9 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         let router = Self.fetchDefaultGateway()
         let dns = Self.fetchDNSServers()
         let isManual = Self.checkIfManualConfig(serviceName: serviceName)
-        let lastSeen = (try? String(contentsOfFile: DaemonInfo.statePath, encoding: .utf8))?
+        let rawLastSeen = (try? String(contentsOfFile: DaemonInfo.statePath, encoding: .utf8))?
             .trimmingCharacters(in: .whitespacesAndNewlines)
+        let lastSeen = Self.isValidSSID(rawLastSeen) ? rawLastSeen : nil
 
         return NetworkSnapshot(
             connectedSSID: ssid,
@@ -64,13 +91,24 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
             currentRouter: router,
             currentDNS: dns,
             isManualConfiguration: isManual,
-            lastSeenSSID: (lastSeen?.isEmpty == false) ? lastSeen : nil,
+            lastSeenSSID: lastSeen,
             matchedProfile: nil,
             timestamp: Date()
         )
     }
 
-    /// Fetches the currently connected Wi-Fi SSID via native IOKit registry without location prompts or subprocesses.
+    /// Checks if a string is a valid, unredacted SSID.
+    static func isValidSSID(_ ssid: String?) -> Bool {
+        guard let s = ssid?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty else {
+            return false
+        }
+        if s.contains("Redacted") || s.hasPrefix("<") || s.lowercased() == "none" {
+            return false
+        }
+        return true
+    }
+
+    /// Fetches the currently connected Wi-Fi SSID via native IOKit registry or CoreWLAN.
     static func fetchCurrentSSID() -> String? {
         let classesToTry = ["IOUserNetworkWLAN", "IO80211Interface", "AppleBCMWLANSkywalkInterface"]
         for className in classesToTry {
@@ -86,10 +124,10 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
                     }
                     let cfKey = "IO80211SSID" as CFString
                     if let prop = IORegistryEntryCreateCFProperty(entry, cfKey, kCFAllocatorDefault, 0)?.takeRetainedValue() {
-                        if let str = prop as? String, !str.isEmpty {
+                        if let str = prop as? String, isValidSSID(str) {
                             return str
                         }
-                        if let data = prop as? Data, let str = String(data: data, encoding: .utf8), !str.isEmpty {
+                        if let data = prop as? Data, let str = String(data: data, encoding: .utf8), isValidSSID(str) {
                             return str
                         }
                     }
@@ -98,11 +136,27 @@ final class WiFiNetworkMonitor: @unchecked Sendable {
         }
 
         // Fast in-process CoreWLAN query fallback
-        if let interface = CWWiFiClient.shared().interface(), let ssid = interface.ssid(), !ssid.isEmpty {
+        if let interface = CWWiFiClient.shared().interface(), let ssid = interface.ssid(), isValidSSID(ssid) {
             return ssid
         }
 
         return nil
+    }
+
+    /// Lists preferred Wi-Fi network SSIDs configured on macOS.
+    static func fetchPreferredNetworks(device: String = "en0") -> [String] {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
+        p.arguments = ["-listpreferredwirelessnetworks", device]
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        try? p.run()
+        p.waitUntilExit()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        guard let out = String(data: data, encoding: .utf8) else { return [] }
+        return out.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { isValidSSID($0) && !$0.hasPrefix("Preferred networks") }
     }
 
     /// Retrieves IPv4 address and subnet mask using in-memory `getifaddrs`.

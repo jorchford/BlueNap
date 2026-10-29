@@ -52,7 +52,7 @@ struct WiFiProfileEditSheet: View {
                             Text(NSLocalizedString("Wi-Fi SSID", comment: ""))
                                 .font(.subheadline.weight(.medium))
                             Spacer()
-                            if let curr = currentSSID, !curr.isEmpty {
+                            if let curr = currentSSID, WiFiNetworkMonitor.isValidSSID(curr) {
                                 Button {
                                     ssidText = curr
                                     if routerText.isEmpty {
@@ -63,6 +63,21 @@ struct WiFiProfileEditSheet: View {
                                         .font(.caption)
                                 }
                                 .buttonStyle(.borderless)
+                            }
+
+                            let preferred = WiFiNetworkMonitor.fetchPreferredNetworks()
+                            if !preferred.isEmpty {
+                                Menu {
+                                    ForEach(preferred, id: \.self) { net in
+                                        Button(net) {
+                                            ssidText = net
+                                        }
+                                    }
+                                } label: {
+                                    Label(NSLocalizedString("Choose Preferred", comment: ""), systemImage: "list.bullet")
+                                        .font(.caption)
+                                }
+                                .menuStyle(.borderlessButton)
                             }
                         }
 
@@ -144,7 +159,7 @@ struct WiFiProfileEditSheet: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(
-                    ssidText.isEmpty ||
+                    !WiFiNetworkMonitor.isValidSSID(ssidText) ||
                         !WiFiProfile.isValidIPv4(ipText) ||
                         !WiFiProfile.isValidIPv4(maskText) ||
                         !WiFiProfile.isValidIPv4(routerText)

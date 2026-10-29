@@ -22,7 +22,17 @@ actor WiFiAutoBindingService {
         global: GlobalConfig,
         profiles: [WiFiProfile]
     ) async -> (applied: Bool, message: String) {
-        guard let activeSSID = WiFiNetworkMonitor.fetchCurrentSSID(), !activeSSID.isEmpty else {
+        var detectedSSID = WiFiNetworkMonitor.fetchCurrentSSID()
+        let currentRouter = WiFiNetworkMonitor.fetchDefaultGateway()
+
+        // Fallback: match profile by router gateway IP if SSID was redacted by macOS
+        if (detectedSSID == nil || !WiFiNetworkMonitor.isValidSSID(detectedSSID)),
+           let router = currentRouter,
+           let match = profiles.first(where: { $0.router == router }) {
+            detectedSSID = match.ssid
+        }
+
+        guard let activeSSID = detectedSSID, WiFiNetworkMonitor.isValidSSID(activeSSID) else {
             return (false, NSLocalizedString("Wi-Fi disconnected; maintaining current network settings", comment: ""))
         }
 

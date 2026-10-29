@@ -49,6 +49,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: - Lifecycle
 
     func applicationDidFinishLaunching(_: Notification) {
+        // Zero-capacity URLCache to prevent creation of ~/Library/Caches/.../Cache.db SQLite files and reduce memory footprint
+        URLCache.shared = URLCache(memoryCapacity: 0, diskCapacity: 0, diskPath: nil)
+        if let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            let appCacheDir = cacheURL.appendingPathComponent("com.needai.bluesnooze")
+            try? FileManager.default.removeItem(at: appCacheDir.appendingPathComponent("Cache.db"))
+            try? FileManager.default.removeItem(at: appCacheDir.appendingPathComponent("Cache.db-wal"))
+            try? FileManager.default.removeItem(at: appCacheDir.appendingPathComponent("Cache.db-shm"))
+        }
+
         Bundle.setupLocalizationSwizzling()
 
         // Prevent sudden termination to ensure status bar item is cleanly unmapped from MenuBarAgent
@@ -74,10 +83,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 createStatusItem()
             }
         }
+        if CommandLine.arguments.contains("--lang-en") {
+            preferences.appLanguage = .en
+        } else if CommandLine.arguments.contains("--lang-zh") {
+            preferences.appLanguage = .zhHans
+        }
         localizeMenuTitles()
         setupNotificationHandlers()
         setupAccessibility()
         scheduleAutoHideTimerIfNeeded()
+
+        if CommandLine.arguments.contains("--dump-menu") {
+            createStatusItem()
+            setupLanguageMenuIfNeeded()
+            ensureMenuItemOrder()
+            localizeMenuTitles()
+            for (idx, item) in statusMenu.items.enumerated() {
+                let title = item.isSeparatorItem ? "--- Separator ---" : item.title
+                print("[\(idx)] \(title)")
+            }
+            exit(0)
+        }
 
         if CommandLine.arguments.contains("--settings") {
             SettingsWindowController.shared.showSettings()
@@ -130,6 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             scheduleAutoHideTimerIfNeeded()
         } else {
             cancelAutoHideTimer()
+            SettingsWindowController.shared.closeSettings()
             if let item = statusItem {
                 item.menu = nil
                 item.button?.image = nil
@@ -291,12 +318,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func ensureMenuItemOrder() {
         guard let statusMenu, let hideItem = hideIconMenuItem else { return }
+
+        // 1. Remove hideItem from its current position
+        if let currentIdx = statusMenu.items.firstIndex(of: hideItem) {
+            statusMenu.removeItem(at: currentIdx)
+        }
+
+        // 2. Find quit item
         guard let quitIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(quitClicked(_:)) }) else { return }
-        let currentIndex = statusMenu.index(of: hideItem)
-        if currentIndex != -1 && currentIndex != quitIndex - 1 {
-            statusMenu.removeItem(hideItem)
-            let newQuitIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(quitClicked(_:)) }) ?? statusMenu.items.count
-            statusMenu.insertItem(hideItem, at: newQuitIndex)
+
+        // 3. Ensure a separator exists directly above hideItem (below Website)
+        let itemAbove = quitIndex > 0 ? statusMenu.items[quitIndex - 1] : nil
+        if itemAbove?.isSeparatorItem != true {
+            statusMenu.insertItem(NSMenuItem.separator(), at: quitIndex)
+        }
+
+        // 4. Re-find quitIndex and insert hideItem directly before quit (on the line above quit)
+        if let targetQuitIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(quitClicked(_:)) }) {
+            statusMenu.insertItem(hideItem, at: targetQuitIndex)
         }
     }
 

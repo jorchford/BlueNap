@@ -120,6 +120,26 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
         return config
     }
 
+    func isValidSSID(_ ssid: String?) -> Bool {
+        guard let s = ssid?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty else {
+            return false
+        }
+        if s.contains("Redacted") || s.hasPrefix("<") || s.lowercased() == "none" {
+            return false
+        }
+        return true
+    }
+
+    func fetchDefaultGateway() -> String? {
+        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil),
+              let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+              let router = dict["Router"] as? String, !router.isEmpty
+        else {
+            return nil
+        }
+        return router
+    }
+
     func fetchCurrentSSID() -> String? {
         let classesToTry = ["IOUserNetworkWLAN", "IO80211Interface", "AppleBCMWLANSkywalkInterface"]
         for className in classesToTry {
@@ -134,10 +154,10 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
                         entry = IOIteratorNext(iterator)
                     }
                     if let prop = IORegistryEntryCreateCFProperty(entry, "IO80211SSID" as CFString, kCFAllocatorDefault, 0)?.takeRetainedValue() {
-                        if let str = prop as? String, !str.isEmpty {
+                        if let str = prop as? String, isValidSSID(str) {
                             return str
                         }
-                        if let data = prop as? Data, let str = String(data: data, encoding: .utf8), !str.isEmpty {
+                        if let data = prop as? Data, let str = String(data: data, encoding: .utf8), isValidSSID(str) {
                             return str
                         }
                     }
@@ -162,28 +182,37 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
 
     func evaluateAndApply() {
         let config = loadConfig()
-        guard let ssid = fetchCurrentSSID(), !ssid.isEmpty else {
+        var ssid = fetchCurrentSSID()
+        let currentRouter = fetchDefaultGateway()
+
+        // Fallback: match profile by router gateway IP if SSID was redacted by macOS kernel
+        if !isValidSSID(ssid), let router = currentRouter,
+           let match = config.profiles.first(where: { $0.router == router }) {
+            ssid = match.ssid
+        }
+
+        guard let activeSSID = ssid, isValidSSID(activeSSID) else {
             // Wi-Fi disconnected: preserve current configuration, do NOT switch to DHCP
             return
         }
 
         // Save last seen SSID
         try? FileManager.default.createDirectory(atPath: "/usr/local/etc", withIntermediateDirectories: true)
-        try? ssid.write(toFile: statePath, atomically: true, encoding: .utf8)
+        try? activeSSID.write(toFile: statePath, atomically: true, encoding: .utf8)
 
         // Check master binding switch
         guard config.isBindingEnabled else {
-            log.info("Auto-binding switch is OFF. Preserving network configuration for \(ssid, privacy: .public)")
+            log.info("Auto-binding switch is OFF. Preserving network configuration for \(activeSSID, privacy: .public)")
             return
         }
 
-        if let match = config.profiles.first(where: { $0.ssid == ssid }) {
+        if let match = config.profiles.first(where: { $0.ssid == activeSSID }) {
             guard match.isEnabled else {
-                log.info("Profile for \(ssid, privacy: .public) is paused.")
+                log.info("Profile for \(activeSSID, privacy: .public) is paused.")
                 return
             }
 
-            log.notice("Applying static IP \(match.staticIP, privacy: .public) for SSID: \(ssid, privacy: .public)")
+            log.notice("Applying static IP \(match.staticIP, privacy: .public) for SSID: \(activeSSID, privacy: .public)")
             let p1 = Process()
             p1.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
             p1.arguments = ["-setmanual", config.networkService, match.staticIP, match.subnetMask, match.router]
@@ -203,7 +232,7 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
         } else {
             // Unconfigured SSID
             if config.restoreDHCP, isManualConfiguration(service: config.networkService) {
-                log.notice("Switching to unconfigured SSID: \(ssid, privacy: .public). Restoring DHCP.")
+                log.notice("Switching to unconfigured SSID: \(activeSSID, privacy: .public). Restoring DHCP.")
                 let p1 = Process()
                 p1.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
                 p1.arguments = ["-setdhcp", config.networkService]

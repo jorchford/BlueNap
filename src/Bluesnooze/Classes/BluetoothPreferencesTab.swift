@@ -91,6 +91,14 @@ struct BluetoothPreferencesTab: View {
                 }
             }
         }
+        .onAppear {
+            if CommandLine.arguments.contains("--demo") {
+                preferences.disconnectDevicesOnSleep = true
+                preferences.disableBluetoothOnSleep = false
+                preferences.setDeviceMarkedForDisconnect(address: "A8-66-7F-3B-21-9C", disconnect: true)
+                appState.refreshHardwareStates()
+            }
+        }
     }
 
     private var pairedDevicesListView: some View {
