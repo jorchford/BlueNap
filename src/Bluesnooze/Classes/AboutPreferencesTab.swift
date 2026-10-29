@@ -187,6 +187,20 @@ struct AboutPreferencesTab: View {
                     Divider()
 
                     HStack {
+                        Text(NSLocalizedString("Open Source License", comment: ""))
+                            .font(.subheadline)
+                        Spacer()
+                        Button("GNU GPLv3") {
+                            if let url = URL(string: "https://www.gnu.org/licenses/gpl-3.0.html") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack {
                         Text(NSLocalizedString("GitHub Repository", comment: ""))
                             .font(.subheadline)
                         Spacer()

@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
+  <img src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square" alt="License: GPLv3" />
   <img src="https://img.shields.io/badge/Dependencies-0%20(Pure%20Native)-purple.svg?style=flat-square" alt="Zero Dependencies" />
   <img src="https://img.shields.io/badge/Notarized-Apple%20Verified-success.svg?style=flat-square" alt="Apple Notarized" />
   <a href="https://github.com/jorchford/BlueNap"><img src="https://img.shields.io/badge/GitHub-jorchford%2FBlueNap-181717.svg?style=flat-square&logo=github" alt="GitHub Repository" /></a>
@@ -147,4 +148,4 @@ Explore **[Tactile (妙触)](https://www.needai.top/app/tactile)** — Next-Gene
 
 ## 📄 License
 
-BlueNap is open source under the MIT License. Contributions and PRs are warmly welcome!
+BlueNap is free and open-source software licensed under the [GNU General Public License v3.0 (GPLv3)](LICENSE). Contributions and PRs are warmly welcome!
