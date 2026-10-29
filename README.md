@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://www.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-www.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
   <a href="https://www.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile" /></a>
+  <a href="https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00"><img src="https://img.shields.io/badge/Sponsor-爱发电-946ce6?style=flat-square" alt="Support Author" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
@@ -143,6 +144,16 @@ The compiled `BlueNap.app` will be available in your Xcode DerivedData build pro
 ## 🤝 Featured Ecosystem App
 
 Explore **[Tactile (妙触)](https://www.needai.top/app/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Supercharge your trackpad and Magic Mouse with fluid gestures, stroke character recognition, and intuitive window snapping.
+
+---
+
+## ❤️ Support & Sponsor / 支持作者
+
+If BlueNap has saved your battery or fixed your headphone connection headaches, consider sponsoring the author to support ongoing maintenance and feature development:
+
+👉 **[支持作者 (爱发电 / Afdian)](https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00)**
+
+Your support makes independent open-source development possible! Thank you!
 
 ---
 

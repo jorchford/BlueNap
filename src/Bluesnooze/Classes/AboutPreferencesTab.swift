@@ -13,9 +13,10 @@ struct AboutPreferencesTab: View {
             // Hero / Brand Card
             liquidCard {
                 VStack(spacing: 12) {
-                    Image(nsImage: NSApplication.shared.applicationIconImage)
+                    Image(nsImage: NSImage(named: "AppIcon") ?? NSApplication.shared.applicationIconImage)
                         .resizable()
                         .frame(width: 72, height: 72)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
 
                     Text(NSLocalizedString("BlueNap", comment: ""))
@@ -206,6 +207,25 @@ struct AboutPreferencesTab: View {
                         Spacer()
                         Button("github.com/jorchford/BlueNap") {
                             if let url = URL(string: "https://github.com/jorchford/BlueNap") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack {
+                        HStack(spacing: 6) {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(.pink)
+                                .font(.caption)
+                            Text(NSLocalizedString("Sponsor Author", comment: ""))
+                                .font(.subheadline.weight(.medium))
+                        }
+                        Spacer()
+                        Button("afdian.com (爱发电)") {
+                            if let url = URL(string: "https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00") {
                                 NSWorkspace.shared.open(url)
                             }
                         }

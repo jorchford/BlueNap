@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://www.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-www.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
   <a href="https://www.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
+  <a href="https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00"><img src="https://img.shields.io/badge/支持作者-爱发电-946ce6?style=flat-square" alt="支持作者 (爱发电)" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
@@ -143,6 +144,16 @@ iPhone や iPad と Mac で Bluetooth イヤホンを共有している場合、
 
 * **[Tactile (妙触)](https://www.needai.top/app/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
 * **[官方展示页面 (BlueNap)](https://www.needai.top/app/bluenap)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
+
+---
+
+## ❤️ 支持与赞助作者
+
+如果您觉得 BlueNap 解决了您的 MacBook 蓝牙抢连、休眠耗电或固定 IP 自动切换的烦恼，欢迎赞助支持作者的持续开源维护：
+
+👉 **[点击前往「爱发电」赞助支持作者](https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00)**
+
+您的每一份支持都将成为本开源项目持续迭代与完善的原动力！衷心感谢！
 
 ---
 
