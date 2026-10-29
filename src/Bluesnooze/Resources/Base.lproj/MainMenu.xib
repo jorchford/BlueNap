@@ -123,12 +123,6 @@
                         <action selector="openPreferencesClicked:" target="Voe-Tx-rLC" id="ooK-DW-6Kn"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Hide icon" toolTip="Relaunch app to show icon" id="iTh-xc-apd">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="hideIconClicked:" target="Voe-Tx-rLC" id="rZI-1a-Hhe"/>
-                    </connections>
-                </menuItem>
                 <menuItem title="Website" toolTip="Version 1.4" id="UNc-OX-MPq">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
@@ -136,6 +130,12 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="lFK-Uh-kIG"/>
+                <menuItem title="Hide icon" toolTip="Relaunch app to show icon" id="iTh-xc-apd">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="hideIconClicked:" target="Voe-Tx-rLC" id="rZI-1a-Hhe"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Quit" keyEquivalent="q" id="0IH-xa-Tvk">
                     <connections>
                         <action selector="quitClicked:" target="Voe-Tx-rLC" id="nzv-74-hhE"/>

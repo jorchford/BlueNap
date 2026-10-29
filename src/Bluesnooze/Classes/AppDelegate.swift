@@ -236,6 +236,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         item.menu = statusMenu
 
         setupLanguageMenuIfNeeded()
+        ensureMenuItemOrder()
         localizeMenuTitles()
 
         item.button?.setAccessibilityLabel(NSLocalizedString(
@@ -282,7 +283,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         self.languageMenu = langMenu
         self.languageMenuItem = mainItem
+        ensureMenuItemOrder()
         updateLanguageMenuStates()
+    }
+
+    func ensureMenuItemOrder() {
+        guard let statusMenu, let hideItem = hideIconMenuItem else { return }
+        guard let quitIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(quitClicked(_:)) }) else { return }
+        let currentIndex = statusMenu.index(of: hideItem)
+        if currentIndex != -1 && currentIndex != quitIndex - 1 {
+            statusMenu.removeItem(hideItem)
+            let newQuitIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(quitClicked(_:)) }) ?? statusMenu.items.count
+            statusMenu.insertItem(hideItem, at: newQuitIndex)
+        }
     }
 
     func updateLanguageMenuStates() {
@@ -306,6 +319,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let statusMenu else { return }
 
         setupLanguageMenuIfNeeded()
+        ensureMenuItemOrder()
         updateLanguageMenuStates()
 
         for item in statusMenu.items {
@@ -381,6 +395,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuWillOpen(_: NSMenu) {
         setupLanguageMenuIfNeeded()
+        ensureMenuItemOrder()
         localizeMenuTitles()
         updateLanguageMenuStates()
         cancelAutoHideTimer()
@@ -394,6 +409,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @IBAction func handleMenuOpen(_: NSMenu) {
         setupLanguageMenuIfNeeded()
+        ensureMenuItemOrder()
         localizeMenuTitles()
         updateLanguageMenuStates()
         appState.refreshHardwareStates()
