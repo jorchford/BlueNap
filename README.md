@@ -1,14 +1,14 @@
-# BlueNap (蓝憩)
+# BlueNap
 
 <p align="center">
-  <img src="images/icon.png" width="108" height="108" alt="BlueNap 蓝憩 App Icon" /><br />
+  <img src="images/icon.png" width="108" height="108" alt="BlueNap App Icon" /><br />
   <b>Sleeping Mac, Silent Bluetooth & Intelligent Auto-WiFi.</b><br />
-  <i>意境优雅的 Mac 蓝牙与 Wi-Fi 深度休眠管理 · 原生 AutoWiFi 静态 IP 智能自动绑定 · 让设备管理恬静自如</i>
+  <i>Intelligent Bluetooth & Wi-Fi Power Lifecycle Manager for macOS · AutoWiFi Static IP Engine · Silent Background Daemon</i>
 </p>
 
 <p align="center">
-  <a href="https://app.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-app.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
-  <a href="https://app.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile (妙触)" /></a>
+  <a href="https://www.needai.top/app/bluenap"><img src="https://img.shields.io/badge/Website-www.needai.top-blueviolet?style=flat-square" alt="Official Website" /></a>
+  <a href="https://www.needai.top/app/tactile"><img src="https://img.shields.io/badge/More%20Apps-Tactile%20(妙触)-ff69b4?style=flat-square" alt="Tactile" /></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue.svg?style=flat-square" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat-square" alt="Swift 6.0" />
   <img src="https://img.shields.io/badge/Concurrency-Complete%20Strict-brightgreen.svg?style=flat-square" alt="Strict Concurrency Complete" />
@@ -19,314 +19,132 @@
 </p>
 
 <p align="center">
-  <b>⚡ Fast Downloads / 高速下载通道:</b><br />
-  <a href="https://app.needai.top/downloads/BlueNap.app.zip">🌐 官网直链 (app.needai.top)</a> &nbsp;|&nbsp;
-  <a href="https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip">⚡ Gitee 国内极速直链</a> &nbsp;|&nbsp;
+  <b>⚡ Fast Download Mirrors:</b><br />
+  <a href="https://www.needai.top/downloads/BlueNap.app.zip">🌐 Official Site Direct (www.needai.top)</a> &nbsp;|&nbsp;
+  <a href="https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip">⚡ Gitee Fast Mirror (China)</a> &nbsp;|&nbsp;
   <a href="https://github.com/jorchford/BlueNap/releases">📦 GitHub Releases</a>
+</p>
+
+<p align="center">
+  <b>Language Navigation:</b> &nbsp;
+  <b>English</b> &nbsp;|&nbsp;
+  <a href="README_ZH.md">简体中文</a> &nbsp;|&nbsp;
+  <a href="README_ZH.md#繁體中文">繁體中文</a> &nbsp;|&nbsp;
+  <a href="README_ZH.md#日本語">日本語</a>
 </p>
 
 ---
 
-## 📸 Screenshots & Interface Showcase / 界面截图展示
+## 📸 Screenshots Showcase (Default: English)
 
 <div align="center">
 
-### 1. 通用设置与后台运行 (General Preferences & Silent Background Mode)
-*登录时自动启动、完全退出应用、以及菜单栏定时自动隐藏（进入静默后台）选项*
+### 1. General Preferences & Silent Background Mode
+*Launch at login, auto-hide menu bar icon, and one-click Exit to Background with aggressive memory purge.*
 
-<img src="images/bluenap_general_settings.png" width="620" alt="BlueNap General Settings" />
-
-<br /><br />
-
-### 2. AutoWiFi 静态 IP 智能绑定与系统守护服务 (AutoWiFi Subsystem)
-*自动感知已连接 SSID，毫秒级切换静态 IPv4 与 DNS，纯原生 Swift LaunchDaemon 守护*
-
-<img src="images/bluenap_autowifi_preferences.png" width="620" alt="BlueNap AutoWiFi Settings" />
+<img src="images/bluenap_general_settings_en.png" width="640" alt="BlueNap General Preferences" />
 
 <br /><br />
 
-### 3. 蓝牙休眠管理与外设防抢连 (Bluetooth Sleep Management)
-*Mac 合盖或休眠时，自动断开指定的 AirPods 或无线音频外设，防止声音截断与电池偷跑*
+### 2. AutoWiFi Static IP Intelligent Auto-Binding
+*Automatically identifies connected Wi-Fi SSIDs and applies customized static IP & DNS in milliseconds.*
 
-<img src="images/blue.png" width="620" alt="BlueNap Bluetooth Settings" />
+<img src="images/bluenap_autowifi_preferences_en.png" width="640" alt="BlueNap AutoWiFi Settings" />
 
 <br /><br />
 
-### 4. Wi-Fi 节能控制与睡眠电源管理 (Wi-Fi Power Management)
-*休眠时关闭 Wi-Fi 电源阻断维护唤醒与无效能耗，开盖解锁瞬间秒速恢复连网*
+### 3. Bluetooth Sleep Management & Audio Hijacking Protection
+*Prevents sleeping Mac from hijacking AirPods or Bluetooth speakers during maintenance wakeups.*
 
-<img src="images/wifi.png" width="620" alt="BlueNap Wi-Fi Settings" />
+<img src="images/bluenap_bluetooth_preferences_en.png" width="640" alt="BlueNap Bluetooth Preferences" />
+
+<br /><br />
+
+### 4. About & Tactile Ecosystem Integration
+*Swift 6 strict concurrency, Liquid Glass translucent aesthetics, and ecosystem recommendations.*
+
+<img src="images/bluenap_about_preferences_en.png" width="640" alt="BlueNap About Preferences" />
 
 </div>
 
 ---
 
-[English](#english) | [简体中文](#简体中文) | [繁體中文](#繁體中文) | [日本語](#日本語)
+## 💡 Overview
 
----
-
-<a name="english"></a>
-## English
-
-### Overview
-
-**BlueNap (蓝憩) elegantly prevents your sleeping Mac from hijacking paired Bluetooth accessories.**
+**BlueNap** elegantly prevents your sleeping Mac from hijacking paired Bluetooth accessories and seamlessly automates your Wi-Fi network configuration.
 
 When you share Bluetooth headphones, earbuds (such as AirPods), or speakers between your Mac and iPhone/iPad, a sleeping Mac can intermittently connect in the background during maintenance wakeups or power assertions, abruptly interrupting your audio or draining accessory battery.
 
-**BlueNap** provides an intuitive, serene solution:
-- When your Mac **goes to sleep**, BlueNap automatically disconnects selected audio accessories or gracefully switches off Bluetooth entirely.
-- When your Mac **wakes up and is unlocked**, BlueNap restores your previous state seamlessly.
-- Optionally applies the same power lifecycle management for **Wi-Fi**.
-- **AutoWiFi Intelligent Static IP Auto-Switching**: Detects your connected Wi-Fi SSID and automatically applies customized static IP, subnet, router, and DNS settings. When leaving, it restores DHCP automatically. Powered by a native Swift LaunchDaemon with 0.0% CPU and zero polling.
+**BlueNap provides an intuitive, serene solution:**
+- **On Sleep**: BlueNap automatically disconnects selected audio accessories or gracefully switches off Bluetooth entirely.
+- **On Wake & Unlock**: BlueNap restores your previous state seamlessly the instant you unlock your Mac.
+- **AutoWiFi Intelligent Static IP**: Automatically switches between static IP configurations and DHCP based on your connected Wi-Fi SSID, powered by a native Swift LaunchDaemon with 0.0% idle CPU.
+- **Input Peripherals Protection**: Automatically recognizes Bluetooth mice, keyboards, and trackpads to ensure they remain connected for wake gestures.
+- **Exit to Background & Extreme Memory Efficiency**: Complete teardown of SwiftUI views and multi-stage Darwin malloc purge reduces background resident footprint to **~12.2 MB**.
 
 ---
 
-### What's New in Version 2.2.0
+## 🌟 Key Features (v2.2.0)
 
-1. **Auto-Close Menu Bar Icon & Silent Background Mode**
-   - Configurable timeout (Never, 1, 2, 3, 5, 10, or 15 minutes) to automatically hide the menu bar icon and run silently in the background.
-   - On system startup or launch at login, BlueNap starts quietly without popping up the Settings window, showing only the status bar item before automatically entering background mode.
-   - Intelligent interaction protection: countdown automatically pauses while menu or settings window is open. Relaunching from Applications or Spotlight restores both the menu bar icon and settings window instantly.
-
-2. **System & Lifecycle Integration**
-   - Added native macOS "Launch at login" toggle powered by `SMAppService.mainApp`.
-   - Added dedicated "Quit Application" button in General preferences and header bar.
-
-3. **Privacy & Security Commitment**
-   - 100% offline, zero-telemetry architecture: does not collect, track, or upload any user personal or device data.
-
-4. **Ecosystem & Memory Optimization**
-   - Added featured recommendation for [Tactile (秒触)](https://app.needai.top/app/tactile) - 120Hz ProMotion Multitouch & Gesture engine.
-   - Aggressive memory purging and zero-IPC caching reducing runtime footprint to bare minimum.
+1. **Exit to Background & Silent Daemon Operation**
+   - Added dedicated **Exit to Background** action in the menu bar directly above "Quit", and in Settings header.
+   - When exiting or auto-closing, the menu bar icon hides, window resources are completely released, and BlueNap guards your hardware silently in the background.
+2. **Dynamic In-App Language Switching**
+   - Dedicated **Language** submenu in the menu bar with live checkmarks.
+   - Instant runtime language switching (System, 简体中文, 繁體中文, English, 日本語) in Settings without app restart.
+3. **AutoWiFi Subsystem**
+   - Automatically switches between static IP configurations (IP, Subnet, Gateway, DNS) for designated Wi-Fi networks.
+   - Seamlessly falls back to DHCP when disconnecting or switching to unconfigured networks.
+4. **Deep Memory Optimization**
+   - `NSHostingController` teardown resets the SwiftUI view hierarchy to `EmptyView()`, flushes CoreAnimation transactions, clears `URLCache`, and triggers system-wide Darwin malloc zone pressure relief.
+5. **Zero Telemetry & 100% Privacy**
+   - Fully local, offline execution with zero network tracking, external analytics, or data collection.
 
 ---
 
-### What's New in Version 2.1.0
+## 🚀 Installation & Download
 
-1. **AutoWiFi Static IP Auto-Binding Subsystem**
-   - Seamlessly switches between DHCP and custom static IP profiles matching office/lab/home SSIDs.
-   - Master switch to enable/disable auto-binding anytime, with individual per-profile toggles.
-   - Pure Swift native background daemon (`bluenap-wifid`) replacing legacy shell scripts, consuming 0.0% CPU via kernel `SCDynamicStore` event-driven notifications.
-   - Full daemon lifecycle management directly within the UI: install, start, stop, restart, and uninstall.
-   - Live network card, IPv4 validation, and one-tap DNS presets (AliDNS, DNSPod, 114DNS, Cloudflare, Google).
+### Option 1: Direct Download (Recommended)
+Download the prebuilt, Apple-notarized app package:
+- 🌐 **Official Website**: [https://www.needai.top/downloads/BlueNap.app.zip](https://www.needai.top/downloads/BlueNap.app.zip)
+- ⚡ **Gitee Direct Mirror**: [https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip](https://gitee.com/jorchford/BlueNap/raw/main/downloads/BlueNap.app.zip)
+- 📦 **GitHub Releases**: [https://github.com/jorchford/BlueNap/releases](https://github.com/jorchford/BlueNap/releases)
 
-2. **Swift 6 Complete Concurrency Architecture**
-   - Fully compiled under `SWIFT_STRICT_CONCURRENCY = complete` with zero concurrency warnings or race conditions.
-   - Actor-isolated hardware managers: [`BluetoothService`](src/Bluesnooze/Classes/BluetoothService.swift) and [`WiFiService`](src/Bluesnooze/Classes/WiFiService.swift) ensure all hardware control and I/O tasks execute off the main thread.
-   - Unified reactive UI state model driven by `@Observable` and `@MainActor` ([`AppState`](src/Bluesnooze/Classes/AppState.swift) and [`Preferences`](src/Bluesnooze/Classes/Preferences.swift)).
+Unzip `BlueNap.app.zip` and drag `BlueNap.app` into your `/Applications` directory.
 
-2. **Liquid Glass SwiftUI Preferences Panel**
-   - Replaced clunky nested menus with a native, responsive SwiftUI Settings window ([`PreferencesView`](src/Bluesnooze/Classes/PreferencesView.swift)).
-   - Dedicated tabs for **Bluetooth**, **Wi-Fi**, **General**, and **About**.
-   - Live paired Bluetooth accessories list with intelligent SF Symbol classification.
-   - Automatic protection for HID input devices (mice, keyboards, trackpads) to eliminate accidental disconnection.
-
-3. **Background-Only Daemon Mode (Hide Menu Bar Icon)**
-   - Option to completely hide the status bar icon while keeping the background sleep/wake listener active.
-   - **Failsafe Re-summon**: Simply relaunching BlueNap via Spotlight, Finder, or Terminal automatically restores the Settings window.
-
-4. **Comprehensive Localization (English & 简体中文)**
-   - Complete Chinese translation across menu bars, settings panels, alerts, and VoiceOver accessibility labels.
-
-5. **Apple Notarized & Direct Distribution**
-   - Officially notarized by Apple (`source=Notarized Developer ID`), guaranteed Gatekeeper trust with zero quarantine blocks.
-
----
-
-### 🌟 More macOS Apps from Developer
-
-* **[Tactile (妙触)](https://app.needai.top/app/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Buttery-smooth, native-grade trackpad & Magic Mouse gesture enhancements.
-* **[Official Website (BlueNap)](https://app.needai.top/app/bluenap)** — Discover more commercial-grade native macOS & iOS utilities crafted for speed and elegance.
-
----
-
-### System Requirements & Development Environment
-
-* **Operating System**: macOS 14.0 (Sonoma) or later.
-* **⚠️ Testing Notice**: **This application has currently only been tested and validated on macOS 27.**
-* **Architecture**: Universal (Apple Silicon M1/M2/M3/M4 & Intel x86_64).
-* **Development Environment**: macOS 27 (Darwin 26.x), Xcode 16.0+, Swift 6.0 (`SWIFT_STRICT_CONCURRENCY = complete`).
-
----
-
-### 🔒 Privacy Policy
-
-**BlueNap operates 100% locally and offline on your device.** It makes zero outbound network connections, includes no tracking or analytics SDKs, and never collects, stores, or uploads any user private data.
-
----
-
-<a name="简体中文"></a>
-## 简体中文说明
-
-### 项目简介
-
-**蓝憩 (BlueNap)** 是一款专为 Mac 用户精心打造的「意境优雅风」蓝牙与 Wi-Fi 深度休眠管理工具。
-
-当您在 iPhone/iPad 与 Mac 之间共用蓝牙耳机（如 AirPods）或无线音箱时，休眠中的 Mac 经常会因系统后台维护（Power Nap、网络唤醒）意外“抢连”蓝牙耳机，打断您的手机听歌通话，或在背包中悄悄耗尽耳机电量。
-
-**蓝憩** 赋予您的 Mac 恬静的睡眠体验：
-- **Mac 入睡**：合盖或进入睡眠时，蓝憩立即断开指定的蓝牙音频设备或完全关闭蓝牙电源；
-- **Mac 醒来**：屏幕唤醒并解锁后，瞬间自动还原休眠前的外设与网络状态；
-- **AutoWiFi 静态 IP 智能绑定**：全自动感知当前连接的 Wi-Fi SSID，毫秒级切换为对应网络预设的静态 IPv4、子网掩码、网关与 DNS，离开或断开自动恢复 DHCP。内置纯原生 Swift LaunchDaemon 守护进程，内核级事件驱动，零轮询、0.0% CPU 占用；
-- **输入外设安全守卫**：全自动识别蓝牙鼠标、触控板与键盘，坚决不误断输入设备，确保蓝牙唤醒顺畅无阻。
-
----
-
-### 核心特性 (v2.2.0)
-
-1. **菜单栏定时自动隐藏与开机静默后台运行**
-   - 灵活设置自动关闭菜单栏时长（从不、1/2/3/5/10/15 分钟），达到时限后自动从状态栏隐去，转入极低功耗静默后台。
-   - 开机或登录启动时，默认仅在菜单栏常驻、绝不主动弹出任何设置界面打扰用户。
-   - 智能防误触：在用户展开菜单或浏览设置时自动暂停计时；随时从「应用程序」或「聚焦搜索」再次点击 BlueNap 即可立刻唤回界面与图标。
-2. **系统生命周期原生集成**
-   - 采用 Apple 现代 `SMAppService.mainApp` 官方 API，在通用设置一键开启/关闭「登录时自动启动」。
-   - 新增明确的「完全退出应用」按钮，停止一切后台监听。
-3. **隐私安全声明与零遥测**
-   - 坚持 100% 本地纯离线运行，绝不收集、追踪或上传任何设备与个人隐私数据。
-4. **精选生态推荐与内存深度优化**
-   - 推荐新一代 macOS 120Hz 智能多指触控神器 [Tactile (秒触)](https://app.needai.top/app/tactile)。
-   - 设置窗口关闭主动释放 SwiftUI 视图层图元与 `URLCache` 缓存，触发系统级内存压力释放。
-
----
-
-### 核心特性 (v2.1.0)
-
-1. **AutoWiFi 智能网络绑定引擎**
-   - 告别繁琐的终端命令与 Shell 脚本，由纯 Swift 原生守护进程驱动。
-   - 提供全局主开关与单网络独立开关，自由掌控是否绑定静态 IP。
-   - 偏好设置面板内原生一键安装、启动、停止、重启与彻底卸载后台 LaunchDaemon 守护进程。
-   - 实时网络状态看板（显示当前连接 SSID、IP、掩码、网关与 DNS），自带“立即应用规则”与“使用当前网络配置”。
-   - 预设常用高速 DNS（阿里、腾讯 DNSPod、114DNS、Cloudflare、Google）。
-2. **Swift 6 全并发安全架构**
-   - 彻底开启 `SWIFT_STRICT_CONCURRENCY = complete`，严格消除数据竞争。
-2. **Liquid Glass 流光玻璃偏好设置**
-   - 专为 macOS Sonoma/Sequoia 设计的高级磨砂拟物面板，支持独立勾选任意已配对设备，实时响应。
-3. **后台极简静默模式**
-   - 支持彻底隐藏状态栏图标，后台持续监听休眠事件；只需从聚焦搜索（Spotlight）再次启动蓝憩，即可随时唤回设置。
-4. **全语言原生适配**
-   - 包含完整的简体中文（`zh-Hans`）与英文（`en`）支持，状态提示、动效反馈与 VoiceOver 盲人读屏完全本土化。
-5. **苹果官方公证 (Notarized)**
-   - 已通过 Apple 官方安全扫描公证，搭载 Developer ID 权威签名，下载即开，无拦截弹窗。
-
----
-
-### 🌟 更多开发者独立作品
-
-* **[Tactile (妙触)](https://app.needai.top/app/tactile)**：macOS 120Hz 全能多点触控与笔画手势神器。独创单指驻留滑动、流光轨迹绘字识别、妙控鼠标全表面增强，榨干触控板潜能。
-* **[官方应用主页 (BlueNap)](https://app.needai.top/app/bluenap)**：汇聚个人独立开发的高品质 Apple 生态原生应用，欢迎体验。
-
----
-
-### 系统要求与开发环境说明
-
-* **系统支持**：macOS 14.0 (Sonoma) 或更高版本。
-* **⚠️ 测试环境特别说明**：**本应用目前仅在 macOS 27 环境下完成全面测试与验证。**
-* **硬件架构**：Universal 通用二进制（原生支持 Apple Silicon M1/M2/M3/M4 与 Intel x86_64 架构）。
-* **开发环境说明**：macOS 27 (Darwin 26.x)、Xcode 16.0+、Swift 6.0 纯原生（开启严格并发检查 `SWIFT_STRICT_CONCURRENCY = complete`）。
-
----
-
-### 🔒 隐私与数据安全
-
-**蓝憩 (BlueNap) 100% 在本地设备离线运行。** 绝无任何外部网络请求与上传行为，不含任何统计或遥测 SDK，承诺绝不收集、记录或上传任何用户的个人隐私数据。
-
----
-
-### 源码编译指南
-
+### Option 2: Homebrew Cask (Coming Soon)
 ```bash
-# 克隆仓库
-git clone https://github.com/jorchford/BlueNap.git
-cd BlueNap
-
-# 执行 Release 编译
-xcodebuild -project src/Bluesnooze.xcodeproj \
-           -scheme Bluesnooze \
-           -configuration Release \
-           build
+brew install --cask bluenap
 ```
 
 ---
 
-### 开发者信息
-* **支持我喝杯咖啡**：[https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00](https://afdian.com/item/383f394ccd6011f1a9ec5254001e7c00)
-* **官方展示页面**：[https://app.needai.top/app/bluenap](https://app.needai.top/app/bluenap)
-* **GitHub 仓库**：[https://github.com/jorchford/BlueNap](https://github.com/jorchford/BlueNap)
-* **更多 macOS 神器**：[https://github.com/jorchford/tactile](https://github.com/jorchford/tactile)
-* **作者**：[ Jorchford](https://github.com/jorchford)
+## 🛠️ Building from Source
+
+### Requirements
+- macOS 14.0 or later
+- Xcode 16.0+ (Swift 6.0 toolchain)
+
+### Build Steps
+```bash
+# Clone the repository
+git clone https://github.com/jorchford/BlueNap.git
+cd BlueNap
+
+# Build Release binary using xcodebuild
+xcodebuild -project src/Bluesnooze.xcodeproj -scheme Bluesnooze -configuration Release clean build
+```
+
+The compiled `BlueNap.app` will be available in your Xcode DerivedData build products folder.
 
 ---
 
-<a name="繁體中文"></a>
-## 繁體中文說明
+## 🤝 Featured Ecosystem App
 
-### 專案簡介
-
-**藍憩 (BlueNap)** 是一款專為 Mac 使用者精心打造的「意境優雅風」藍牙與 Wi-Fi 深度休眠管理工具。
-
-當您在 iPhone/iPad 與 Mac 之間共用藍牙耳機（如 AirPods）或無線音箱時，休眠中的 Mac 經常會因系統背景維護（Power Nap、網路喚醒）意外“搶連”藍牙耳機，打斷您的手機聽歌通話，或在背包中悄悄耗盡耳機電量。
-
-**藍憩** 賦予您的 Mac 恬靜的睡眠體驗：
-- **Mac 入睡**：合蓋或進入睡眠時，藍憩立即斷開指定的藍牙音訊設備或完全關閉藍牙電源；
-- **Mac 醒來**：螢幕喚醒並解鎖後，瞬間自動還原休眠前的外設與網路狀態；
-- **多語言即時切換**：在通用設定中支援自由切換「跟隨系統」、「簡體中文」、「繁體中文」、「English」與「日本語」，切換即刻生效；
-- **AutoWiFi 靜態 IP 智慧綁定**：全自動感知當前連接的 Wi-Fi SSID，毫秒級切換為對應網路預設的靜態 IPv4、子網遮罩、閘道與 DNS，離開或斷開自動恢復 DHCP。內建純原生 Swift LaunchDaemon 守護程序，核心級事件驅動，零輪詢、0.0% CPU 佔用；
-- **輸入外設安全守衛**：全自動識別藍牙滑鼠、觸控板與鍵盤，堅決不誤斷輸入設備，確保藍牙喚醒順暢無阻。
+Explore **[Tactile (妙触)](https://www.needai.top/app/tactile)** — Next-Generation 120Hz ProMotion Multitouch Gesture Powerhouse & Stroke Drawing Engine for macOS. Supercharge your trackpad and Magic Mouse with fluid gestures, stroke character recognition, and intuitive window snapping.
 
 ---
 
-### 核心特性 (v2.2.0)
+## 📄 License
 
-1. **應用內多語言即時切換**
-   - 原生支援簡體中文、繁體中文、英文與日文，無需重啟系統語言即可在偏好設定中切換。
-2. **選單列定時自動隱藏與開機靜默背景執行**
-   - 靈活設定自動關閉選單列時長（從不、1/2/3/5/10/15 分鐘），達到時限後自動從狀態列隱去，轉入極低功耗靜默背景。
-   - 開機或登入啟動時，預設僅在選單列常駐、絕不主動彈出任何設定界面打擾使用者。
-   - 智慧防誤觸：在展開選單或瀏覽設定時自動暫停計時；隨時從「應用程式」或「聚焦搜尋 (Spotlight)」再次點擊 BlueNap 即可立刻喚回界面與圖示。
-3. **系統生命週期原生整合**
-   - 採用 Apple 現代 `SMAppService.mainApp` 官方 API，在通用設定一鍵開啟/關閉「登入時自動啟動」。
-   - 新增明確的「完全退出應用」按鈕，停止一切背景監聽。
-4. **隱私安全聲明與零遙測**
-   - 堅持 100% 本地純離線執行，絕不收集、追蹤或上傳任何設備與個人隱私資料。
-5. **精選生態推薦與記憶體深度優化**
-   - 推薦新一代 macOS 120Hz 智慧多指觸控神器 [Tactile (秒觸)](https://app.needai.top/app/tactile)。
-   - 設定視窗關閉主動釋放 SwiftUI 視圖層圖元與 `URLCache` 快取，觸發系統級記憶體壓力釋放。
-
----
-
-<a name="日本語"></a>
-## 日本語
-
-### 概要
-
-**BlueNap (藍憩)** は、Mac がスリープ中にペアリングされた Bluetooth 音声機器（AirPods やワイヤレススピーカーなど）を勝手にハイジャックして接続してしまうのを防ぐ、エレガントで軽量な macOS 向け電源管理ユーティリティです。
-
-iPhone や iPad と Mac で Bluetooth イヤホンを共有している場合、Mac がスリープに入ってもシステム保守（Power Nap など）で意図せず再接続され、iPhone での音楽再生や通話が遮断されたり、イヤホンのバッテリーが消耗してしまうことがあります。
-
-**BlueNap** が提供する機能：
-- **Mac スリープ時**：指定したオーディオ機器を自動切断、または Bluetooth を自動的にオフにします。
-- **Mac ロック解除時**：スリープ前の接続状態を瞬時に自動復元します。
-- **アプリ内多言語切り替え**：一般設定から「システム設定に従う」「簡体字中国語」「繁体字中国語」「英語」「日本語」を自由に切り替え可能。
-- **AutoWiFi 固定 IP 自動切り替え**：接続中の Wi-Fi SSID を検知し、オフィス・自宅・研究室に応じた固定 IP や DNS 設定へ自動切り替え。離脱時は DHCP に自動復元します。Swift ネイティブの LaunchDaemon によるカーネルイベント駆動で CPU 使用率 0.0%。
-- **入力機器保護**：Bluetooth マウス・トラックパッド・キーボードを自動認識し、誤って切断されることを防ぎます。
-
----
-
-### バージョン 2.2.0 の新機能
-
-1. **多言語表示の切り替え機能**
-   - 一般設定パネルから即座に表示言語（日本語、英語、簡体字、繁体字）を変更できます。
-2. **メニューバー自動非表示＆サイレント起動**
-   - 起動または無操作から一定時間（1/2/3/5/10/15 分）後にメニューバーアイコンを非表示にし、バックグラウンド待機に移行可能。
-   - Spotlight や「アプリケーション」から再度 BlueNap を起動するだけで、即座に設定画面とメニューバーが再表示されます。
-3. **システム連携（ログイン時起動・アプリ終了）**
-   - macOS の `SMAppService.mainApp` API を採用した「ログイン時に自動起動」スイッチを搭載。
-   - アプリを完全に停止する「アプリを終了」ボタンを追加。
-4. **完全オフライン＆ゼロテレメトリ**
-   - 外部通信やトラッキング SDK は一切含まず、デバイスローカルで完全に完結します。
-5. **おすすめアプリ＆メモリ最適化**
-   - 120Hz 高精度ジェスチャーツール [Tactile (秒触)](https://app.needai.top/app/tactile) を紹介。
-   - 設定ウィンドウを閉じると SwiftUI 描画リソースやキャッシュを積極解放し、メモリ消費を最小化。
-
----
+BlueNap is open source under the MIT License. Contributions and PRs are warmly welcome!

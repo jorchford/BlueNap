@@ -604,7 +604,7 @@ extension AppDelegate {
     }
 
     @IBAction func websiteClicked(_: NSMenuItem) {
-        if let url = URL(string: "https://github.com/jorchford/BlueNap") {
+        if let url = URL(string: "https://www.needai.top/app/bluenap") {
             NSWorkspace.shared.open(url)
         }
     }

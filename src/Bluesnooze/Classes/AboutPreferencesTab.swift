@@ -176,8 +176,8 @@ struct AboutPreferencesTab: View {
                         Text(NSLocalizedString("Official Website", comment: ""))
                             .font(.subheadline)
                         Spacer()
-                        Button("app.needai.top/app/bluenap") {
-                            if let url = URL(string: "https://app.needai.top/app/bluenap") {
+                        Button("www.needai.top/app/bluenap") {
+                            if let url = URL(string: "https://www.needai.top/app/bluenap") {
                                 NSWorkspace.shared.open(url)
                             }
                         }
