@@ -9,7 +9,7 @@ import Foundation
 import os
 
 enum Log: Sendable {
-    private static let subsystem = Bundle.main.bundleIdentifier ?? "com.oliverpeate.Bluesnooze"
+    private static let subsystem = Bundle.main.bundleIdentifier ?? "com.needai.bluesnooze"
 
     static let bluetooth = Logger(subsystem: subsystem, category: "bluetooth")
     static let wifi = Logger(subsystem: subsystem, category: "wifi")

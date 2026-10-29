@@ -1,9 +1,8 @@
 //
 //  AppDelegate.swift
-//  Bluesnooze
+//  BlueNap
 //
-//  Created by Oliver Peate on 07/04/2020.
-//  Modernized for Swift 6 on 2026-10-20.
+//  Created by jorchford on 2026-10-20.
 //
 
 import Cocoa
