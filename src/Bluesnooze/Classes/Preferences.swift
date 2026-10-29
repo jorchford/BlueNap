@@ -78,10 +78,11 @@ final class Preferences {
 
     /// In-memory cached properties for zero-IPC and O(1) reads
     var appLanguage: AppLanguage {
-        get { AppLanguage.current }
-        set {
-            AppLanguage.current = newValue
+        didSet {
+            AppLanguage.current = appLanguage
             AppDelegate.shared?.localizeMenuTitles()
+            AppDelegate.shared?.updateLanguageMenuStates()
+            SettingsWindowController.shared.updateWindowTitle()
         }
     }
 
@@ -175,6 +176,8 @@ final class Preferences {
         } else {
             showTransitionAnimation = defaults.bool(forKey: Keys.showTransitionAnimation)
         }
+
+        appLanguage = AppLanguage.current
     }
 
     func isDeviceMarkedForDisconnect(address: String) -> Bool {

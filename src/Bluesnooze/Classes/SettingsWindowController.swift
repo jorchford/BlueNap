@@ -13,6 +13,8 @@ import SwiftUI
 final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     static let shared = SettingsWindowController()
 
+    private var hostingController: NSHostingController<AnyView>?
+
     var isWindowVisible: Bool {
         window?.isVisible == true
     }
@@ -28,19 +30,20 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     func showSettings() {
         if window == nil {
-            let hostingView = NSHostingView(rootView: PreferencesView())
+            let controller = NSHostingController(rootView: AnyView(PreferencesView()))
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 580, height: 540),
+                contentRect: NSRect(x: 0, y: 0, width: 640, height: 550),
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered,
                 defer: false
             )
             window.center()
             window.title = NSLocalizedString("BlueNap Settings", comment: "")
-            window.contentView = hostingView
+            window.contentViewController = controller
             window.isReleasedWhenClosed = false
             window.titlebarAppearsTransparent = true
             window.delegate = self
+            self.hostingController = controller
             self.window = window
         }
 
@@ -54,6 +57,15 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func updateWindowTitle() {
+        window?.title = NSLocalizedString("BlueNap Settings", comment: "")
+    }
+
+    func closeSettings() {
+        guard let win = window else { return }
+        windowWillClose(Notification(name: NSWindow.willCloseNotification, object: win))
     }
 
     func captureScreenshot(to path: String) {
@@ -82,12 +94,22 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     // MARK: - NSWindowDelegate
 
     func windowWillClose(_: Notification) {
-        // Stop network monitor immediately to stop all observers and free resources
+        // Stop all background timers & monitors immediately
         WiFiNetworkMonitor.shared.stopMonitoring()
 
-        // Clear view hierarchy and break all SwiftUI graph references
-        window?.contentView = nil
-        window?.delegate = nil
+        // CRITICAL: Replace SwiftUI graph with EmptyView to force complete teardown of ViewGraph,
+        // state observation subscriptions, display lists, and cached layouts
+        hostingController?.rootView = AnyView(EmptyView())
+        hostingController?.view.removeFromSuperview()
+        hostingController = nil
+
+        if let win = window {
+            win.contentViewController = nil
+            win.contentView = nil
+            win.delegate = nil
+            win.orderOut(nil)
+            win.close()
+        }
         window = nil
 
         // Clear transient state caches
@@ -100,21 +122,49 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         // Resume auto-hide timer if configured
         AppDelegate.shared?.scheduleAutoHideTimerIfNeeded()
 
-        // Aggressive memory pressure relief & purge
-        trimMemory()
+        // Perform aggressive multi-pass memory reclamation
+        performDeepMemoryPurge()
     }
 
-    private func trimMemory() {
+    func performDeepMemoryPurge() {
+        // 1. Flush CoreAnimation transaction to commit view removals
         CATransaction.flush()
-        malloc_zone_pressure_relief(nil, 0)
-        malloc_zone_pressure_relief(malloc_default_zone(), 0)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        // 2. Clear AppKit / Cocoa internal caches
+        URLCache.shared.removeAllCachedResponses()
+        NSAnimationContext.beginGrouping()
+        CATransaction.flush()
+        NSAnimationContext.endGrouping()
+
+        // 3. Purge all Darwin malloc zones
+        purgeAllMallocZones()
+
+        // 4. Multi-stage deferred purge to catch async release loops
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             autoreleasepool {
                 CATransaction.flush()
-                malloc_zone_pressure_relief(nil, 0)
-                malloc_zone_pressure_relief(malloc_default_zone(), 0)
+                self?.purgeAllMallocZones()
             }
         }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            autoreleasepool {
+                CATransaction.flush()
+                self?.purgeAllMallocZones()
+            }
+        }
+    }
+
+    private func purgeAllMallocZones() {
+        var count: UInt32 = 0
+        var zoneList: UnsafeMutablePointer<vm_address_t>?
+        if malloc_get_all_zones(mach_task_self_, nil, &zoneList, &count) == KERN_SUCCESS, let list = zoneList {
+            for i in 0 ..< Int(count) {
+                if let zone = UnsafeMutablePointer<malloc_zone_t>(bitPattern: list[i]) {
+                    malloc_zone_pressure_relief(zone, 0)
+                }
+            }
+        }
+        malloc_zone_pressure_relief(nil, 0)
     }
 }

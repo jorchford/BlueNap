@@ -186,6 +186,7 @@
 "15 Minutes" = "15 分钟";
 
 /* 界面语言设置 */
+"Language" = "界面语言";
 "Language & Localization" = "多语言设置";
 "App Interface Language" = "应用界面语言";
 "Choose the display language for BlueNap. Changes take effect immediately." = "选择 蓝憩 的界面显示语言，切换后即刻生效。";

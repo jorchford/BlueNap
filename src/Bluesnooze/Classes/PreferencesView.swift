@@ -23,8 +23,8 @@ struct PreferencesView: View {
             rawValue
         }
 
-        var localizedKey: LocalizedStringKey {
-            LocalizedStringKey(rawValue)
+        var localizedTitle: String {
+            NSLocalizedString(rawValue, comment: "")
         }
 
         var iconName: String {
@@ -53,11 +53,14 @@ struct PreferencesView: View {
                         .frame(width: 8, height: 8)
                     Text(appState.status.displayText)
                         .font(.caption)
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(.regularMaterial, in: Capsule())
+                .fixedSize(horizontal: true, vertical: false)
 
                 // Exit to Background button
                 Button {
@@ -68,8 +71,10 @@ struct PreferencesView: View {
                             .font(.system(size: 10, weight: .bold))
                         Text(NSLocalizedString("Exit to Background", comment: ""))
                             .font(.system(size: 11, weight: .medium))
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, 9)
                     .padding(.vertical, 5)
                     .background(Color.blue.opacity(0.12), in: Capsule())
                     .foregroundStyle(.blue)
@@ -112,7 +117,7 @@ struct PreferencesView: View {
                 .padding(20)
             }
         }
-        .frame(width: 580, height: 540)
+        .frame(width: 640, height: 550)
         .background(.regularMaterial)
         .id(preferences.appLanguage.rawValue)
         .environment(\.locale, preferences.appLanguage.locale ?? Locale.autoupdatingCurrent)
@@ -127,14 +132,16 @@ struct PreferencesView: View {
                 selectedTab = tab
             }
         } label: {
-            HStack(spacing: 6) {
+            HStack(spacing: 5) {
                 Image(systemName: tab.iconName)
-                    .font(.system(size: 13, weight: .medium))
-                Text(tab.localizedKey)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
+                Text(tab.localizedTitle)
+                    .font(.system(size: 12, weight: .medium))
+                    .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
             .background(
                 selectedTab == tab
                     ? AnyShapeStyle(.tint.opacity(0.18))

@@ -40,6 +40,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private var statusItem: NSStatusItem?
     private var autoHideTimer: Timer?
+    private var languageMenuItem: NSMenuItem?
+    private var languageMenu: NSMenu?
     private let preferences = Preferences.shared
     private let powerStateManager = PowerStateManager.shared
     private let bluetoothService = BluetoothService.shared
@@ -233,6 +235,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusMenu.delegate = self
         item.menu = statusMenu
 
+        setupLanguageMenuIfNeeded()
+        localizeMenuTitles()
+
         item.button?.setAccessibilityLabel(NSLocalizedString(
             "BlueNap",
             tableName: "Accessibility",
@@ -242,13 +247,74 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = item
     }
 
+    func setupLanguageMenuIfNeeded() {
+        guard let statusMenu else { return }
+
+        if let existing = languageMenuItem, statusMenu.items.contains(existing) {
+            updateLanguageMenuStates()
+            return
+        }
+
+        let langMenu = NSMenu(title: NSLocalizedString("Language", comment: ""))
+        for lang in AppLanguage.allCases {
+            let item = NSMenuItem(
+                title: lang.displayName,
+                action: #selector(languageMenuItemClicked(_:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.representedObject = lang.rawValue
+            langMenu.addItem(item)
+        }
+
+        let mainItem = NSMenuItem(
+            title: NSLocalizedString("Language", comment: ""),
+            action: nil,
+            keyEquivalent: ""
+        )
+        mainItem.submenu = langMenu
+
+        if let prefIndex = statusMenu.items.firstIndex(where: { $0.action == #selector(openPreferencesClicked(_:)) }) {
+            statusMenu.insertItem(mainItem, at: prefIndex + 1)
+        } else {
+            statusMenu.addItem(mainItem)
+        }
+
+        self.languageMenu = langMenu
+        self.languageMenuItem = mainItem
+        updateLanguageMenuStates()
+    }
+
+    func updateLanguageMenuStates() {
+        guard let languageMenu else { return }
+        let currentLang = preferences.appLanguage
+        for item in languageMenu.items {
+            if let rawValue = item.representedObject as? String,
+               let lang = AppLanguage(rawValue: rawValue) {
+                item.state = (lang == currentLang) ? .on : .off
+            }
+        }
+    }
+
+    @objc func languageMenuItemClicked(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let lang = AppLanguage(rawValue: rawValue) else { return }
+        preferences.appLanguage = lang
+    }
+
     func localizeMenuTitles() {
         guard let statusMenu else { return }
+
+        setupLanguageMenuIfNeeded()
+        updateLanguageMenuStates()
 
         for item in statusMenu.items {
             if item.submenu == bluetoothMenu {
                 item.title = NSLocalizedString("Bluetooth", comment: "")
                 bluetoothMenu?.title = NSLocalizedString("Bluetooth", comment: "")
+            } else if item == languageMenuItem || item.submenu == languageMenu {
+                item.title = NSLocalizedString("Language", comment: "")
+                languageMenu?.title = NSLocalizedString("Language", comment: "")
             } else if item.submenu != nil {
                 item.title = NSLocalizedString("Wi-Fi", comment: "")
                 item.submenu?.title = NSLocalizedString("Wi-Fi", comment: "")
@@ -258,6 +324,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 item.title = preferences.hideIcon ?
                     NSLocalizedString("Show icon", comment: "") :
                     NSLocalizedString("Exit to Background", comment: "")
+                item.toolTip = NSLocalizedString("Exit to Background Description", comment: "")
             } else if item.action == #selector(websiteClicked(_:)) {
                 item.title = NSLocalizedString("Website", comment: "")
             } else if item.action == #selector(quitClicked(_:)) {
@@ -290,7 +357,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         wifiActionOnScreenUnlockNothing?.title = NSLocalizedString("Do nothing", comment: "")
 
         // Wi-Fi submenu header
-        if let wifiItem = statusMenu.items.first(where: { $0.submenu != nil && $0.submenu != bluetoothMenu }) {
+        if let wifiItem = statusMenu.items.first(where: { $0.submenu != nil && $0.submenu != bluetoothMenu && $0.submenu != languageMenu }) {
             for sub in wifiItem.submenu?.items ?? [] {
                 if sub.action == nil && !sub.isSeparatorItem && !sub.title.isEmpty {
                     sub.title = NSLocalizedString("Action when unlocked:", comment: "")
@@ -313,7 +380,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: - NSMenuDelegate
 
     func menuWillOpen(_: NSMenu) {
+        setupLanguageMenuIfNeeded()
         localizeMenuTitles()
+        updateLanguageMenuStates()
         cancelAutoHideTimer()
         appState.refreshHardwareStates()
         updateMenuStates()
@@ -324,7 +393,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @IBAction func handleMenuOpen(_: NSMenu) {
+        setupLanguageMenuIfNeeded()
         localizeMenuTitles()
+        updateLanguageMenuStates()
         appState.refreshHardwareStates()
         updateMenuStates()
     }
@@ -357,11 +428,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         wifiActionOnScreenUnlockEnable.state = boolToMenuState(wifiAction == .enable)
         wifiActionOnScreenUnlockNothing.state = boolToMenuState(wifiAction == .nothing)
 
+        // Update language states
+        updateLanguageMenuStates()
+
         // Hide icon / Exit to background
         hideIconMenuItem.state = boolToMenuState(preferences.hideIcon)
         hideIconMenuItem.title = preferences.hideIcon ?
             NSLocalizedString("Show icon", comment: "") :
             NSLocalizedString("Exit to Background", comment: "")
+        hideIconMenuItem.toolTip = NSLocalizedString("Exit to Background Description", comment: "")
     }
 
     private func clearBluetoothDeviceList() {
@@ -507,11 +582,9 @@ extension AppDelegate {
     }
 
     func enterBackgroundMode() {
-        if SettingsWindowController.shared.isWindowVisible {
-            SettingsWindowController.shared.window?.performClose(nil)
-        }
+        SettingsWindowController.shared.closeSettings()
         setMenuBarIconVisible(false)
-        trimMemoryFootprint()
+        SettingsWindowController.shared.performDeepMemoryPurge()
     }
 
     @IBAction func websiteClicked(_: NSMenuItem) {
@@ -570,10 +643,7 @@ extension AppDelegate {
     // MARK: - Helpers
 
     func trimMemoryFootprint() {
-        malloc_zone_pressure_relief(nil, 0)
-        DispatchQueue.main.async {
-            malloc_zone_pressure_relief(nil, 0)
-        }
+        SettingsWindowController.shared.performDeepMemoryPurge()
     }
 
     private func boolToMenuState(_ value: Bool?) -> NSControl.StateValue {

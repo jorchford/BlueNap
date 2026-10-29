@@ -186,6 +186,7 @@
 "15 Minutes" = "15 Minutes";
 
 /* Language & Localization */
+"Language" = "Language";
 "Language & Localization" = "Language & Localization";
 "App Interface Language" = "App Interface Language";
 "Choose the display language for BlueNap. Changes take effect immediately." = "Choose the display language for BlueNap. Changes take effect immediately.";
