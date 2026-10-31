@@ -4,6 +4,8 @@ DerivedData
 .DS_Store
 *.zip
 !downloads/*.zip
+*.dmg
+!downloads/*.dmg
 *.xcuserstate
 *.xcuserdata
 

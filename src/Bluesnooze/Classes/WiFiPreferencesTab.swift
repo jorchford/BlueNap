@@ -25,7 +25,7 @@ struct WiFiPreferencesTab: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Master Auto-Binding Toggle Card
-            autoBindingMasterCard
+            WiFiAutoBindingMasterCard(isEnabled: $preferences.isAutoWiFiBindingEnabled)
 
             if preferences.isAutoWiFiBindingEnabled {
                 // Live Network Status Card
@@ -49,7 +49,7 @@ struct WiFiPreferencesTab: View {
             }
 
             // Wi-Fi Sleep & Wake Power Management
-            sleepWakePowerSection
+            WiFiSleepWakeSectionView(preferences: preferences)
         }
         .sheet(isPresented: $isSheetPresented) {
             WiFiProfileEditSheet(
@@ -85,33 +85,7 @@ struct WiFiPreferencesTab: View {
         }
     }
 
-    // MARK: - Sections
-
-    private var autoBindingMasterCard: some View {
-        liquidCard {
-            HStack {
-                Image(systemName: "network")
-                    .font(.title2)
-                    .foregroundStyle(preferences.isAutoWiFiBindingEnabled ? Color.blue : Color.secondary)
-                    .frame(width: 36, height: 36)
-                    .background(.ultraThinMaterial, in: Circle())
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(NSLocalizedString("Auto-Bind Wi-Fi Static IP", comment: ""))
-                        .font(.headline)
-                    Text(NSLocalizedString("Automatically switches to static IP for designated Wi-Fi networks.", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Toggle("", isOn: $preferences.isAutoWiFiBindingEnabled)
-                    .labelsHidden()
-                    .toggleStyle(.switch)
-            }
-        }
-    }
+    // MARK: - Profiles Section
 
     private var profilesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -120,8 +94,9 @@ struct WiFiPreferencesTab: View {
                     .font(.headline)
                 Spacer()
                 Button {
+                    let prefillSSID = networkSnapshot.connectedSSID ?? networkSnapshot.matchedProfile?.ssid ?? ""
                     editingProfile = WiFiProfile(
-                        ssid: networkSnapshot.connectedSSID ?? "",
+                        ssid: prefillSSID,
                         staticIP: networkSnapshot.currentIPv4 ?? "",
                         subnetMask: networkSnapshot.currentNetmask ?? "255.255.255.0",
                         router: networkSnapshot.currentRouter ?? "",
@@ -138,26 +113,25 @@ struct WiFiPreferencesTab: View {
             }
 
             if profiles.isEmpty {
-                liquidCard {
-                    HStack(spacing: 12) {
-                        Image(systemName: "wifi.exclamationmark")
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(NSLocalizedString("No Wi-Fi Profiles Added", comment: ""))
-                                .font(.subheadline.weight(.medium))
-                            Text(
-                                NSLocalizedString(
-                                    "Click 'Add Wi-Fi Profile' above to configure static IP for your office or home network.",
-                                    comment: ""
-                                )
+                HStack(spacing: 12) {
+                    Image(systemName: "wifi.exclamationmark")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("No Wi-Fi Profiles Added", comment: ""))
+                            .font(.subheadline.weight(.medium))
+                        Text(
+                            NSLocalizedString(
+                                "Click 'Add Wi-Fi Profile' above to configure static IP for your office or home network.",
+                                comment: ""
                             )
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        }
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
-                    .padding(.vertical, 6)
                 }
+                .padding(.vertical, 6)
+                .liquidCardStyle()
             } else {
                 ForEach(profiles) { profile in
                     WiFiProfileCardView(
@@ -184,46 +158,28 @@ struct WiFiPreferencesTab: View {
         }
     }
 
-    private var sleepWakePowerSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text(NSLocalizedString("Sleep & Wake Power Lifecycle", comment: ""))
-                .font(.headline)
-
-            liquidCard {
-                VStack(alignment: .leading, spacing: 14) {
-                    Text(NSLocalizedString("When Mac Goes to Sleep", comment: ""))
-                        .font(.subheadline.weight(.medium))
-
-                    Toggle(NSLocalizedString("Turn off Wi-Fi when sleeping", comment: ""), isOn: $preferences.disableWifiOnSleep)
-
-                    Text(NSLocalizedString("Helps preserve battery life and prevent unexpected background network wakeups.", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Divider()
-
-                    Text(NSLocalizedString("When Mac Wakes Up", comment: ""))
-                        .font(.subheadline.weight(.medium))
-
-                    Picker(NSLocalizedString("Action on unlock:", comment: ""), selection: $preferences.wifiWakeAction) {
-                        ForEach(WakeAction.allCases, id: \.self) { action in
-                            Text(action.displayName).tag(action)
-                        }
-                    }
-                    .pickerStyle(.radioGroup)
-                }
-            }
-        }
-    }
-
     // MARK: - Actions & Persistence
 
     private func loadAutoWiFiData() {
         Task {
             if CommandLine.arguments.contains("--demo") {
                 globalConfig = GlobalConfig(networkService: "Wi-Fi", wifiDevice: "en0", restoreDHCP: true, isBindingEnabled: true)
-                let demoProfile1 = WiFiProfile(ssid: "Home_Office_5G", staticIP: "192.168.1.151", subnetMask: "255.255.255.0", router: "192.168.1.1", dnsServers: ["1.1.1.1", "8.8.8.8"], isEnabled: true)
-                let demoProfile2 = WiFiProfile(ssid: "Company_HighSpeed_Wi-Fi", staticIP: "10.0.0.188", subnetMask: "255.255.255.0", router: "10.0.0.1", dnsServers: ["223.5.5.5", "114.114.114.114"], isEnabled: true)
+                let demoProfile1 = WiFiProfile(
+                    ssid: "Home_Office_5G",
+                    staticIP: "192.168.1.151",
+                    subnetMask: "255.255.255.0",
+                    router: "192.168.1.1",
+                    dnsServers: ["1.1.1.1", "8.8.8.8"],
+                    isEnabled: true
+                )
+                let demoProfile2 = WiFiProfile(
+                    ssid: "Company_HighSpeed_Wi-Fi",
+                    staticIP: "10.0.0.188",
+                    subnetMask: "255.255.255.0",
+                    router: "10.0.0.1",
+                    dnsServers: ["223.5.5.5", "114.114.114.114"],
+                    isEnabled: true
+                )
                 profiles = [demoProfile1, demoProfile2]
                 networkSnapshot = NetworkSnapshot(
                     connectedSSID: "Home_Office_5G",
@@ -232,6 +188,8 @@ struct WiFiPreferencesTab: View {
                     currentRouter: "192.168.1.1",
                     currentDNS: ["1.1.1.1", "8.8.8.8"],
                     isManualConfiguration: true,
+                    isInterfaceActive: true,
+                    locationAuthorizationStatus: 3,
                     lastSeenSSID: "Home_Office_5G",
                     matchedProfile: demoProfile1,
                     timestamp: Date()
@@ -365,18 +323,83 @@ struct WiFiPreferencesTab: View {
             daemonInfo = DaemonInfo(status: status)
         }
     }
+}
 
-    private func liquidCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            content()
+// MARK: - Subcomponents
+
+struct WiFiAutoBindingMasterCard: View {
+    @Binding var isEnabled: Bool
+
+    var body: some View {
+        HStack {
+            Image(systemName: "network")
+                .font(.title2)
+                .foregroundStyle(isEnabled ? Color.blue : Color.secondary)
+                .frame(width: 36, height: 36)
+                .background(.ultraThinMaterial, in: Circle())
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(NSLocalizedString("Auto-Bind Wi-Fi Static IP", comment: ""))
+                    .font(.headline)
+                Text(NSLocalizedString("Automatically switches to static IP for designated Wi-Fi networks.", comment: ""))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Toggle("", isOn: $isEnabled)
+                .labelsHidden()
+                .toggleStyle(.switch)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+        .liquidCardStyle()
+    }
+}
+
+struct WiFiSleepWakeSectionView: View {
+    @Bindable var preferences: Preferences
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("Sleep & Wake Power Lifecycle", comment: ""))
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 14) {
+                Text(NSLocalizedString("When Mac Goes to Sleep", comment: ""))
+                    .font(.subheadline.weight(.medium))
+
+                Toggle(NSLocalizedString("Turn off Wi-Fi when sleeping", comment: ""), isOn: $preferences.disableWifiOnSleep)
+
+                Text(NSLocalizedString("Helps preserve battery life and prevent unexpected background network wakeups.", comment: ""))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Divider()
+
+                Text(NSLocalizedString("When Mac Wakes Up", comment: ""))
+                    .font(.subheadline.weight(.medium))
+
+                Picker(NSLocalizedString("Action on unlock:", comment: ""), selection: $preferences.wifiWakeAction) {
+                    ForEach(WakeAction.allCases, id: \.self) { action in
+                        Text(action.displayName).tag(action)
+                    }
+                }
+                .pickerStyle(.radioGroup)
+            }
+            .liquidCardStyle()
+        }
+    }
+}
+
+extension View {
+    func liquidCardStyle() -> some View {
+        padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
     }
 }

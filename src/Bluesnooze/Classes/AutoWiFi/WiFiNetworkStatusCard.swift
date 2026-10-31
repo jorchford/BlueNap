@@ -5,11 +5,22 @@
 //  Created on 2026-10-23.
 //
 
+import AppKit
 import SwiftUI
 
 struct WiFiNetworkStatusCard: View {
     let snapshot: NetworkSnapshot
     let onApplyOnce: () -> Void
+
+    private var headerTitle: String {
+        if let ssid = snapshot.connectedSSID, !ssid.isEmpty {
+            return ssid
+        }
+        if snapshot.isConnected {
+            return NSLocalizedString("Wi-Fi Connected", comment: "")
+        }
+        return NSLocalizedString("Wi-Fi Disconnected", comment: "")
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -19,18 +30,25 @@ struct WiFiNetworkStatusCard: View {
                         .font(.title3)
                         .foregroundStyle(snapshot.isConnected ? Color.blue : Color.secondary)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(snapshot.connectedSSID ?? NSLocalizedString("Wi-Fi Disconnected", comment: ""))
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(headerTitle)
                             .font(.headline)
-                        Text(snapshot.modeDisplayText)
-                            .font(.caption2.weight(.semibold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(
-                                snapshot.isManualConfiguration ? Color.purple.opacity(0.18) : Color.blue.opacity(0.18),
-                                in: Capsule()
-                            )
-                            .foregroundStyle(snapshot.isManualConfiguration ? Color.purple : Color.blue)
+
+                        HStack(spacing: 6) {
+                            Text(snapshot.modeDisplayText)
+                                .font(.caption2.weight(.semibold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    snapshot.isManualConfiguration ? Color.purple.opacity(0.18) : Color.blue.opacity(0.18),
+                                    in: Capsule()
+                                )
+                                .foregroundStyle(snapshot.isManualConfiguration ? Color.purple : Color.blue)
+
+                            if snapshot.isConnected && (snapshot.connectedSSID == nil || snapshot.connectedSSID!.isEmpty) {
+                                locationPermissionBadge
+                            }
+                        }
                     }
                 }
 
@@ -104,5 +122,38 @@ struct WiFiNetworkStatusCard: View {
                 .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+    }
+
+    @ViewBuilder
+    private var locationPermissionBadge: some View {
+        if snapshot.isLocationDenied {
+            Button {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
+                    NSWorkspace.shared.open(url)
+                }
+            } label: {
+                HStack(spacing: 3) {
+                    Image(systemName: "location.slash.fill")
+                    Text(NSLocalizedString("Open Settings to Show SSID", comment: ""))
+                }
+                .font(.caption2.weight(.medium))
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.mini)
+            .help(NSLocalizedString("Location permission is needed to read the Wi-Fi name.", comment: ""))
+        } else if !snapshot.isLocationAuthorized {
+            Button {
+                WiFiNetworkMonitor.shared.requestLocationAuthorizationIfNeeded()
+            } label: {
+                HStack(spacing: 3) {
+                    Image(systemName: "location.circle")
+                    Text(NSLocalizedString("Authorize to Show SSID", comment: ""))
+                }
+                .font(.caption2.weight(.medium))
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.mini)
+            .help(NSLocalizedString("Click to allow reading Wi-Fi name.", comment: ""))
+        }
     }
 }

@@ -32,8 +32,8 @@
 /* Class = "NSMenuItem"; title = "Device list end"; ObjectID = "U3Y-sg-vdO"; */
 "U3Y-sg-vdO.title" = "Device list end";
 
-/* Class = "NSMenuItem"; ibShadowedToolTip = "Version 1.4"; ObjectID = "UNc-OX-MPq"; */
-"UNc-OX-MPq.ibShadowedToolTip" = "Version 1.4";
+/* Class = "NSMenuItem"; ibShadowedToolTip = "Version 2.3"; ObjectID = "UNc-OX-MPq"; */
+"UNc-OX-MPq.ibShadowedToolTip" = "Version 2.3";
 
 /* Class = "NSMenuItem"; title = "Website"; ObjectID = "UNc-OX-MPq"; */
 "UNc-OX-MPq.title" = "Website";

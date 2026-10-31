@@ -8,6 +8,16 @@
 import SwiftUI
 
 struct AboutPreferencesTab: View {
+    private var versionString: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.3"
+    }
+
+    private var fullVersionString: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.3"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+        return "\(version) (\(build))"
+    }
+
     var body: some View {
         VStack(spacing: 18) {
             // Hero / Brand Card
@@ -19,8 +29,17 @@ struct AboutPreferencesTab: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
 
-                    Text(NSLocalizedString("BlueNap", comment: ""))
-                        .font(.title2.weight(.bold))
+                    HStack(alignment: .center, spacing: 8) {
+                        Text(NSLocalizedString("BlueNap", comment: ""))
+                            .font(.title2.weight(.bold))
+
+                        Text("v\(versionString)")
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(Color.accentColor)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(Color.accentColor.opacity(0.12), in: Capsule())
+                    }
 
                     Text(NSLocalizedString("Smart Bluetooth & Wi-Fi Power Manager for Mac", comment: ""))
                         .font(.subheadline)
@@ -136,7 +155,8 @@ struct AboutPreferencesTab: View {
 
                     Text(
                         NSLocalizedString(
-                            "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, stroke drawing recognition, and window management.",
+                            "Supercharge your Trackpad & Magic Mouse with 120Hz ProMotion gestures, " +
+                                "stroke drawing recognition, and window management.",
                             comment: ""
                         )
                     )
@@ -168,6 +188,17 @@ struct AboutPreferencesTab: View {
                             .font(.caption)
                         Text(NSLocalizedString("Tested exclusively on macOS 27", comment: ""))
                             .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Divider()
+
+                    HStack {
+                        Text(NSLocalizedString("Version", comment: ""))
+                            .font(.subheadline)
+                        Spacer()
+                        Text(fullVersionString)
+                            .font(.subheadline.monospacedDigit())
                             .foregroundStyle(.secondary)
                     }
 

@@ -89,6 +89,11 @@
 "Auto-Bind Wi-Fi Static IP" = "Auto-Bind Wi-Fi Static IP";
 "Automatically switches to static IP for designated Wi-Fi networks." = "Automatically switches to static IP and DNS for designated Wi-Fi networks.";
 "Wi-Fi Disconnected" = "Wi-Fi Disconnected";
+"Wi-Fi Connected" = "Wi-Fi Connected";
+"Authorize to Show SSID" = "Authorize to Show SSID";
+"Open Settings to Show SSID" = "Open Settings to Authorize Location";
+"Location permission is needed to read the Wi-Fi name." = "Location authorization is required by macOS to resolve Wi-Fi network names (SSID).";
+"Click to allow reading Wi-Fi name." = "Click to allow macOS to read the current Wi-Fi SSID.";
 "Static IP" = "Static IP";
 "DHCP" = "DHCP";
 "Apply Rule Now" = "Apply Rule Now";
@@ -136,6 +141,7 @@
 "Invalid DNS address: %@" = "Invalid DNS address: %@";
 "Authorization failed" = "Authorization failed";
 "Wi-Fi disconnected; maintaining current network settings" = "Wi-Fi disconnected; maintaining current network settings";
+"No matching Wi-Fi rule found; maintaining current network settings" = "No matching Wi-Fi rule found; maintaining current network settings";
 "Auto-binding disabled; maintaining settings for %@" = "Auto-binding disabled; maintaining settings for %@";
 "Binding paused for %@" = "Binding paused for %@";
 "Failed to set static IP" = "Failed to set static IP";
@@ -192,5 +198,6 @@
 "App Interface Language" = "App Interface Language";
 "Choose the display language for BlueNap. Changes take effect immediately." = "Choose the display language for BlueNap. Changes take effect immediately.";
 "Sponsor Author" = "Sponsor Author (Afdian)";
+"Version" = "Version";
 
 

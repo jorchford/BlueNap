@@ -71,6 +71,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if CommandLine.arguments.contains("--hidden") || CommandLine.arguments.contains("--background") {
             if !preferences.hideIcon {
                 createStatusItem()
+            } else {
+                setpriority(PRIO_PROCESS, 0, PRIO_DARWIN_BG)
             }
         } else {
             // Default to opening/showing menu bar icon on startup / interactive launch
@@ -147,6 +149,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func setMenuBarIconVisible(_ visible: Bool) {
         preferences.hideIcon = !visible
         if visible {
+            setpriority(PRIO_PROCESS, 0, 0)
             if statusItem == nil {
                 createStatusItem()
             }
@@ -166,6 +169,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
             hideIconMenuItem?.title = NSLocalizedString("Show icon", comment: "")
             clearBluetoothDeviceList()
+            appState.pairedDevices.removeAll(keepingCapacity: false)
+            setpriority(PRIO_PROCESS, 0, PRIO_DARWIN_BG)
         }
         trimMemoryFootprint()
     }
@@ -382,6 +387,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 item.toolTip = NSLocalizedString("Exit to Background Description", comment: "")
             } else if item.action == #selector(websiteClicked(_:)) {
                 item.title = NSLocalizedString("Website", comment: "")
+                let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.3"
+                item.toolTip = "BlueNap v\(version)"
             } else if item.action == #selector(quitClicked(_:)) {
                 item.title = NSLocalizedString("Quit", comment: "")
             } else if !item.isSeparatorItem && !item.title.isEmpty {
@@ -412,7 +419,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         wifiActionOnScreenUnlockNothing?.title = NSLocalizedString("Do nothing", comment: "")
 
         // Wi-Fi submenu header
-        if let wifiItem = statusMenu.items.first(where: { $0.submenu != nil && $0.submenu != bluetoothMenu && $0.submenu != languageMenu }) {
+        let nonStatusSubmenus = statusMenu.items.first {
+            $0.submenu != nil && $0.submenu != bluetoothMenu && $0.submenu != languageMenu
+        }
+        if let wifiItem = nonStatusSubmenus {
             for sub in wifiItem.submenu?.items ?? [] {
                 if sub.action == nil && !sub.isSeparatorItem && !sub.title.isEmpty {
                     sub.title = NSLocalizedString("Action when unlocked:", comment: "")
@@ -464,7 +474,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuDidClose(_: NSMenu) {
         statusItem?.menu = nil
+        clearBluetoothDeviceList()
+        appState.pairedDevices.removeAll(keepingCapacity: false)
         scheduleAutoHideTimerIfNeeded()
+        trimMemoryFootprint()
     }
 
     @IBAction func handleMenuOpen(_: NSMenu) {
@@ -687,7 +700,7 @@ extension AppDelegate {
             return nil
         }()
 
-        guard (preferences.autoHideMenuBarDelayMinutes > 0 || testDelaySeconds != nil), statusItem != nil else { return }
+        guard preferences.autoHideMenuBarDelayMinutes > 0 || testDelaySeconds != nil, statusItem != nil else { return }
 
         if SettingsWindowController.shared.isWindowVisible {
             return

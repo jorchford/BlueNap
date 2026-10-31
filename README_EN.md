@@ -86,7 +86,7 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ---
 
-## 🌟 Key Features (v2.2.0)
+## 🌟 Key Features (v2.3)
 
 1. **Exit to Background & Silent Daemon Operation**
    - Added dedicated **Exit to Background** action in the menu bar and Settings header.

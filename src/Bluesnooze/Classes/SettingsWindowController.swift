@@ -127,17 +127,20 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     }
 
     func performDeepMemoryPurge() {
-        // 1. Flush CoreAnimation transaction to commit view removals
-        CATransaction.flush()
+        autoreleasepool {
+            // 1. Flush CoreAnimation transaction to commit view removals
+            CATransaction.flush()
 
-        // 2. Clear AppKit / Cocoa internal caches
-        URLCache.shared.removeAllCachedResponses()
-        NSAnimationContext.beginGrouping()
-        CATransaction.flush()
-        NSAnimationContext.endGrouping()
+            // 2. Clear AppKit / Cocoa internal caches
+            URLCache.shared.removeAllCachedResponses()
+            NSAnimationContext.beginGrouping()
+            CATransaction.flush()
+            NSAnimationContext.endGrouping()
+            NSGraphicsContext.current = nil
 
-        // 3. Purge all Darwin malloc zones
-        purgeAllMallocZones()
+            // 3. Purge all Darwin malloc zones
+            purgeAllMallocZones()
+        }
 
         // 4. Multi-stage deferred purge to catch async release loops
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
@@ -159,8 +162,8 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         var count: UInt32 = 0
         var zoneList: UnsafeMutablePointer<vm_address_t>?
         if malloc_get_all_zones(mach_task_self_, nil, &zoneList, &count) == KERN_SUCCESS, let list = zoneList {
-            for i in 0 ..< Int(count) {
-                if let zone = UnsafeMutablePointer<malloc_zone_t>(bitPattern: list[i]) {
+            for index in 0 ..< Int(count) {
+                if let zone = UnsafeMutablePointer<malloc_zone_t>(bitPattern: list[index]) {
                     malloc_zone_pressure_relief(zone, 0)
                 }
             }

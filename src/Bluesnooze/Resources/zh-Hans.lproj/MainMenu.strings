@@ -31,8 +31,8 @@
 /* Class = "NSMenuItem"; title = "Device list end"; ObjectID = "U3Y-sg-vdO"; */
 "U3Y-sg-vdO.title" = "设备列表结束";
 
-/* Class = "NSMenuItem"; ibShadowedToolTip = "Version 1.4"; ObjectID = "UNc-OX-MPq"; */
-"UNc-OX-MPq.ibShadowedToolTip" = "版本 1.4";
+/* Class = "NSMenuItem"; ibShadowedToolTip = "Version 2.3"; ObjectID = "UNc-OX-MPq"; */
+"UNc-OX-MPq.ibShadowedToolTip" = "版本 2.3";
 
 /* Class = "NSMenuItem"; title = "Website"; ObjectID = "UNc-OX-MPq"; */
 "UNc-OX-MPq.title" = "访问官网";

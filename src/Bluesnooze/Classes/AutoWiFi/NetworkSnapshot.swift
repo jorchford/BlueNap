@@ -15,6 +15,8 @@ struct NetworkSnapshot: Sendable, Hashable {
     var currentRouter: String?
     var currentDNS: [String]
     var isManualConfiguration: Bool
+    var isInterfaceActive: Bool
+    var locationAuthorizationStatus: Int
     var lastSeenSSID: String?
     var matchedProfile: WiFiProfile?
     var timestamp: Date
@@ -26,6 +28,8 @@ struct NetworkSnapshot: Sendable, Hashable {
         currentRouter: String? = nil,
         currentDNS: [String] = [],
         isManualConfiguration: Bool = false,
+        isInterfaceActive: Bool = false,
+        locationAuthorizationStatus: Int = 0,
         lastSeenSSID: String? = nil,
         matchedProfile: WiFiProfile? = nil,
         timestamp: Date = Date()
@@ -36,13 +40,32 @@ struct NetworkSnapshot: Sendable, Hashable {
         self.currentRouter = currentRouter
         self.currentDNS = currentDNS
         self.isManualConfiguration = isManualConfiguration
+        self.isInterfaceActive = isInterfaceActive
+        self.locationAuthorizationStatus = locationAuthorizationStatus
         self.lastSeenSSID = lastSeenSSID
         self.matchedProfile = matchedProfile
         self.timestamp = timestamp
     }
 
     var isConnected: Bool {
-        connectedSSID != nil && !connectedSSID!.isEmpty
+        if let ssid = connectedSSID, !ssid.isEmpty {
+            return true
+        }
+        if let ip = currentIPv4, !ip.isEmpty, ip != "0.0.0.0" {
+            return true
+        }
+        if let router = currentRouter, !router.isEmpty {
+            return true
+        }
+        return isInterfaceActive
+    }
+
+    var isLocationAuthorized: Bool {
+        locationAuthorizationStatus == 3 || locationAuthorizationStatus == 4
+    }
+
+    var isLocationDenied: Bool {
+        locationAuthorizationStatus == 1 || locationAuthorizationStatus == 2
     }
 
     var modeDisplayText: String {

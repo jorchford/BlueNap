@@ -89,6 +89,11 @@
 "Auto-Bind Wi-Fi Static IP" = "Wi-Fi 固定IP 自動切り替え";
 "Automatically switches to static IP for designated Wi-Fi networks." = "指定されたWi-Fiネットワークに接続時、固定IPアドレスとDNSへ自動切り替えします。";
 "Wi-Fi Disconnected" = "Wi-Fi 未接続";
+"Wi-Fi Connected" = "Wi-Fi 接続済み";
+"Authorize to Show SSID" = "Wi-Fi名の表示を許可";
+"Open Settings to Show SSID" = "設定を開いて位置情報を許可";
+"Location permission is needed to read the Wi-Fi name." = "Wi-Fiネットワーク名（SSID）を取得するにはmacOSの位置情報許可が必要です。";
+"Click to allow reading Wi-Fi name." = "現在のWi-Fi名を取得することを許可します。";
 "Static IP" = "固定 IP";
 "DHCP" = "DHCP";
 "Apply Rule Now" = "今すぐルールを適用";
@@ -136,6 +141,7 @@
 "Invalid DNS address: %@" = "無効な DNS アドレス: %@";
 "Authorization failed" = "管理者認証に失敗しました";
 "Wi-Fi disconnected; maintaining current network settings" = "Wi-Fi 切断中。現在の設定を維持します";
+"No matching Wi-Fi rule found; maintaining current network settings" = "一致するWi-Fiルールがありません。現在の設定を維持します";
 "Auto-binding disabled; maintaining settings for %@" = "自動バインド無効。%@ の設定を維持します";
 "Binding paused for %@" = "%@ の自動バインドは一時停止中です";
 "Failed to set static IP" = "固定IPの設定に失敗しました";
@@ -192,5 +198,6 @@
 "App Interface Language" = "アプリの表示言語";
 "Choose the display language for BlueNap. Changes take effect immediately." = "BlueNap の表示言語を選択します。変更は即座に反映されます。";
 "Sponsor Author" = "作者をサポート (Afdian)";
+"Version" = "バージョン";
 
 

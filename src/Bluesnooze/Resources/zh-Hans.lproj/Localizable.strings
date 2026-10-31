@@ -89,6 +89,11 @@
 "Auto-Bind Wi-Fi Static IP" = "Wi-Fi 静态 IP 自动绑定切换";
 "Automatically switches to static IP for designated Wi-Fi networks." = "根据连接的 Wi-Fi 名称，自动切换至对应的固定 IP 与 DNS。";
 "Wi-Fi Disconnected" = "Wi-Fi 已断开";
+"Wi-Fi Connected" = "Wi-Fi 已连接";
+"Authorize to Show SSID" = "允许显示 Wi-Fi 名称";
+"Open Settings to Show SSID" = "前往系统设置授权定位";
+"Location permission is needed to read the Wi-Fi name." = "macOS 系统需要定位权限以解析 Wi-Fi 名称 (SSID)。";
+"Click to allow reading Wi-Fi name." = "点击以允许 macOS 读取当前 Wi-Fi 名称。";
 "Static IP" = "静态 IP";
 "DHCP" = "DHCP 自动";
 "Apply Rule Now" = "立即按规则应用";
@@ -136,6 +141,7 @@
 "Invalid DNS address: %@" = "DNS 地址 '%@' 无效";
 "Authorization failed" = "用户取消或授权失败";
 "Wi-Fi disconnected; maintaining current network settings" = "Wi-Fi 已断开；保持当前配置不变";
+"No matching Wi-Fi rule found; maintaining current network settings" = "未匹配到适用的 Wi-Fi 静态规则；保持当前配置不变";
 "Auto-binding disabled; maintaining settings for %@" = "已暂停自动绑定；保持 %@ 当前设置";
 "Binding paused for %@" = "%@ 规则已暂停绑定";
 "Failed to set static IP" = "设置静态 IP 失败";
@@ -192,5 +198,6 @@
 "App Interface Language" = "应用界面语言";
 "Choose the display language for BlueNap. Changes take effect immediately." = "选择 蓝憩 的界面显示语言，切换后即刻生效。";
 "Sponsor Author" = "支持作者 (爱发电)";
+"Version" = "版本";
 
 

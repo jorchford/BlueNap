@@ -26,6 +26,10 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
         super.init()
     }
 
+    var locationAuthorizationStatus: CLAuthorizationStatus {
+        locationManager?.authorizationStatus ?? .notDetermined
+    }
+
     /// Requests location authorization if needed so macOS can provide unredacted Wi-Fi SSID.
     func requestLocationAuthorizationIfNeeded() {
         DispatchQueue.main.async { [weak self] in
@@ -35,17 +39,36 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
                 manager.delegate = self
                 self.locationManager = manager
             }
-            if self.locationManager?.authorizationStatus == .notDetermined {
-                self.locationManager?.requestWhenInUseAuthorization()
+            guard let manager = self.locationManager else { return }
+            let status = manager.authorizationStatus
+            if status == .notDetermined {
+                manager.requestWhenInUseAuthorization()
+                // On macOS, startUpdatingLocation is what triggers the system TCC user permission prompt
+                manager.startUpdatingLocation()
             }
         }
     }
 
-    func locationManagerDidChangeAuthorization(_: CLLocationManager) {
-        // Trigger a fresh snapshot whenever authorization status changes
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus != .notDetermined {
+            // Stop location updates immediately once determined to preserve battery and 0% CPU
+            manager.stopUpdatingLocation()
+        }
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: .init("WiFiNetworkSnapshotNeedsRefresh"), object: nil)
         }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations _: [CLLocation]) {
+        // Stop location updates immediately once any location is received
+        manager.stopUpdatingLocation()
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .init("WiFiNetworkSnapshotNeedsRefresh"), object: nil)
+        }
+    }
+
+    func locationManager(_: CLLocationManager, didFailWithError _: Error) {
+        // Silently handled without cluttering logs
     }
 
     /// Starts monitoring network changes. The callback is invoked on MainActor whenever network status changes.
@@ -80,9 +103,11 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
         let router = Self.fetchDefaultGateway()
         let dns = Self.fetchDNSServers()
         let isManual = Self.checkIfManualConfig(serviceName: serviceName)
+        let isInterfaceActive = Self.isWiFiInterfaceActive(device: device)
         let rawLastSeen = (try? String(contentsOfFile: DaemonInfo.statePath, encoding: .utf8))?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let lastSeen = Self.isValidSSID(rawLastSeen) ? rawLastSeen : nil
+        let locationStatus = Int(locationManager?.authorizationStatus.rawValue ?? 0)
 
         return NetworkSnapshot(
             connectedSSID: ssid,
@@ -91,18 +116,47 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
             currentRouter: router,
             currentDNS: dns,
             isManualConfiguration: isManual,
+            isInterfaceActive: isInterfaceActive,
+            locationAuthorizationStatus: locationStatus,
             lastSeenSSID: lastSeen,
             matchedProfile: nil,
             timestamp: Date()
         )
     }
 
+    /// Checks whether the Wi-Fi network interface is active and associated at the hardware/link level.
+    static func isWiFiInterfaceActive(device: String = "en0") -> Bool {
+        // 1. CoreWLAN interface active check
+        let client = CWWiFiClient.shared()
+        let iface = client.interface(withName: device) ?? client.interface()
+        if let iface, iface.powerOn(), iface.serviceActive() {
+            if iface.transmitRate() > 0 || iface.rssiValue() != 0 {
+                return true
+            }
+        }
+
+        // 2. SCDynamicStore Link state check
+        if let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
+           let linkDict = SCDynamicStoreCopyValue(store, "State:/Network/Interface/\(device)/Link" as CFString) as? [String: Any],
+           let active = linkDict["Active"] as? Bool, active {
+            return true
+        }
+
+        // 3. Kernel assigned IPv4 check
+        let (ip, _) = fetchIPv4AndMask(for: device)
+        if let ip, !ip.isEmpty, ip != "0.0.0.0" {
+            return true
+        }
+
+        return false
+    }
+
     /// Checks if a string is a valid, unredacted SSID.
     static func isValidSSID(_ ssid: String?) -> Bool {
-        guard let s = ssid?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty else {
+        guard let trimmedSSID = ssid?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmedSSID.isEmpty else {
             return false
         }
-        if s.contains("Redacted") || s.hasPrefix("<") || s.lowercased() == "none" {
+        if trimmedSSID.contains("Redacted") || trimmedSSID.hasPrefix("<") || trimmedSSID.lowercased() == "none" {
             return false
         }
         return true
@@ -136,8 +190,16 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
         }
 
         // Fast in-process CoreWLAN query fallback
-        if let interface = CWWiFiClient.shared().interface(), let ssid = interface.ssid(), isValidSSID(ssid) {
+        let client = CWWiFiClient.shared()
+        if let interface = client.interface(), let ssid = interface.ssid(), isValidSSID(ssid) {
             return ssid
+        }
+        if let names = client.interfaceNames() {
+            for name in names {
+                if let iface = client.interface(withName: name), let ssid = iface.ssid(), isValidSSID(ssid) {
+                    return ssid
+                }
+            }
         }
 
         return nil
@@ -145,13 +207,13 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
 
     /// Lists preferred Wi-Fi network SSIDs configured on macOS.
     static func fetchPreferredNetworks(device: String = "en0") -> [String] {
-        let p = Process()
-        p.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
-        p.arguments = ["-listpreferredwirelessnetworks", device]
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
+        process.arguments = ["-listpreferredwirelessnetworks", device]
         let pipe = Pipe()
-        p.standardOutput = pipe
-        try? p.run()
-        p.waitUntilExit()
+        process.standardOutput = pipe
+        try? process.run()
+        process.waitUntilExit()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         guard let out = String(data: data, encoding: .utf8) else { return [] }
         return out.components(separatedBy: .newlines)
