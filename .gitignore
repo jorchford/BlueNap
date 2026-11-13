@@ -9,3 +9,8 @@ DerivedData
 *.xcuserstate
 *.xcuserdata
 
+# Local assistant tooling
+.claude/
+.mcp.json
+AGENTS.md
+

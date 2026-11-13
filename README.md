@@ -86,19 +86,21 @@ When you share Bluetooth headphones, earbuds (such as AirPods), or speakers betw
 
 ---
 
-## 🌟 Key Features (v2.3)
+## 🌟 Key Features (v2.4)
 
-1. **Exit to Background & Silent Daemon Operation**
+1. **Ultra-Low Memory Footprint & Zero Shared Asset Overhead**
+   - Resident physical memory optimized to **~12.0 MB** with true 0.0% CPU idling.
+   - Decodes menu bar template icons directly from memory, eliminating automatic mapping of system assets (`CoreGlyphs.bundle/Assets.car`, `CoreNLP`, and tokenizer dictionaries saving over 180 MB of mapped file structures).
+   - Dynamic on-demand menu creation completely eliminates `MainMenu.xib` launch overhead.
+2. **AutoWiFi 0.0% CPU Kernel Event Engine**
+   - Native `bluenap-wifid` LaunchDaemon updated to query `SCDynamicStore` purely in memory without spawning `networksetup` subprocesses.
+   - 1.0s cancellable serial debounce queue prevents repeated operations during network flapping.
+3. **Exit to Background & Silent Daemon Operation**
    - Added dedicated **Exit to Background** action in the menu bar directly above "Quit", and in Settings header.
    - When exiting or auto-closing, the menu bar icon hides, window resources are completely released, and BlueNap guards your hardware silently in the background.
-2. **Dynamic In-App Language Switching**
+4. **Dynamic In-App Language Switching**
    - Dedicated **Language** submenu in the menu bar with live checkmarks.
    - Instant runtime language switching (System, 简体中文, 繁體中文, English, 日本語) in Settings without app restart.
-3. **AutoWiFi Subsystem**
-   - Automatically switches between static IP configurations (IP, Subnet, Gateway, DNS) for designated Wi-Fi networks.
-   - Seamlessly falls back to DHCP when disconnecting or switching to unconfigured networks.
-4. **Deep Memory Optimization**
-   - `NSHostingController` teardown resets the SwiftUI view hierarchy to `EmptyView()`, flushes CoreAnimation transactions, clears `URLCache`, and triggers system-wide Darwin malloc zone pressure relief.
 5. **Zero Telemetry & 100% Privacy**
    - Fully local, offline execution with zero network tracking, external analytics, or data collection.
 

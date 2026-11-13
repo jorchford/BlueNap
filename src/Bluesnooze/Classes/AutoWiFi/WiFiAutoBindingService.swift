@@ -58,7 +58,7 @@ actor WiFiAutoBindingService {
                 return (false, String(format: NSLocalizedString("Binding paused for %@", comment: ""), activeSSID))
             }
 
-            return applyStaticConfiguration(profile: match, serviceName: global.networkService)
+            return applyStaticConfiguration(profile: match, serviceName: global.networkService, wifiDevice: global.wifiDevice)
         } else {
             // Unconfigured network
             if global.restoreDHCP {
@@ -71,8 +71,24 @@ actor WiFiAutoBindingService {
 
     private func applyStaticConfiguration(
         profile: WiFiProfile,
-        serviceName: String
+        serviceName: String,
+        wifiDevice: String
     ) -> (applied: Bool, message: String) {
+        let (currentIP, currentMask) = WiFiNetworkMonitor.fetchIPv4AndMask(for: wifiDevice)
+        let currentRouter = WiFiNetworkMonitor.fetchDefaultGateway()
+        let currentDNS = WiFiNetworkMonitor.fetchDNSServers()
+        let isManual = WiFiNetworkMonitor.checkIfManualConfig(serviceName: serviceName)
+
+        if isManual,
+           currentIP == profile.staticIP,
+           currentMask == profile.subnetMask,
+           currentRouter == profile.router,
+           profile.dnsServers.isEmpty || currentDNS == profile.dnsServers {
+            let format = NSLocalizedString("Static IP %@ successfully applied for %@", comment: "")
+            let msg = String(format: format, profile.staticIP, profile.ssid)
+            return (false, msg)
+        }
+
         log.notice("Applying static IP \(profile.staticIP, privacy: .public) for SSID: \(profile.ssid, privacy: .public)")
 
         // 1. Set static IPv4

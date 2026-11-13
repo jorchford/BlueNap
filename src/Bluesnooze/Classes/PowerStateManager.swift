@@ -12,12 +12,30 @@ import os
 final class PowerStateManager {
     static let shared = PowerStateManager()
 
+    private enum StateKeys {
+        static let isSystemSleeping = "PowerState.isSystemSleeping"
+        static let prevBluetoothState = "PowerState.prevBluetoothState"
+        static let prevWifiState = "PowerState.prevWifiState"
+        static let prevConnectedDevices = "PowerState.prevConnectedDevices"
+    }
+
     // MARK: - Internal State
 
-    private(set) var isSystemSleeping: Bool = false
-    private(set) var prevBluetoothState: Bool = true
-    private(set) var prevWifiState: Bool = false
-    private(set) var prevConnectedDevices: [String: Bool] = [:]
+    private(set) var isSystemSleeping: Bool = false {
+        didSet { UserDefaults.standard.set(isSystemSleeping, forKey: StateKeys.isSystemSleeping) }
+    }
+
+    private(set) var prevBluetoothState: Bool = true {
+        didSet { UserDefaults.standard.set(prevBluetoothState, forKey: StateKeys.prevBluetoothState) }
+    }
+
+    private(set) var prevWifiState: Bool = false {
+        didSet { UserDefaults.standard.set(prevWifiState, forKey: StateKeys.prevWifiState) }
+    }
+
+    private(set) var prevConnectedDevices: [String: Bool] = [:] {
+        didSet { UserDefaults.standard.set(prevConnectedDevices, forKey: StateKeys.prevConnectedDevices) }
+    }
 
     private var lastWakeTimestamp: Date = .distantPast
     private let wakeDebounceInterval: TimeInterval = 1.0
@@ -37,6 +55,16 @@ final class PowerStateManager {
         self.bluetoothService = bluetoothService
         self.wifiService = wifiService
         self.appState = appState
+
+        let defaults = UserDefaults.standard
+        isSystemSleeping = defaults.bool(forKey: StateKeys.isSystemSleeping)
+        if defaults.object(forKey: StateKeys.prevBluetoothState) != nil {
+            prevBluetoothState = defaults.bool(forKey: StateKeys.prevBluetoothState)
+        }
+        prevWifiState = defaults.bool(forKey: StateKeys.prevWifiState)
+        if let saved = defaults.dictionary(forKey: StateKeys.prevConnectedDevices) as? [String: Bool] {
+            prevConnectedDevices = saved
+        }
     }
 
     // MARK: - Power Down (Sleep / Power Off)

@@ -20,6 +20,7 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
     let configPath = "/usr/local/etc/bluenap-wifi.conf"
     let legacyConfigPath = "/usr/local/etc/wifi-static-ip-switcher.conf"
     let statePath = "/usr/local/etc/bluenap-wifi.state"
+    private let store = SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil)
 
     struct Profile {
         var ssid: String
@@ -131,13 +132,68 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
     }
 
     func fetchDefaultGateway() -> String? {
-        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil),
+        guard let store = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil),
               let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
               let router = dict["Router"] as? String, !router.isEmpty
         else {
             return nil
         }
         return router
+    }
+
+    func fetchDNSServers() -> [String] {
+        guard let store = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil),
+              let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/DNS" as CFString) as? [String: Any],
+              let servers = dict["ServerAddresses"] as? [String]
+        else {
+            return []
+        }
+        return servers
+    }
+
+    func fetchIPv4AndMask(for interfaceName: String) -> (ip: String?, mask: String?) {
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&ifaddr) == 0, let firstAddr = ifaddr else { return (nil, nil) }
+        defer { freeifaddrs(ifaddr) }
+
+        var current: UnsafeMutablePointer<ifaddrs>? = firstAddr
+        while let ptr = current {
+            let flags = Int32(ptr.pointee.ifa_flags)
+            let isUp = (flags & IFF_UP) == IFF_UP
+            let isLoopback = (flags & IFF_LOOPBACK) == IFF_LOOPBACK
+            let family = ptr.pointee.ifa_addr.pointee.sa_family
+
+            if isUp, !isLoopback, family == UInt8(AF_INET) {
+                let name = String(cString: ptr.pointee.ifa_name)
+                if name == interfaceName {
+                    var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    var maskBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    _ = getnameinfo(
+                        ptr.pointee.ifa_addr,
+                        socklen_t(ptr.pointee.ifa_addr.pointee.sa_len),
+                        &hostBuffer,
+                        socklen_t(hostBuffer.count),
+                        nil,
+                        0,
+                        NI_NUMERICHOST
+                    )
+                    _ = getnameinfo(
+                        ptr.pointee.ifa_netmask,
+                        socklen_t(ptr.pointee.ifa_netmask.pointee.sa_len),
+                        &maskBuffer,
+                        socklen_t(maskBuffer.count),
+                        nil,
+                        0,
+                        NI_NUMERICHOST
+                    )
+                    let ipStr = hostBuffer.withUnsafeBufferPointer { $0.baseAddress.map { String(cString: $0) } ?? "" }
+                    let maskStr = maskBuffer.withUnsafeBufferPointer { $0.baseAddress.map { String(cString: $0) } ?? "" }
+                    return (ipStr.isEmpty ? nil : ipStr, maskStr.isEmpty ? nil : maskStr)
+                }
+            }
+            current = ptr.pointee.ifa_next
+        }
+        return (nil, nil)
     }
 
     func fetchCurrentSSID() -> String? {
@@ -167,20 +223,23 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
         return nil
     }
 
-    func isManualConfiguration(service: String) -> Bool {
-        let p = Process()
-        p.executableURL = URL(fileURLWithPath: "/usr/sbin/networksetup")
-        p.arguments = ["-getinfo", service]
-        let pipe = Pipe()
-        p.standardOutput = pipe
-        try? p.run()
-        p.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let out = String(data: data, encoding: .utf8) ?? ""
-        return out.contains("Manual Configuration")
+    func isManualConfiguration(service _: String) -> Bool {
+        guard let store = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "bluenap-wifid" as CFString, nil, nil),
+              let globalDict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+              let serviceID = globalDict["PrimaryService"] as? String
+        else {
+            return false
+        }
+        let setupKey = "Setup:/Network/Service/\(serviceID)/IPv4" as CFString
+        if let setupDict = SCDynamicStoreCopyValue(store, setupKey) as? [String: Any],
+           let configMethod = setupDict["ConfigMethod"] as? String {
+            return configMethod == "Manual"
+        }
+        return false
     }
 
     func evaluateAndApply() {
+        defer { malloc_zone_pressure_relief(nil, 0) }
         let config = loadConfig()
         var ssid = fetchCurrentSSID()
         let currentRouter = fetchDefaultGateway()
@@ -197,8 +256,12 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
         }
 
         // Save last seen SSID
-        try? FileManager.default.createDirectory(atPath: "/usr/local/etc", withIntermediateDirectories: true)
-        try? activeSSID.write(toFile: statePath, atomically: true, encoding: .utf8)
+        let existingState = (try? String(contentsOfFile: statePath, encoding: .utf8))?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if existingState != activeSSID {
+            try? FileManager.default.createDirectory(atPath: "/usr/local/etc", withIntermediateDirectories: true)
+            try? activeSSID.write(toFile: statePath, atomically: true, encoding: .utf8)
+        }
 
         // Check master binding switch
         guard config.isBindingEnabled else {
@@ -209,6 +272,16 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
         if let match = config.profiles.first(where: { $0.ssid == activeSSID }) {
             guard match.isEnabled else {
                 log.info("Profile for \(activeSSID, privacy: .public) is paused.")
+                return
+            }
+
+            let (currentIP, currentMask) = fetchIPv4AndMask(for: config.wifiDevice)
+            let currentDNS = fetchDNSServers()
+            if isManualConfiguration(service: config.networkService),
+               currentIP == match.staticIP,
+               currentMask == match.subnetMask,
+               currentRouter == match.router,
+               match.dnsServers.isEmpty || currentDNS == match.dnsServers {
                 return
             }
 
@@ -250,17 +323,30 @@ final class BlueNapWiFiDaemonCore: @unchecked Sendable {
     }
 }
 
+/// Serial background queue and cancellable work item for true event debouncing
+private let daemonSerialQueue = DispatchQueue(label: "com.needai.bluenap.wifid.serial", qos: .background)
+private nonisolated(unsafe) var pendingWorkItem: DispatchWorkItem?
+
 /// Global Callback for SCDynamicStore
 func dynamicStoreCallback(
     _: SCDynamicStore,
     _: CFArray,
     _: UnsafeMutableRawPointer?
 ) {
-    // Debounce 1.0 second to allow Wi-Fi association and hardware handshake to settle
-    DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
-        BlueNapWiFiDaemonCore.shared.evaluateAndApply()
+    daemonSerialQueue.async {
+        pendingWorkItem?.cancel()
+        let item = DispatchWorkItem {
+            autoreleasepool {
+                BlueNapWiFiDaemonCore.shared.evaluateAndApply()
+            }
+        }
+        pendingWorkItem = item
+        daemonSerialQueue.asyncAfter(deadline: .now() + 1.0, execute: item)
     }
 }
+
+URLCache.shared = URLCache(memoryCapacity: 0, diskCapacity: 0, diskPath: nil)
+setpriority(PRIO_PROCESS, 0, PRIO_DARWIN_BG)
 
 let args = CommandLine.arguments
 let mode = args.count > 1 ? args[1] : "service"
@@ -301,12 +387,16 @@ default: // "service"
         exit(1)
     }
 
-    let patterns = [
-        "State:/Network/Interface/.*/.*" as CFString,
+    let keys = [
         "State:/Network/Global/IPv4" as CFString
     ] as CFArray
+    let patterns = [
+        "State:/Network/Interface/en[0-9]+/IPv4" as CFString,
+        "State:/Network/Interface/en[0-9]+/Link" as CFString,
+        "State:/Network/Interface/en[0-9]+/AirPort" as CFString
+    ] as CFArray
 
-    SCDynamicStoreSetNotificationKeys(store, nil, patterns)
+    SCDynamicStoreSetNotificationKeys(store, keys, patterns)
     guard let runLoopSource = SCDynamicStoreCreateRunLoopSource(kCFAllocatorDefault, store, 0) else {
         log.error("Failed to create RunLoopSource for SCDynamicStore.")
         exit(1)

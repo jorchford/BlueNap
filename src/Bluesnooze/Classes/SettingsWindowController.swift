@@ -43,7 +43,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             window.isReleasedWhenClosed = false
             window.titlebarAppearsTransparent = true
             window.delegate = self
-            self.hostingController = controller
+            hostingController = controller
             self.window = window
         }
 
@@ -54,7 +54,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
         // Switch to regular activation policy so the settings window can become key and accept input
         NSApp.setActivationPolicy(.regular)
+        setpriority(PRIO_PROCESS, 0, 0)
         window.center()
+        window.orderFrontRegardless()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -139,31 +141,34 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             NSGraphicsContext.current = nil
 
             // 3. Purge all Darwin malloc zones
-            purgeAllMallocZones()
+            Self.purgeAllProcessMallocZones()
         }
 
         // 4. Multi-stage deferred purge to catch async release loops
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             autoreleasepool {
                 CATransaction.flush()
-                self?.purgeAllMallocZones()
+                Self.purgeAllProcessMallocZones()
             }
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             autoreleasepool {
                 CATransaction.flush()
-                self?.purgeAllMallocZones()
+                Self.purgeAllProcessMallocZones()
             }
         }
     }
 
-    private func purgeAllMallocZones() {
+    nonisolated static func purgeAllProcessMallocZones() {
         var count: UInt32 = 0
         var zoneList: UnsafeMutablePointer<vm_address_t>?
         if malloc_get_all_zones(mach_task_self_, nil, &zoneList, &count) == KERN_SUCCESS, let list = zoneList {
             for index in 0 ..< Int(count) {
                 if let zone = UnsafeMutablePointer<malloc_zone_t>(bitPattern: list[index]) {
+                    if zone.pointee.version >= 8 {
+                        _ = zone.pointee.pressure_relief?(zone, 0)
+                    }
                     malloc_zone_pressure_relief(zone, 0)
                 }
             }

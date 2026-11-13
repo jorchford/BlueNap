@@ -8,30 +8,44 @@
 import Foundation
 
 enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
-    case system = "system"
+    case system
     case zhHans = "zh-Hans"
     case zhHant = "zh-Hant"
-    case en = "en"
-    case ja = "ja"
+    case en
+    case ja
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     static var current: AppLanguage {
         get {
-            if let str = UserDefaults.standard.string(forKey: "appLanguage"),
-               let lang = AppLanguage(rawValue: str) {
-                return lang
-            }
-            return .system
+            cachedCurrentLanguage
         }
         set {
+            cachedCurrentLanguage = newValue
             UserDefaults.standard.set(newValue.rawValue, forKey: "appLanguage")
             if newValue == .system {
                 UserDefaults.standard.removeObject(forKey: "AppleLanguages")
             } else {
                 UserDefaults.standard.set([newValue.rawValue], forKey: "AppleLanguages")
             }
+            refreshCachedBundle()
         }
+    }
+
+    private nonisolated(unsafe) static var cachedCurrentLanguage: AppLanguage = {
+        if let str = UserDefaults.standard.string(forKey: "appLanguage"),
+           let lang = AppLanguage(rawValue: str) {
+            return lang
+        }
+        return .system
+    }()
+
+    private nonisolated(unsafe) static var cachedBundle: Bundle = resolveLanguageBundle(for: cachedCurrentLanguage)
+
+    static func refreshCachedBundle() {
+        cachedBundle = resolveLanguageBundle(for: cachedCurrentLanguage)
     }
 
     var displayName: String {
@@ -54,9 +68,12 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     }
 
     static var effectiveLanguageCode: String {
-        let current = AppLanguage.current
-        if current != .system {
-            return current.rawValue
+        resolveEffectiveLanguageCode(for: cachedCurrentLanguage)
+    }
+
+    private static func resolveEffectiveLanguageCode(for language: AppLanguage) -> String {
+        if language != .system {
+            return language.rawValue
         }
         for lang in Locale.preferredLanguages {
             if lang.hasPrefix("zh-Hans") || lang.hasPrefix("zh-CN") || lang.hasPrefix("zh-SG") {
@@ -79,7 +96,11 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     }
 
     static var currentLanguageBundle: Bundle {
-        let code = effectiveLanguageCode
+        cachedBundle
+    }
+
+    private static func resolveLanguageBundle(for language: AppLanguage) -> Bundle {
+        let code = resolveEffectiveLanguageCode(for: language)
         if let path = Bundle.main.path(forResource: code, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             return bundle

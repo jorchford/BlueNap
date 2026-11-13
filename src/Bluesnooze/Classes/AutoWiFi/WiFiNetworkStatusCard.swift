@@ -45,7 +45,7 @@ struct WiFiNetworkStatusCard: View {
                                 )
                                 .foregroundStyle(snapshot.isManualConfiguration ? Color.purple : Color.blue)
 
-                            if snapshot.isConnected && (snapshot.connectedSSID == nil || snapshot.connectedSSID!.isEmpty) {
+                            if snapshot.isConnected, snapshot.connectedSSID == nil || snapshot.connectedSSID!.isEmpty {
                                 locationPermissionBadge
                             }
                         }

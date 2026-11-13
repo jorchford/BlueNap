@@ -17,13 +17,22 @@ final class BluetoothDeviceMenuItem: NSMenuItem {
         let connectionSuffix = deviceInfo.isConnected ? NSLocalizedString(" (Connected)", comment: "") : ""
         super.init(title: "\(deviceInfo.name)\(connectionSuffix)", action: selector, keyEquivalent: charCode)
 
-        if let symbolImage = NSImage(
-            systemSymbolName: deviceInfo.sfSymbolName,
-            accessibilityDescription: deviceInfo.category.displayName
-        ) {
-            let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .regular)
-            image = symbolImage.withSymbolConfiguration(config)
+        let isConnected = deviceInfo.isConnected
+        let statusImage = NSImage(size: NSSize(width: 10, height: 10), flipped: false) { rect in
+            let circleRect = rect.insetBy(dx: 1.5, dy: 1.5)
+            let path = NSBezierPath(ovalIn: circleRect)
+            if isConnected {
+                NSColor.systemGreen.setFill()
+                path.fill()
+            } else {
+                NSColor.secondaryLabelColor.withAlphaComponent(0.55).setStroke()
+                path.lineWidth = 1.2
+                path.stroke()
+            }
+            return true
         }
+        statusImage.accessibilityDescription = deviceInfo.category.displayName
+        image = statusImage
 
         let addressLabel = NSLocalizedString("Address", comment: "")
         let categoryLabel = NSLocalizedString("Category", comment: "")

@@ -34,7 +34,9 @@ enum AutoHideDelayOption: Int, CaseIterable, Identifiable, Sendable {
     case tenMinutes = 10
     case fifteenMinutes = 15
 
-    var id: Int { rawValue }
+    var id: Int {
+        rawValue
+    }
 
     var displayName: String {
         switch self {
@@ -89,6 +91,7 @@ final class Preferences {
     var autoHideMenuBarDelayMinutes: Int {
         didSet { defaults.set(autoHideMenuBarDelayMinutes, forKey: Keys.autoHideMenuBarDelayMinutes) }
     }
+
     var isAutoWiFiBindingEnabled: Bool {
         didSet { defaults.set(isAutoWiFiBindingEnabled, forKey: Keys.isAutoWiFiBindingEnabled) }
     }

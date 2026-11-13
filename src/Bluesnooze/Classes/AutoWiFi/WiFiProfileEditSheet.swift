@@ -19,6 +19,7 @@ struct WiFiProfileEditSheet: View {
     @State private var maskText: String = "255.255.255.0"
     @State private var routerText: String = ""
     @State private var dnsText: String = ""
+    @State private var preferredNetworks: [String] = []
 
     private let dnsPresets: [(name: String, ips: [String])] = [
         ("AliDNS", ["223.5.5.5", "223.6.6.6"]),
@@ -65,10 +66,9 @@ struct WiFiProfileEditSheet: View {
                                 .buttonStyle(.borderless)
                             }
 
-                            let preferred = WiFiNetworkMonitor.fetchPreferredNetworks()
-                            if !preferred.isEmpty {
+                            if !preferredNetworks.isEmpty {
                                 Menu {
-                                    ForEach(preferred, id: \.self) { net in
+                                    ForEach(preferredNetworks, id: \.self) { net in
                                         Button(net) {
                                             ssidText = net
                                         }
@@ -175,6 +175,12 @@ struct WiFiProfileEditSheet: View {
             maskText = profile.subnetMask.isEmpty ? "255.255.255.0" : profile.subnetMask
             routerText = profile.router
             dnsText = profile.dnsServers.joined(separator: " ")
+        }
+        .task {
+            let loaded = await Task.detached(priority: .utility) {
+                WiFiNetworkMonitor.fetchPreferredNetworks()
+            }.value
+            preferredNetworks = loaded
         }
     }
 }

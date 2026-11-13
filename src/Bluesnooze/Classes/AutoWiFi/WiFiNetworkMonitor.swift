@@ -34,12 +34,12 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
     func requestLocationAuthorizationIfNeeded() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            if self.locationManager == nil {
+            if locationManager == nil {
                 let manager = CLLocationManager()
                 manager.delegate = self
-                self.locationManager = manager
+                locationManager = manager
             }
-            guard let manager = self.locationManager else { return }
+            guard let manager = locationManager else { return }
             let status = manager.authorizationStatus
             if status == .notDetermined {
                 manager.requestWhenInUseAuthorization()
@@ -98,12 +98,13 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
 
     /// Captures a complete snapshot of current network state purely from in-memory kernel/store queries.
     func captureCurrentSnapshot(device: String = "en0", serviceName: String = "Wi-Fi") -> NetworkSnapshot {
+        let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil)
         let ssid = Self.fetchCurrentSSID()
         let (ip, mask) = Self.fetchIPv4AndMask(for: device)
-        let router = Self.fetchDefaultGateway()
-        let dns = Self.fetchDNSServers()
-        let isManual = Self.checkIfManualConfig(serviceName: serviceName)
-        let isInterfaceActive = Self.isWiFiInterfaceActive(device: device)
+        let router = Self.fetchDefaultGateway(store: store)
+        let dns = Self.fetchDNSServers(store: store)
+        let isManual = Self.checkIfManualConfig(serviceName: serviceName, store: store)
+        let isInterfaceActive = Self.isWiFiInterfaceActive(device: device, currentIP: ip, store: store)
         let rawLastSeen = (try? String(contentsOfFile: DaemonInfo.statePath, encoding: .utf8))?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let lastSeen = Self.isValidSSID(rawLastSeen) ? rawLastSeen : nil
@@ -125,7 +126,11 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
     }
 
     /// Checks whether the Wi-Fi network interface is active and associated at the hardware/link level.
-    static func isWiFiInterfaceActive(device: String = "en0") -> Bool {
+    static func isWiFiInterfaceActive(
+        device: String = "en0",
+        currentIP: String? = nil,
+        store: SCDynamicStore? = nil
+    ) -> Bool {
         // 1. CoreWLAN interface active check
         let client = CWWiFiClient.shared()
         let iface = client.interface(withName: device) ?? client.interface()
@@ -136,14 +141,15 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
         }
 
         // 2. SCDynamicStore Link state check
-        if let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
-           let linkDict = SCDynamicStoreCopyValue(store, "State:/Network/Interface/\(device)/Link" as CFString) as? [String: Any],
+        let activeStore = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil)
+        if let activeStore,
+           let linkDict = SCDynamicStoreCopyValue(activeStore, "State:/Network/Interface/\(device)/Link" as CFString) as? [String: Any],
            let active = linkDict["Active"] as? Bool, active {
             return true
         }
 
         // 3. Kernel assigned IPv4 check
-        let (ip, _) = fetchIPv4AndMask(for: device)
+        let ip = currentIP ?? fetchIPv4AndMask(for: device).ip
         if let ip, !ip.isEmpty, ip != "0.0.0.0" {
             return true
         }
@@ -274,9 +280,10 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
     }
 
     /// Fetches the default router gateway directly from SCDynamicStore in memory (0 subprocesses).
-    static func fetchDefaultGateway() -> String? {
-        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
-              let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+    static func fetchDefaultGateway(store: SCDynamicStore? = nil) -> String? {
+        let activeStore = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil)
+        guard let activeStore,
+              let dict = SCDynamicStoreCopyValue(activeStore, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
               let router = dict["Router"] as? String, !router.isEmpty
         else {
             return nil
@@ -285,9 +292,10 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
     }
 
     /// Retrieves current DNS servers via SCDynamicStore in memory (0 subprocesses).
-    static func fetchDNSServers() -> [String] {
-        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
-              let dict = SCDynamicStoreCopyValue(store, "State:/Network/Global/DNS" as CFString) as? [String: Any],
+    static func fetchDNSServers(store: SCDynamicStore? = nil) -> [String] {
+        let activeStore = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil)
+        guard let activeStore,
+              let dict = SCDynamicStoreCopyValue(activeStore, "State:/Network/Global/DNS" as CFString) as? [String: Any],
               let servers = dict["ServerAddresses"] as? [String]
         else {
             return []
@@ -296,15 +304,16 @@ final class WiFiNetworkMonitor: NSObject, @unchecked Sendable, CLLocationManager
     }
 
     /// Checks whether the network service is currently configured with Manual Static IP via SCDynamicStore in memory (0 subprocesses).
-    static func checkIfManualConfig(serviceName _: String = "Wi-Fi") -> Bool {
-        guard let store = SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil),
-              let globalDict = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
+    static func checkIfManualConfig(serviceName _: String = "Wi-Fi", store: SCDynamicStore? = nil) -> Bool {
+        let activeStore = store ?? SCDynamicStoreCreate(kCFAllocatorDefault, "WiFiNetworkMonitor" as CFString, nil, nil)
+        guard let activeStore,
+              let globalDict = SCDynamicStoreCopyValue(activeStore, "State:/Network/Global/IPv4" as CFString) as? [String: Any],
               let serviceID = globalDict["PrimaryService"] as? String
         else {
             return false
         }
         let setupKey = "Setup:/Network/Service/\(serviceID)/IPv4" as CFString
-        if let setupDict = SCDynamicStoreCopyValue(store, setupKey) as? [String: Any],
+        if let setupDict = SCDynamicStoreCopyValue(activeStore, setupKey) as? [String: Any],
            let configMethod = setupDict["ConfigMethod"] as? String {
             return configMethod == "Manual"
         }
